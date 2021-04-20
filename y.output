@@ -1,0 +1,122 @@
+Nonterminals useless in grammar
+
+   resta
+   multiplicacion
+   division
+
+
+Terminals unused in grammar
+
+   OP_RESTA
+   OP_MUL
+   OP_DIV
+   ASIG
+   P_A
+   P_C
+
+
+Rules useless in grammar
+
+    4 resta: operando OP_RESTA operando
+
+    5 multiplicacion: operando OP_MUL operando
+
+    6 division: operando OP_DIV operando
+
+
+Gramática
+
+    0 $accept: suma $end
+
+    1 suma: operando OP_SUMA operando
+
+    2 operando: ID
+    3         | ENTERO
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256)
+ID (258) 2
+ENTERO (259) 3
+OP_SUMA (260) 1
+OP_RESTA (261)
+OP_MUL (262)
+OP_DIV (263)
+ASIG (264)
+P_A (265)
+P_C (266)
+
+
+No terminales con las reglas donde aparecen
+
+$accept (12)
+    en la izquierda: 0
+suma (13)
+    en la izquierda: 1, en la derecha: 0
+operando (14)
+    en la izquierda: 2 3, en la derecha: 1
+
+
+estado 0
+
+    0 $accept: . suma $end
+
+    ID      desplazar e ir al estado 1
+    ENTERO  desplazar e ir al estado 2
+
+    suma      ir al estado 3
+    operando  ir al estado 4
+
+
+estado 1
+
+    2 operando: ID .
+
+    $default  reduce usando la regla 2 (operando)
+
+
+estado 2
+
+    3 operando: ENTERO .
+
+    $default  reduce usando la regla 3 (operando)
+
+
+estado 3
+
+    0 $accept: suma . $end
+
+    $end  desplazar e ir al estado 5
+
+
+estado 4
+
+    1 suma: operando . OP_SUMA operando
+
+    OP_SUMA  desplazar e ir al estado 6
+
+
+estado 5
+
+    0 $accept: suma $end .
+
+    $default  aceptar
+
+
+estado 6
+
+    1 suma: operando OP_SUMA . operando
+
+    ID      desplazar e ir al estado 1
+    ENTERO  desplazar e ir al estado 2
+
+    operando  ir al estado 7
+
+
+estado 7
+
+    1 suma: operando OP_SUMA operando .
+
+    $default  reduce usando la regla 1 (suma)
