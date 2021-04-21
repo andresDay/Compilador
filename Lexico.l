@@ -54,5 +54,5 @@ COMMENT     "{\/\/}{CTE_CADENA}*"
 {CTE_INT}	{ yylval = atoi( yytext ) ;return CTE_INT;}
 
 "\n"      		
-"\t"		//comentario para comentar
+"\t"		//comentario para comentar comentando
 {COMMENT} //esto ignora comentarios en linea supuestamente
