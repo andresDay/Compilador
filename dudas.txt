@@ -1,0 +1,2 @@
+1- Qué forma la lista de expresiones?
+2- Qué regla cuenta como que realiza una "acción" para meterle el printf?

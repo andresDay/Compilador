@@ -39,27 +39,93 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     ID = 258,
-     ENTERO = 259,
-     OP_SUMA = 260,
-     OP_RESTA = 261,
-     OP_MUL = 262,
-     OP_DIV = 263,
-     ASIG = 264,
-     P_A = 265,
-     P_C = 266
+     CTE_INT = 258,
+     CTE_REAL = 259,
+     CTE_CADENA = 260,
+     P_COMA = 261,
+     DECLARACION = 262,
+     COMA = 263,
+     C_A = 264,
+     C_C = 265,
+     AND = 266,
+     OR = 267,
+     NOT = 268,
+     IGUAL = 269,
+     DISTINTO = 270,
+     MAYOR = 271,
+     MENOR = 272,
+     MENOR_IGUAL = 273,
+     MAYOR_IGUAL = 274,
+     ID = 275,
+     ASIG = 276,
+     P_A = 277,
+     P_C = 278,
+     ESCRIBIR = 279,
+     ESCANEAR = 280,
+     CONCATENAR = 281,
+     DECVAR = 282,
+     ENDDEC = 283,
+     STRING = 284,
+     CHAR = 285,
+     INTEGER = 286,
+     IF = 287,
+     ELSE = 288,
+     WHILE = 289,
+     BEGIN = 290,
+     END = 291,
+     IN = 292,
+     DO = 293,
+     ENDWHILE = 294,
+     OP_MULT = 295,
+     OP_DIV = 296,
+     OP_SUMA = 297,
+     OP_RESTA = 298,
+     OP_MOD = 299
    };
 #endif
 /* Tokens.  */
-#define ID 258
-#define ENTERO 259
-#define OP_SUMA 260
-#define OP_RESTA 261
-#define OP_MUL 262
-#define OP_DIV 263
-#define ASIG 264
-#define P_A 265
-#define P_C 266
+#define CTE_INT 258
+#define CTE_REAL 259
+#define CTE_CADENA 260
+#define P_COMA 261
+#define DECLARACION 262
+#define COMA 263
+#define C_A 264
+#define C_C 265
+#define AND 266
+#define OR 267
+#define NOT 268
+#define IGUAL 269
+#define DISTINTO 270
+#define MAYOR 271
+#define MENOR 272
+#define MENOR_IGUAL 273
+#define MAYOR_IGUAL 274
+#define ID 275
+#define ASIG 276
+#define P_A 277
+#define P_C 278
+#define ESCRIBIR 279
+#define ESCANEAR 280
+#define CONCATENAR 281
+#define DECVAR 282
+#define ENDDEC 283
+#define STRING 284
+#define CHAR 285
+#define INTEGER 286
+#define IF 287
+#define ELSE 288
+#define WHILE 289
+#define BEGIN 290
+#define END 291
+#define IN 292
+#define DO 293
+#define ENDWHILE 294
+#define OP_MULT 295
+#define OP_DIV 296
+#define OP_SUMA 297
+#define OP_RESTA 298
+#define OP_MOD 299
 
 
 

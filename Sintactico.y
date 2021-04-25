@@ -11,39 +11,44 @@ char *yyltext;
 char *yytext;
 
 %}
-%type <ival> ID
-%token<ival> CTE_INT
+// %type <ival> ID
+// %token<ival> CTE_INT
 
-%token CTE_INT CTE_CADENA
-%token P_COMA DECLARACION COMA C_A C_C IGUAL MAYOR MENOR MENOR_IGUAL MAYOR_IGUAL
+%token CTE_INT CTE_REAL CTE_CADENA
+%token P_COMA DECLARACION COMA C_A C_C AND OR NOT IGUAL DISTINTO MAYOR MENOR MENOR_IGUAL MAYOR_IGUAL
 %token ID
-%token OP_SUMA ASIG P_A P_C 
+%token ASIG P_A P_C 
 %token ESCRIBIR ESCANEAR CONCATENAR 
 %token DECVAR ENDDEC
-%token CHAR_ARRAY
+%token STRING
 %token CHAR INTEGER 
-%token IF WHILE BEGIN END
-%token OP_MULT OP_DIV OP_SUMA OP_RESTA
+%token IF ELSE WHILE BEGIN END IN DO ENDWHILE
+%token OP_MULT OP_DIV OP_SUMA OP_RESTA OP_MOD
 
 %left OP_MULT OP_DIV OP_SUMA OP_RESTA
 
-%type<ival> expresion
-%type<ival> termino
-%type<ival> factor
-%type<ival> asignacion
+// %type<ival> expresion
+// %type<ival> termino
+// %type<ival> factor
+// %type<ival> asignacion
 
-%start inicio
+%start inicio_prima
 %%
 
-inicio: DECVAR declaraciones ENDDEC programa
-        | DECVAR ENDDEC programa
-        | programa
+inicio_prima: inicio {printf("1 - \n");};
+
+inicio: DECVAR declaraciones ENDDEC programa {printf("2 - \n");}
+        | programa {printf("3 - \n");}
 ;
 
-declaraciones: ID DECLARACION tipodato P_COMA           
+declaraciones: lista_de_variables DECLARACION tipodato P_COMA {printf("4 - \n");}           
 ;
 
-tipodato: CHAR_ARRAY
+lista_de_variables: ID  {printf("5 - \n");}
+                    | lista_de_variables COMA ID        {printf("6 - \n");}
+;
+
+tipodato: STRING
           |CHAR
           |INTEGER
 ;
@@ -54,38 +59,57 @@ bloque: sentencia
         |bloque sentencia
 ;
 sentencia: ciclo
+          |ciclo_especial
           |asignacion
           |seleccion
           |funcion
 ;
 funcion:  ESCRIBIR P_A CTE_CADENA P_C P_COMA {printf(CTE_CADENA);}
           |ESCANEAR P_A ID P_C P_COMA {scanf(ID);}
-          |CONCATENAR P_A ID COMA CTE_CADENA P_COMA {strcat(ID,CTE_CADENA);}
+          |CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA {strcat(ID,CTE_CADENA);}
 ;
-seleccion: IF P_A condicion P_C BEGIN bloque END 
-          |IF P_A condicion P_C BEGIN bloque END ELSE BEGIN bloque END
+seleccion: IF P_A condicion_mul P_C BEGIN bloque END 
+          |IF P_A condicion_mul P_C BEGIN bloque END ELSE BEGIN bloque END
 ;
-condicion: expresion MAYOR expresion {$$=$1>$3;}
-          |expresion MENOR expresion {$$=$1<$3;}
-          |expresion MAYOR_IGUAL expresion {$$=$1>=$3;}
-          |expresion MENOR_IGUAL expresion {$$=$1<=$3;}
-          |expresion IGUAL expresion {$$=$1==$3;}
+
+condicion_mul: condicion AND condicion
+               | condicion OR condicion
+               | NOT condicion
+               | condicion
+;
+
+condicion: expresion MAYOR expresion
+          |expresion MENOR expresion
+          |expresion MAYOR_IGUAL expresion
+          |expresion MENOR_IGUAL expresion
+          |expresion IGUAL expresion
+          |expresion DISTINTO expresion
 ;
 
 
-asignacion: ID ASIG expresion T_COMA {$$=$3;};
+asignacion: ID ASIG expresion P_COMA;
 
-expresion:      expresion OP_SUMA termino {$$=$1+$3;}
-                |expresion OP_RESTA termino {$$=$1-$3;}
-                | termino {$$=$1;}
+expresion:      expresion OP_SUMA termino
+                |expresion OP_RESTA termino
+                | termino
 ;
-termino:        termino OP_MULT factor {$$= $1*$3;}
-                |termino OP_DIV factor {$$=$1/$3;}
-                |factor {$$=$1;}
+termino:        termino OP_MULT factor
+                |termino OP_DIV factor
+                |termino OP_MOD factor
+                |factor
 ;
-factor:         P_A expresion P_C {$$=$2;}
-				        |ID{$$=$1;}
-                |CTE_INT {$$=$1;}
+factor:         P_A expresion P_C
+		|ID
+                |CTE_INT
+                |CTE_REAL
+;
+
+ciclo: WHILE P_A condicion_mul P_C BEGIN bloque END;
+
+ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE;
+
+lista_de_expresiones: factor
+                      | lista_de_expresiones COMA factor
 ;
 
 %%
