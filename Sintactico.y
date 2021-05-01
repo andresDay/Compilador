@@ -108,8 +108,8 @@ ciclo: WHILE P_A condicion_mul P_C BEGIN bloque END;
 
 ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE;
 
-lista_de_expresiones: factor
-                      | lista_de_expresiones COMA factor
+lista_de_expresiones: expresion
+                      | lista_de_expresiones COMA expresion
 ;
 
 %%
