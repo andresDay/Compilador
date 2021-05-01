@@ -1,28 +1,30 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include "string.h"
-#include <conio.h>
-#include "y.tab.h"
-int yylval;
+#include "./include/cabecera.h"
+
+int yylex();
+int yyerror();
 int yystopparser=0;
 FILE  *yyin;
 char *yyltext;
 char *yytext;
 
 %}
-// %type <ival> ID
-// %token<ival> CTE_INT
 
-%token CTE_INT CTE_REAL CTE_CADENA
+%union {
+int intVal;
+double realVal;
+char *strVal;
+}
+
+%token <intVal>CTE_INT <realVal>CTE_REAL <strVal>CTE_CADENA
 %token P_COMA DECLARACION COMA C_A C_C AND OR NOT IGUAL DISTINTO MAYOR MENOR MENOR_IGUAL MAYOR_IGUAL
 %token ID
 %token ASIG P_A P_C 
 %token ESCRIBIR ESCANEAR CONCATENAR 
 %token DECVAR ENDDEC
 %token STRING
-%token CHAR INTEGER 
-%token IF ELSE WHILE BEGIN END IN DO ENDWHILE
+%token CHAR INTEGER FLOAT
+%token IF ELSE WHILE START END IN DO ENDWHILE
 %token OP_MULT OP_DIV OP_SUMA OP_RESTA OP_MOD
 
 %left OP_MULT OP_DIV OP_SUMA OP_RESTA
@@ -37,8 +39,12 @@ char *yytext;
 
 inicio_prima: inicio {printf("1 - \n");};
 
-inicio: DECVAR declaraciones ENDDEC programa {printf("2 - \n");}
+inicio: DECVAR bloque_declaraciones ENDDEC programa {printf("2 - \n");}
         | programa {printf("3 - \n");}
+;
+
+bloque_declaraciones: declaraciones
+                      | bloque_declaraciones declaraciones
 ;
 
 declaraciones: lista_de_variables DECLARACION tipodato P_COMA {printf("4 - \n");}           
@@ -64,12 +70,12 @@ sentencia: ciclo
           |seleccion
           |funcion
 ;
-funcion:  ESCRIBIR P_A CTE_CADENA P_C P_COMA {printf(CTE_CADENA);}
-          |ESCANEAR P_A ID P_C P_COMA {scanf(ID);}
-          |CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA {strcat(ID,CTE_CADENA);}
+funcion:  ESCRIBIR P_A CTE_CADENA P_C P_COMA
+          |ESCANEAR P_A ID P_C P_COMA
+          |CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA
 ;
-seleccion: IF P_A condicion_mul P_C BEGIN bloque END 
-          |IF P_A condicion_mul P_C BEGIN bloque END ELSE BEGIN bloque END
+seleccion: IF P_A condicion_mul P_C START bloque END 
+          |IF P_A condicion_mul P_C START bloque END ELSE START bloque END
 ;
 
 condicion_mul: condicion AND condicion
@@ -104,7 +110,7 @@ factor:         P_A expresion P_C
                 |CTE_REAL
 ;
 
-ciclo: WHILE P_A condicion_mul P_C BEGIN bloque END;
+ciclo: WHILE P_A condicion_mul P_C START bloque END;
 
 ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE;
 
@@ -123,15 +129,18 @@ int main(int argc,char *argv[])
   }
   else
   {
+          crear_lista_ts(&tablaSimbolos);
 	  yyparse();
   }
      fclose(yyin);
+     guardar_lista_en_archivo_ts(&tablaSimbolos, "tablaSimbolos.txt");
   return 0;
 }
 
 
-int yyerror(void)
+int yyerror()
 {
+     guardar_lista_en_archivo_ts(&tablaSimbolos, "tablaSimbolos.txt");
       printf("Syntax Error\n");
 	    system ("Pause");
       exit (1);

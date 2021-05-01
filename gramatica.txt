@@ -18,8 +18,8 @@ sentencia ---> funcion
 funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA
 funcion ---> ESCANEAR P_A ID P_C P_COMA
 funcion ---> CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA
-seleccion ---> IF P_A condicion_mul P_C BEGIN bloque END
-seleccion ---> IF P_A condicion_mul P_C BEGIN bloque END ELSE BEGIN bloque END
+seleccion ---> IF P_A condicion_mul P_C START bloque END
+seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END
 condicion_mul ---> condicion AND condicion
 condicion_mul ---> condicion OR condicion
 condicion_mul ---> NOT condicion
@@ -42,7 +42,7 @@ factor ---> P_A expresion P_C
 factor ---> ID
 factor ---> CTE_INT
 factor ---> CTE_REAL
-ciclo ---> WHILE P_A condicion_mul P_C BEGIN bloque END
+ciclo ---> WHILE P_A condicion_mul P_C START bloque END
 ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE
 lista_de_expresiones ---> factor
 lista_de_expresiones ---> lista_de_expresiones COMA factor

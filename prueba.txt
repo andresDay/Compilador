@@ -1,11 +1,11 @@
 DECVAR
-    palabra: char[];
+    palabra: string;
     cantidadLetras: integer;
     letra: char;
     i: integer;
 ENDDEC
 
-//este es un programa muy simple
+-/este es un programa muy simple/-
 
 escribir("--PROGRAMA PARA CONTAR LETRAS--\n");
 escribir("--INGRESE EXIT PARA SALIR--\n");
