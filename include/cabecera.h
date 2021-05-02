@@ -10,7 +10,7 @@
 #include <float.h>
 #include <conio.h>
 #include "../y.tab.h"
-// #include "./lexico.h"
+#include "./utils.h"
 #include "./constantes.h"
 #include "./lista_ts.h"
 extern int yylineno;

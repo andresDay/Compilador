@@ -109,13 +109,9 @@ void guardarSimbolo(const char *type){
             exit(1);
         }
 
-        if((dato.valor = (char*)malloc(strlen(yytext)-1)) == NULL){
+        if((dato.valor = strdup(obtenerValorString(yytext))) == NULL){
             puts("Memoria insuficiente!");
             exit(1);
-        }
-        else{
-            strncpy(dato.valor, yytext+1, strlen(yytext)-2);
-            printf("%s",dato.valor);
         }
 
         dato.longitud = strlen(yytext) - 2;
@@ -144,10 +140,11 @@ void guardarSimbolo(const char *type){
 int validarCteInt(const int cte)
 {
 	
-    if(cte > USHRT_MAX){
+    if(cte < 0 || cte > USHRT_MAX){
 		printf("(!) ERROR: Constante entera fuera de rango (16 bits maximo) -> Linea %d\n", yylineno);
 		fprintf(stderr, "Fin de ejecucion.\n");
 		system ("Pause");
+        guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 		exit (1);
 	}
 
@@ -167,6 +164,7 @@ int validarCteReal(const float real)
 		printf("(!) ERROR: Constante real fuera de rango (-1.17549e-38; 3.40282e38) -> Linea %d\n", yylineno);
 		fprintf(stderr, "Fin de ejecucion.\n");
 		system ("Pause");
+        guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 		exit (1);
 	}
     
@@ -185,6 +183,7 @@ int validarCteString(const char *string)
 		printf("(!) ERROR: Constante string fuera de rango (30 caracteres maximo) -> Linea %d\n", yylineno);
 		fprintf(stderr, "Fin de ejecucion.\n");
 		system ("Pause");
+        guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 		exit (1);
 	}
 	
@@ -205,6 +204,7 @@ int validarId(const char *id)
 		printf("(!) ERROR: Identificador fuera de rango (15 caracteres maximo) -> Linea %d\n", yylineno);
 		fprintf(stderr, "Fin de ejecucion.\n");
 		system ("Pause");
+        guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 		exit (1);
 	}
 	

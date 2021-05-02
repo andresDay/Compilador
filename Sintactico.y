@@ -132,7 +132,7 @@ int main(int argc,char *argv[])
 	yyparse();
   }
      fclose(yyin);
-     guardar_lista_en_archivo_ts(&tablaSimbolos, "tablaSimbolos.txt");
+     guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 
   return 0;
 }

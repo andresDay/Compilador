@@ -4,7 +4,7 @@ pause
 c:\GnuWin32\bin\bison -dyv Sintactico.y
 echo "byson Sintactico.y"
 pause
-c:\MinGW\bin\gcc.exe ./lib/lista_ts.c lex.yy.c y.tab.c -o EntregaUno.exe
+c:\MinGW\bin\gcc.exe ./lib/utils.c ./lib/lista_ts.c lex.yy.c y.tab.c -o EntregaUno.exe
 echo "gcc EntregaUno.exe"
 pause
 pause
