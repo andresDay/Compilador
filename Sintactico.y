@@ -103,6 +103,7 @@ factor: factor OP_MOD factor_mod {printf("factor --> factor OP_MOD factor_mod \n
 ; 
 factor_mod: ID  {printf(" factor_mod --> ID \n");}         
         |CTE_INT {printf(" factor_mod --> CTE_INT \n");}
+        |CTE_REAL {printf(" factor_mod --> CTE_REAL \n");}
         |P_A expresion P_C {printf("factor_mod --> P_A expresion P_C \n");}
 ;
 

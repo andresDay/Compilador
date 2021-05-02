@@ -1,6 +1,8 @@
 inicio' ---> inicio
-inicio ---> DECVAR declaraciones ENDDEC programa
+inicio ---> DECVAR bloque_declaraciones ENDDEC programa
 inicio ---> programa
+bloque_declaraciones ---> declaraciones
+bloque_declaraciones ---> bloque_declaraciones declaraciones
 declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA
 lista_de_variables ---> ID
 lista_de_variables ---> lista_de_variables COMA ID
@@ -17,7 +19,6 @@ sentencia ---> seleccion
 sentencia ---> funcion
 funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA
 funcion ---> ESCANEAR P_A ID P_C P_COMA
-funcion ---> CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA
 seleccion ---> IF P_A condicion_mul P_C START bloque END
 seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END
 condicion_mul ---> condicion AND condicion
@@ -31,18 +32,20 @@ condicion ---> expresion MENOR_IGUAL expresion
 condicion ---> expresion IGUAL expresion
 condicion ---> expresion DISTINTO expresion
 asignacion ---> ID ASIG expresion P_COMA
+asignacion ---> ID ASIG CTE_CADENA P_COMA
 expresion ---> expresion OP_SUMA termino
 expresion ---> expresion OP_RESTA termino
 expresion ---> termino
 termino ---> termino OP_MULT factor
 termino ---> termino OP_DIV factor
-termino ---> termino OP_MOD factor
 termino ---> factor
-factor ---> P_A expresion P_C
-factor ---> ID
-factor ---> CTE_INT
-factor ---> CTE_REAL
+factor ---> factor OP_MOD factor_mod
+factor ---> factor_mod
+factor_mod ---> ID
+factor_mod ---> CTE_INT
+factor_mod ---> CTE_REAL
+factor_mod ---> P_A expresion P_C
 ciclo ---> WHILE P_A condicion_mul P_C START bloque END
 ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE
-lista_de_expresiones ---> factor
-lista_de_expresiones ---> lista_de_expresiones COMA factor
+lista_de_expresiones ---> expresion
+lista_de_expresiones ---> lista_de_expresiones COMA expresion
