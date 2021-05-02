@@ -9,6 +9,7 @@ lista_de_variables ---> lista_de_variables COMA ID
 tipodato ---> STRING
 tipodato ---> CHAR
 tipodato ---> INTEGER
+tipodato ---> FLOAT
 programa ---> bloque
 bloque ---> sentencia
 bloque ---> bloque sentencia
@@ -17,6 +18,7 @@ sentencia ---> ciclo_especial
 sentencia ---> asignacion
 sentencia ---> seleccion
 sentencia ---> funcion
+funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA
 funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA
 funcion ---> ESCANEAR P_A ID P_C P_COMA
 seleccion ---> IF P_A condicion_mul P_C START bloque END

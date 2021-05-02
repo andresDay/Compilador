@@ -14,7 +14,7 @@ DIGITO			[0-9]
 LETRA			[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
 DELIM           [ \t\n\r]
-CARACTER    [a-z|A-Z|0-9|=|>|<|!|:|+|-|*|/|?|¿|!|¡|@|%|#|&|°|´|^|`|~|/|\\|-|_|.|,|;|¬||]
+CARACTER    [a-z|A-Z|0-9|=|>|<|!|:|+|-|*|/|"|?|¿|!|¡|@|%|#|&|°|´|^|`|~|/|\\|-|_|.|,|;|¬||]
 VALID_STRING    ({CARACTER}+|{DELIM})*
 COMENTARIO_S    -\/{VALID_STRING}\/-
 COMENTARIO ({COMENTARIO_S}|-\/{VALID_STRING}{COMENTARIO_S}{VALID_STRING}\/-)+
@@ -85,10 +85,10 @@ OR          [Oo][Rr]
 {DO}        {return DO;}
 {ENDWHILE}  {return ENDWHILE;}
 
-{ID}		{ingresarId(yytext); return ID;}
 {CTE_REAL}  {yylval.realVal = atof(yytext); ingresarCteReal(yylval.realVal); return CTE_REAL;}
 {CTE_INT}	{yylval.intVal = atoi( yytext ); ingresarCteInt(yylval.intVal); return CTE_INT;}
 {CTE_CADENA}    {yylval.strVal = strdup(yytext); ingresarCteString(yylval.strVal); return CTE_CADENA;}
+{ID}		{ingresarId(yytext); return ID;}
 {COMENTARIO}
 
 "\n"      		

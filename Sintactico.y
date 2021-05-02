@@ -51,6 +51,7 @@ lista_de_variables: ID  {printf("lista_de_variables ---> ID\n");}
 tipodato: STRING
           |CHAR
           |INTEGER
+          |FLOAT
 ;
 
 programa: bloque
@@ -65,8 +66,9 @@ sentencia: ciclo {printf("sentencia ---> ciclo \n");}
           |funcion {printf("sentencia ---> funcion \n");}
 ;
 
-funcion:  ESCRIBIR P_A CTE_CADENA P_C P_COMA {printf("funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA\n");}
-          |ESCANEAR P_A ID P_C P_COMA {printf("funcion ---> ESCANEAR P_A ID P_C P_COMA\n");}
+funcion:  ESCRIBIR factor_mod P_COMA {printf("funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA\n");}
+          |ESCRIBIR CTE_CADENA P_COMA {printf("funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA\n");}
+          |ESCANEAR ID P_COMA {printf("funcion ---> ESCANEAR P_A ID P_C P_COMA\n");}
 ;
 seleccion: IF P_A condicion_mul P_C START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END\n");}
           |IF P_A condicion_mul P_C START bloque END ELSE START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");}

@@ -4,23 +4,35 @@ DECVAR
     cantidadLetras: INTEGER;
     letra: CHAR;
     i: INTEGER;
-    variable: INTEGER;
+    variable: FLOAT;
+
+    -/Ejemplo de declaracion de id fuera de rango/-
+    -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
 
--/este es un programa muy simple/-
+-/este es un programa muy simple -/con un comentario anidado/- de prueba /-
 
-variable:=5000000000000000000000000000000009999999999999999999999999999999999999999;
-
-write("PROGRAMA PARA CONTAR LETRAS--");
-write("--INGRESE EXIT PARA SALIR--\n");
-write("ingresa una palabra: ");
-read(palabra);
+write "PROGRAMA PARA CONTAR LETRAS--";
+write "--INGRESE EXIT PARA SALIR--\n";
+write "ingresa una palabra: ";
+read palabra;
 i:=0;
-WHILE palabra IN [palabra] 
+variable:=4.5;
+
+WHILE variable IN [i+2,2.25*2,variable-3.5,4 MOD 4,9 DIV 2] 
 DO
-i:=1;
+i:= i + 1;
 ENDWHILE
-WHILE ( palabra != 2)
+
+-/Declaracion erronea fuera del bloque de declaraciones/-
+-/prueba: STRING;/-
+
+-/Ejemplos de asignaciones fuera de rango para validar longitud/-
+-/i:=456548556;/-
+-/variable:=3402823466385288598117041834845169254431.0000000000000000;/-
+-/palabra:="abcdefgdidfgdfgofhgisdfuhgdfsrg";/-
+
+WHILE ( palabra != 2 )
 START
     letra:="A";
     WHILE(letra != 3)
@@ -29,20 +41,30 @@ START
         i:=i+1;
     END
     i:=i+1;
-    IF(i>15)
+    IF( i > 20 AND letra == 4 )
     -/faltaria hacer un write con variable/-
     START
-        write("es una palabra larga");
-        write("palabra");
+        IF(cantidadLetras>=25)
+        START
+            write "es una palabra larga";
+            write palabra;
+            variable:= i MOD 6;
+        END
+        ELSE
+        START
+            write "es una palabra no tan larga";
+            write palabra;
+            variable:= i DIV 6;
+        END
     END
     ELSE
     START
-        write("es una palabra corta");
+        write "es una palabra corta";
     END
-    write("la cantidad buena");
+    write "la cantidad es total";
     i:=0;
-    write("ingresa una palabra:");
-    read(palabra);
+    write "ingresa una palabra:";
+    read palabra;
 END
 
 i:=palabra * (2 + 2) mod 2;
