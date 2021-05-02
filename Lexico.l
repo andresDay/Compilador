@@ -17,7 +17,7 @@ DELIM           [ \t\n\r]
 CARACTER    [a-z|A-Z|0-9|=|>|<|!|:|+|-|*|/|"|?|¿|!|¡|@|%|#|&|°|´|^|`|~|/|\\|-|_|.|,|;|¬||]
 VALID_STRING    ({CARACTER}+|{DELIM})*
 COMENTARIO_S    -\/{VALID_STRING}\/-
-COMENTARIO ({COMENTARIO_S}|-\/{VALID_STRING}{COMENTARIO_S}{VALID_STRING}\/-)+
+COMENTARIO ({COMENTARIO_S}|-\/{VALID_STRING}(({COMENTARIO_S}{VALID_STRING})+|({COMENTARIO_S}{COMENTARIO_S})+|{COMENTARIO_S})*\/-)+
 CTE_CADENA  \"([^\"\\]|\\.)*\"
 CTE_INT     {DIGITO}+
 CTE_REAL    ({DIGITO}*\.{DIGITO}+)|({DIGITO}+\.{DIGITO}*)

@@ -9,8 +9,7 @@ DECVAR
     -/Ejemplo de declaracion de id fuera de rango/-
     -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
-
--/este es un programa muy simple -/con un comentario anidado/- de prueba /-
+-/este es un programa muy simple -/comentario anidado/--/con un comentario anidado/- de prueba -/otroo comentario/-/-
 
 write "PROGRAMA PARA CONTAR LETRAS--";
 write "--INGRESE EXIT PARA SALIR--\n";
