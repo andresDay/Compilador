@@ -20,7 +20,7 @@ char *strVal;
 %token P_COMA DECLARACION COMA C_A C_C AND OR NOT IGUAL DISTINTO MAYOR MENOR MENOR_IGUAL MAYOR_IGUAL
 %token ID
 %token ASIG P_A P_C 
-%token ESCRIBIR ESCANEAR CONCATENAR 
+%token ESCRIBIR ESCANEAR 
 %token DECVAR ENDDEC
 %token STRING
 %token CHAR INTEGER FLOAT
@@ -64,9 +64,9 @@ sentencia: ciclo {printf("sentencia ---> ciclo \n");}
           |seleccion {printf("sentencia ---> seleccion \n");}
           |funcion {printf("sentencia ---> funcion \n");}
 ;
+
 funcion:  ESCRIBIR P_A CTE_CADENA P_C P_COMA {printf("funcion ---> ESCRIBIR P_A CTE_CADENA P_C P_COMA\n");}
           |ESCANEAR P_A ID P_C P_COMA {printf("funcion ---> ESCANEAR P_A ID P_C P_COMA\n");}
-          |CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA {printf("funcion ---> CONCATENAR P_A ID COMA CTE_CADENA P_C P_COMA\n");}
 ;
 seleccion: IF P_A condicion_mul P_C START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END\n");}
           |IF P_A condicion_mul P_C START bloque END ELSE START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");}

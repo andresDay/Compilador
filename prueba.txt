@@ -4,11 +4,13 @@ DECVAR
     cantidadLetras: INTEGER;
     letra: CHAR;
     i: INTEGER;
+    variable: INTEGER;
 ENDDEC
 
 -/este es un programa muy simple/-
--/hay que borrar la regla concatenar/-
--/PEPE/- 
+
+variable:=5000000000000000000000000000000009999999999999999999999999999999999999999;
+
 write("PROGRAMA PARA CONTAR LETRAS--");
 write("--INGRESE EXIT PARA SALIR--\n");
 write("ingresa una palabra: ");
