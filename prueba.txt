@@ -1,39 +1,47 @@
+
 DECVAR
-    palabra: string;
-    cantidadLetras: integer;
-    letra: char;
-    i: integer;
+    palabra: STRING;
+    cantidadLetras: INTEGER;
+    letra: CHAR;
+    i: INTEGER;
 ENDDEC
 
 -/este es un programa muy simple/-
+-/hay que borrar la regla concatenar/-
+-/PEPE/- 
+write("PROGRAMA PARA CONTAR LETRAS--");
+write("--INGRESE EXIT PARA SALIR--\n");
+write("ingresa una palabra: ");
+read(palabra);
 
-escribir("--PROGRAMA PARA CONTAR LETRAS--\n");
-escribir("--INGRESE EXIT PARA SALIR--\n");
-escribir("ingresa una palabra: ");
-escanear(palabra);
-concatenar(palabra, "\0");
-
-i=0;
-WHILE(palabra != "exit")
-BEGIN
-    letra=palabra[i];
-    WHILE(letra != "\0")
-    BEGIN
-        letra=palabra[i];
-        i=i+1;
+i:=0;
+WHILE palabra IN [palabra] 
+DO
+i:=1;
+ENDWHILE
+WHILE ( palabra != 2)
+START
+    letra:="A";
+    WHILE(letra != 3)
+    START
+        letra:="B";
+        i:=i+1;
     END
-    i=i+1;
+    i:=i+1;
     IF(i>15)
-    BEGIN
-        escribir("es una palabra larga \n", palabra);
+    -/faltaria hacer un write con variable/-
+    START
+        write("es una palabra larga");
+        write("palabra");
     END
     ELSE
-    BEGIN
-        escribir("es una palabra corta \n", palabra);
+    START
+        write("es una palabra corta");
     END
-    escribir("\nla cantidad de letras de " palabra " es: ", i);
-    i=0;
-    escribir("ingresa una palabra:");
-    escanear("palabra");
-    concatenar(palabra, "\0");
+    write("la cantidad buena");
+    i:=0;
+    write("ingresa una palabra:");
+    read(palabra);
 END
+
+i:=palabra * (2 + 2) mod 2;

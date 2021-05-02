@@ -3,8 +3,22 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
+|"--INGRESE EXIT PARA SALIR--\n" |string          |--INGRESE EXIT PARA SALIR--\n"IO˜9·_Âè|29      |
+|"A"                             |string          |A"                              |1       |
+|"B"                             |string          |B"                              |1       |
+|"PROGRAMA PARA CONTAR LETRAS--" |string          |PROGRAMA PARA CONTAR LETRAS--"he˜9·_Âè|29      |
+|"es una palabra corta"          |string          |es una palabra corta"           |20      |
+|"es una palabra larga"          |string          |es una palabra larga"           |20      |
+|"ingresa una palabra: "         |string          |ingresa una palabra: "IC˜9·_Ãè  |21      |
+|"ingresa una palabra:"          |string          |ingresa una palabra:"           |20      |
+|"la cantidad buena"             |string          |la cantidad buena"              |17      |
+|"palabra"                       |string          |palabra"                        |7       |
+|0                               |                |                                |        |
+|1                               |                |                                |        |
+|15                              |                |                                |        |
+|2                               |                |                                |        |
+|3                               |                |                                |        |
 |cantidadLetras                  |                |                                |        |
-|escribir                        |                |                                |        |
 |i                               |                |                                |        |
 |letra                           |                |                                |        |
 |palabra                         |                |                                |        |

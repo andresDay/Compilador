@@ -18,7 +18,7 @@ CARACTER    [a-z|A-Z|0-9|=|>|<|!|:|+|-|*|/|?|¿|!|¡|@|%|#|&|°|´|^|`|~|/|\\|-|
 VALID_STRING    ({CARACTER}+|{DELIM})*
 COMENTARIO_S    -\/{VALID_STRING}\/-
 COMENTARIO ({COMENTARIO_S}|-\/{VALID_STRING}{COMENTARIO_S}{VALID_STRING}\/-)+
-CTE_CADENA  \"([^\"\\\\]|\\\\.)*\"
+CTE_CADENA  \"([^\"\\]|\\.)*\"
 CTE_INT     {DIGITO}+
 CTE_REAL    ({DIGITO}*\.{DIGITO}+)|({DIGITO}+\.{DIGITO}*)
 WRITE       [Ww][rR][Ii][Tt][Ee]
@@ -129,8 +129,7 @@ void guardarSimbolo(const char *type){
         if((dato.lexema = strdup(yytext)) == NULL){
             puts("Memoria insuficiente!");
             exit(1);
-        }
-        printf("\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n%s\nnxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n",dato.lexema);
+        }       
 
         dato.tipo = NULL;
         dato.valor = NULL;

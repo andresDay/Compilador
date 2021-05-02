@@ -8,6 +8,7 @@
 #include <string.h>
 #include <limits.h>
 #include <float.h>
+#include <conio.h>
 #include "../y.tab.h"
 // #include "./lexico.h"
 #include "./constantes.h"

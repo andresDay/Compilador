@@ -1,10 +1,5 @@
 %{
 #include "./include/cabecera.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "string.h"
-#include <conio.h>
-int yylval;
 int yylex();
 int yyerror();
 int yystopparser=0;
@@ -100,14 +95,15 @@ expresion:      expresion OP_SUMA termino  {printf("R34 - expresion ---> expresi
                 | termino {printf("R36 - expresion ---> termino \n");}
 ;
 termino:        termino OP_MULT factor {printf("R37 - termino ---> termino OP_MULT factor \n");}
-                |termino OP_DIV factor {printf("R38 - termino ---> termino OP_DIV factor \n");}
-                |termino OP_MOD factor {printf("R39 - termino ---> termino OP_MOD factor \n");}
+                |termino OP_DIV factor {printf("R38 - termino ---> termino OP_DIV factor \n");}                
                 |factor {printf("R40 - termino ---> factor \n");}
 ;
-factor:         P_A expresion P_C {printf("R41 - factor ---> P_A expresion P_C \n");}
-		|ID {printf("R42 - factor ---> ID \n");}
-                |CTE_INT {printf("R43 - factor ---> CTE_INT \n");}
-                |CTE_REAL {printf("R44 - factor ---> CTE_REAL \n");}
+factor: factor OP_MOD factor_mod {printf(" factor --> factor OP_MOD factor_mod \n");}
+        | factor_mod {printf(" factor --> factor_mod \n");}
+; 
+factor_mod: ID  {printf(" factor_mod --> ID \n");}         
+        |CTE_INT {printf(" factor_mod --> CTE_INT \n");}
+        |P_A expresion P_C {printf(" factor_mod --> P_A expresion P_C \n");}
 ;
 
 ciclo: WHILE P_A condicion_mul P_C START bloque END {printf("R45 - ciclo_normal ---> P_A condicion_mul P_C START bloque END \n");}
