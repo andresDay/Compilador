@@ -30,7 +30,6 @@ STRING      [Ss][Tt][Rr][Ii][Nn][Gg]
 CHAR        [Cc][Hh][Aa][Rr]
 INTEGER     [Ii][Nn][Tt][Ee][Gg][Ee][Rr]
 FLOAT       [Ff][Ll][Oo][Aa][Tt]
-CONCATENAR  [Cc][Oo][Nn][Cc][Aa][Tt][Ee][Nn][Aa][Rr]
 DECVAR      [Dd][Ee][Cc][Vv][Aa][Rr]
 ENDDEC      [Ee][Nn][Dd][Dd][Ee][Cc]
 START       [Ss][Tt][Aa][Rr][Tt]
@@ -71,7 +70,6 @@ OR          [Oo][Rr]
 "]"         { return C_C;}
 {WRITE}  { return ESCRIBIR;}
 {READ}  { return ESCANEAR;}
-{CONCATENAR} { return CONCATENAR;}
 {DECVAR}    {return DECVAR;}
 {ENDDEC}    {return ENDDEC;}
 {STRING}    {return STRING;}
@@ -145,8 +143,8 @@ void guardarSimbolo(const char *type){
 
 int validarCteInt(const int cte)
 {
-
-	if(cte > USHRT_MAX){
+	
+    if(cte > USHRT_MAX){
 		printf("(!) ERROR: Constante entera fuera de rango (16 bits maximo) -> Linea %d\n", yylineno);
 		fprintf(stderr, "Fin de ejecucion.\n");
 		system ("Pause");
