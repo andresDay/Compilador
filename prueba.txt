@@ -13,7 +13,6 @@ write("PROGRAMA PARA CONTAR LETRAS--");
 write("--INGRESE EXIT PARA SALIR--\n");
 write("ingresa una palabra: ");
 read(palabra);
-
 i:=0;
 WHILE palabra IN [palabra] 
 DO
