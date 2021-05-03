@@ -1,0 +1,11 @@
+#ifndef CONSTANTES_H_INCLUDED
+#define CONSTANTES_H_INCLUDED
+
+/* RETORNO GENERAL */
+#define ERROR 1
+#define TODO_BIEN 0
+
+#define LISTA_DUPLICADO 2
+#define LISTA_LLENA 2
+
+#endif
