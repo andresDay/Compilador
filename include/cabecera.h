@@ -13,6 +13,7 @@
 #include "./utils.h"
 #include "./constantes.h"
 #include "./lista_ts.h"
+#include "./arboles.h"
 extern int yylineno;
 extern FILE *yyin;
 t_lista_ts tablaSimbolos;

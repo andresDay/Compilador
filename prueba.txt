@@ -1,6 +1,6 @@
 
 DECVAR
-    palabra: STRING;
+    palabra : STRING ;
     cantidadLetras: INTEGER;
     letra: CHAR;
     i: INTEGER;

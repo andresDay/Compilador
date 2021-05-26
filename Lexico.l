@@ -2,6 +2,7 @@
 #include "./include/cabecera.h"
 
 void guardarSimbolo(const char* type);
+void errorCharInvalido();
 t_lista_ts tablaSimbolos;
 
 %}
@@ -93,6 +94,9 @@ OR          [Oo][Rr]
 
 "\n"      		
 "\t"
+" "
+
+.           {errorCharInvalido();}
 %%
 
 void guardarSimbolo(const char *type){
@@ -124,8 +128,10 @@ void guardarSimbolo(const char *type){
             puts("Memoria insuficiente!");
             exit(1);
         }       
-
-        dato.tipo = NULL;
+        if((dato.tipo = strdup(type)) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }
         dato.valor = NULL;
         dato.longitud = 0;
 
@@ -153,7 +159,7 @@ int validarCteInt(const int cte)
 
 void ingresarCteInt(const int cte){
     if(validarCteInt(cte)){
-        guardarSimbolo(NULL);
+        guardarSimbolo("");
     }
 }
 
@@ -173,7 +179,7 @@ int validarCteReal(const float real)
 
 void ingresarCteReal(const float real){
     if(validarCteReal(real)){
-        guardarSimbolo(NULL);
+        guardarSimbolo("");
     }
 }
 
@@ -213,6 +219,14 @@ int validarId(const char *id)
 
 void ingresarId(const char *id){
     if(validarId(id)){
-        guardarSimbolo(NULL);
+        guardarSimbolo("id");
     }
+}
+
+void errorCharInvalido()
+{
+	printf("Invalid Character\n");
+    fprintf(stderr,"error: invalid character in line %d\n", yylineno);
+    system ("Pause");
+    exit (1);
 }
