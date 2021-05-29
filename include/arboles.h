@@ -7,7 +7,7 @@ typedef struct
 	int indice;//PARA EL GRAPHVIZ
     char* valor;
 	char* tipo;//PARA SABER SI ES UNA CTE O UNA STRING
-	int etiqueta_escrita; //PARA SABER SI LA ETIQUETA CUERPO YA FUE ESCRITA EN EL ASSEMBLER
+	int etiqueta_escrita;
 }t_info;
 
 typedef struct s_nodoa
