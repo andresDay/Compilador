@@ -1,10 +1,10 @@
 
 DECVAR
     palabra : STRING ;
-    cantidadLetras: INTEGER;
-    letra: CHAR;
-    i: INTEGER;
-    variable: FLOAT;
+    cantidadLetras : INTEGER;
+    letra : CHAR;
+    i : INTEGER;
+    variable : FLOAT;
 
     -/Ejemplo de declaracion de id fuera de rango/-
     -/esto_es_un_id_muy_largo: STRING;/-
@@ -13,7 +13,7 @@ ENDDEC
 
 write "PROGRAMA PARA CONTAR LETRAS--";
 write "--INGRESE EXIT PARA SALIR--\n";
-write "ingresa una palabra: ";
+write "ingresa una palabra:";
 read palabra;
 i:=0;
 variable:=4.5;

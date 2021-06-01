@@ -1,6 +1,7 @@
 #ifndef ARBOLES_H_INCLUDED
 #define ARBOLES_H_INCLUDED
 #include <stdio.h>
+#include <string.h>
 
 typedef struct
 {
@@ -36,5 +37,6 @@ void graficar_arbol_rec(t_arbol*pa,int n);
 t_nodoa* obtener_nodo_con_hojas_mas_izq(t_nodoa *,FILE*);
 void eliminar_hijos_hoja(t_nodoa* );
 int es_padre_con_hojas(const t_nodoa*);
+int es_hoja(const t_nodoa*);
 
 #endif // ARBOLES_H_INCLUDED

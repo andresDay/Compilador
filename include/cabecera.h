@@ -16,6 +16,7 @@
 #include "./arboles.h"
 extern int yylineno;
 extern FILE *yyin;
+extern FILE *pf;
 t_lista_ts tablaSimbolos;
 int indice;
 

@@ -55,7 +55,7 @@ t_nodoa* obtener_nodo_con_hojas_mas_izq(t_nodoa *p_nodo,FILE* pf)
 			if(es_hoja(p_nodo->izq)==0){
 				if(p_nodo->info.etiqueta_escrita==0){//DEBO ESCRIBIR LA ETIQUETA DE CUERPO
 					p_nodo->info.etiqueta_escrita=1;
-					aux=(char*)transformar_a_etiqueta(p_nodo->info.valor);
+					// aux=(char*)transformar_a_etiqueta(p_nodo->info.valor);
 					fprintf(pf,"%s:\n",aux);
 				}
 			}
