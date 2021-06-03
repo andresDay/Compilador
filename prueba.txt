@@ -12,7 +12,7 @@ ENDDEC
 -/este es un programa muy simple -/comentario anidado/--/con un comentario anidado/- de prueba -/otroo comentario/-/-
 
 write "PROGRAMA PARA CONTAR LETRAS--";
-write "--INGRESE EXIT PARA SALIR--\n";
+write "--INGRESE EXIT PARA SALIR--";
 write "ingresa una palabra:";
 read palabra;
 i:=0;

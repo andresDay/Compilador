@@ -7,5 +7,6 @@
 #include "./constantes.h"
 
 char* obtenerValorString(const char *);
+char* obtenerStringHoja(const char *);
 
 #endif

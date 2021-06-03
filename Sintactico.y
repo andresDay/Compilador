@@ -1,7 +1,7 @@
 %{
 #include "./include/cabecera.h"
 int yylex();
-// int yyerror();
+int yyerror();
 int yystopparser=0;
 FILE  *yyin;
 char *yyltext;
@@ -99,18 +99,18 @@ declaraciones: lista_de_variables DECLARACION tipodato P_COMA
 {
         printf("declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n");
 
-        info->valor = "DECLARACION";
+        info->valor = ":";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(NULL, p_oper, p_l_var, pf);
+        crear_nodo(p_l_var, p_oper, p_tdato, pf);
         p_dec = p_oper;
 }                 
 ;
 
 lista_de_variables: ID  
 {
-        printf("lista_de_variables ---> ID\n");
+        printf("lista_de_variables ---> ID, %s\n",$1);
 
         info->valor = $1;
         info->indice++;
@@ -119,9 +119,9 @@ lista_de_variables: ID
 
 | lista_de_variables COMA ID  
 {
-        printf("lista_de_variables ---> lista_de_variables COMA ID\n");
+        printf("lista_de_variables ---> lista_de_variables COMA ID, %s\n", $3);
 
-        info->valor = "COMA";
+        info->valor = "CUERPO";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
@@ -133,9 +133,33 @@ lista_de_variables: ID
 ;
 
 tipodato: STRING
-|CHAR       
-|INTEGER       
+{
+        info->valor = "STRING";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+
+|CHAR
+{
+        info->valor = "CHAR";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+       
+|INTEGER     
+{
+        info->valor = "INTEGER";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+  
 |FLOAT
+{
+        info->valor = "FLOAT";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+
 ;
 
 programa: bloque
@@ -212,7 +236,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = obtenerValorString($2);
+        info->valor = obtenerStringHoja($2);
         info->indice++;
         crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
         p_func = p_oper;
@@ -437,16 +461,17 @@ asignacion: ID ASIG expresion P_COMA
 
 | ID ASIG CTE_CADENA P_COMA 
 {
+
         printf("asignacion ---> ID ASIG CTE_CADENA P_COMA \n");
+        info->valor = $1;
+        info->indice++;
+        p_aux = crear_hoja(info, pf);
+        
         info->valor = "ASIG";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
-
-        info->valor = obtenerValorString($3);
+        info->valor = obtenerStringHoja($3);
         info->indice++; 
         crear_nodo(p_aux, p_oper, crear_hoja(info, pf), pf);
         p_asig = p_oper;
@@ -602,13 +627,11 @@ int main(int argc,char *argv[])
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         info->indice=-1;
-        printf("\nooooooooooooooooooooooooooooooooo\n");
 
         fprintf(pf,"digraph G {\n");
 	yyparse();
         fprintf(pf,"}");
 
-        printf("\nooooooooooooooooooooooooooooooooo\n");
         fclose(pf);
   }
      fclose(yyin);

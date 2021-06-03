@@ -89,7 +89,7 @@ OR          [Oo][Rr]
 {CTE_REAL}  {yylval.realVal = atof(yytext); ingresarCteReal(yylval.realVal); return CTE_REAL;}
 {CTE_INT}	{yylval.intVal = atoi( yytext ); ingresarCteInt(yylval.intVal); return CTE_INT;}
 {CTE_CADENA}    {yylval.strVal = strdup(yytext); ingresarCteString(yylval.strVal); return CTE_CADENA;}
-{ID}		{ingresarId(yytext); return ID;}
+{ID}		{yylval.strVal = strdup(yytext); ingresarId(yytext); return ID;}
 {COMENTARIO}
 
 "\n"      		
