@@ -10,7 +10,13 @@ DECVAR
 ENDDEC
 
 write "PROGRAMA PARA CONTAR LETRAS--";
-write "ingresa una palabra:";
-write "--INGRESE EXIT PARA SALIR--";
 
-palabra := "test";
+IF ( i < 3 ) START
+
+    write "i es menor que 3";
+    write "otro write";
+END
+ELSE
+START
+    WRITE "Esto es el else";
+END

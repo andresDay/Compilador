@@ -3,10 +3,10 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
-|"--INGRESE EXIT PARA SALIR--"   |string          |--INGRESE EXIT PARA SALIR--     |27      |
 |"PROGRAMA PARA CONTAR LETRAS--" |string          |PROGRAMA PARA CONTAR LETRAS--   |29      |
-|"ingresa una palabra:"          |string          |ingresa una palabra:            |20      |
-|"test"                          |string          |test                            |4       |
+|"i es menor que 3"              |string          |i es menor que 3                |16      |
+|"otro write"                    |string          |otro write                      |10      |
+|3                               |                |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
 |letra                           |id              |                                |        |

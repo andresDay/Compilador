@@ -12,9 +12,11 @@ extern int yylineno;
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
-t_nodoa *p_ini_pri, *p_l_exp, *p_oper;
+t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo;
 t_info *info;
 FILE *pf;
+t_pila pila_blo;
+t_dato_pila dato;
 
 %}
 %locations
@@ -80,31 +82,32 @@ inicio: DECVAR bloque_declaraciones ENDDEC programa
 bloque_declaraciones: declaraciones 
 {
         printf("bloque_declaraciones ---> declaraciones\n");
-
-        p_blo_dec = p_dec;
+        info->valor = "BLOQUE\nDECLARACIONES";
+        info->indice++;
+        p_blo_dec = crear_hoja(info, pf);
 }
 
 | bloque_declaraciones declaraciones 
 {
         printf("bloque_declaraciones ---> bloque_declaraciones declaraciones\n");
-        info->valor = "BLOQUE\nDECLARACIONES";
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        // info->valor = "BLOQUE\nDECLARACIONES";
+        // info->indice++;
+        // p_aux = crear_hoja(info, pf);
 
-        crear_nodo(p_blo_dec, p_aux, p_dec, pf);
-        p_blo_dec = p_aux;
+        // crear_nodo(p_blo_dec, p_aux, p_dec, pf);
+        // p_blo_dec = p_aux;
 }
 ;
 declaraciones: lista_de_variables DECLARACION tipodato P_COMA 
 {
         printf("declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n");
 
-        info->valor = ":";
-        info->indice++;
-        p_oper = crear_hoja(info, pf);
+        // info->valor = ":";
+        // info->indice++;
+        // p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_l_var, p_oper, p_tdato, pf);
-        p_dec = p_oper;
+        // crear_nodo(p_l_var, p_oper, p_tdato, pf);
+        // p_dec = p_oper;
 }                 
 ;
 
@@ -112,52 +115,52 @@ lista_de_variables: ID
 {
         printf("lista_de_variables ---> ID, %s\n",$1);
 
-        info->valor = $1;
-        info->indice++;
-        p_l_var = crear_hoja(info, pf);
+//         info->valor = $1;
+//         info->indice++;
+//         p_l_var = crear_hoja(info, pf);
 }
 
 | lista_de_variables COMA ID  
 {
         printf("lista_de_variables ---> lista_de_variables COMA ID, %s\n", $3);
 
-        info->valor = "CUERPO";
-        info->indice++;
-        p_oper = crear_hoja(info, pf);
+        // info->valor = "CUERPO";
+        // info->indice++;
+        // p_oper = crear_hoja(info, pf);
 
-        info->valor = $3;
-        info->indice++;
-        crear_nodo(p_l_var, p_oper, crear_hoja(info, pf), pf);
-        p_l_var = p_oper;
+        // info->valor = $3;
+        // info->indice++;
+        // crear_nodo(p_l_var, p_oper, crear_hoja(info, pf), pf);
+        // p_l_var = p_oper;
 }
 ;
 
 tipodato: STRING
 {
-        info->valor = "STRING";
-        info->indice++;
-        p_tdato = crear_hoja(info, pf);
+        // info->valor = "STRING";
+        // info->indice++;
+        // p_tdato = crear_hoja(info, pf);
 }
 
 |CHAR
 {
-        info->valor = "CHAR";
-        info->indice++;
-        p_tdato = crear_hoja(info, pf);
+        // info->valor = "CHAR";
+        // info->indice++;
+        // p_tdato = crear_hoja(info, pf);
 }
        
 |INTEGER     
 {
-        info->valor = "INTEGER";
-        info->indice++;
-        p_tdato = crear_hoja(info, pf);
+        // info->valor = "INTEGER";
+        // info->indice++;
+        // p_tdato = crear_hoja(info, pf);
 }
   
 |FLOAT
 {
-        info->valor = "FLOAT";
-        info->indice++;
-        p_tdato = crear_hoja(info, pf);
+        // info->valor = "FLOAT";
+        // info->indice++;
+        // p_tdato = crear_hoja(info, pf);
 }
 
 ;
@@ -172,6 +175,9 @@ bloque: sentencia
 {
         printf("bloque ---> sentencia \n");
         p_blo = p_sent;
+
+        dato = p_blo;
+        apilar(&pila_blo, &dato);
 }
 
 |bloque sentencia 
@@ -181,10 +187,13 @@ bloque: sentencia
         info->indice++;
         p_aux = crear_hoja(info, pf);
 
-        crear_nodo(p_blo, p_aux, p_sent, pf);
+        desapilar(&pila_blo, &dato);
+
+        crear_nodo(dato, p_aux, p_sent, pf);
         p_blo = p_aux;
 }
 ;
+
 sentencia: ciclo 
 {
         printf("sentencia ---> ciclo \n");
@@ -256,8 +265,39 @@ funcion:  ESCRIBIR factor_mod P_COMA
         p_func = p_oper;
 }
 ;
-seleccion: IF P_A condicion_mul P_C START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END\n");}
-          |IF P_A condicion_mul P_C START bloque END ELSE START bloque END {printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");}
+seleccion: IF P_A condicion_mul P_C START bloque END 
+{
+        printf("seleccion ---> IF P_A condicion_mul P_C START bloque END\n");
+
+        info->valor = "IF";
+        info->indice++;
+        p_aux = crear_hoja(info, pf);
+
+        crear_nodo(p_cond_mul, p_aux, p_blo, pf);
+        p_sel = p_aux;
+}
+          
+|IF P_A condicion_mul P_C START bloque
+{
+        p_aux2 = p_blo;
+}
+END ELSE START bloque END 
+{
+        printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");
+        
+        info->valor = "CUERPO";
+        info->indice++;
+        p_cuerpo = crear_hoja(info, pf);
+        
+        info->valor = "IF";
+        info->indice++;
+        p_aux = crear_hoja(info, pf);
+
+        crear_nodo(p_aux2, p_cuerpo, p_blo, pf);
+
+        crear_nodo(p_cond_mul, p_aux, p_cuerpo, pf);
+        p_sel = p_aux;
+}
 ;
 
 condicion_mul: condicion 
@@ -335,9 +375,9 @@ MAYOR expresion
           
 |expresion 
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        // info->valor = $1;
+        // info->indice++;
+        p_aux = p_exp;
 }
 MENOR expresion 
 {
@@ -347,9 +387,9 @@ MENOR expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
+        // info->valor = $3;
+        // info->indice++;
+        // p_exp = crear_hoja(info, pf);
 
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
@@ -624,6 +664,7 @@ int main(int argc,char *argv[])
   else
   {
         crear_lista_ts(&tablaSimbolos);
+        crear_pila(&pila_blo);
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         info->indice=-1;
