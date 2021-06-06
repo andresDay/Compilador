@@ -9,12 +9,26 @@ DECVAR
     -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
 
-write "PROGRAMA PARA CONTAR LETRAS--";
+write "1er bloque";
+
+write "2do bloque";
+
+write "3er bloque";
+
+write "4to bloque";
+
+WHILE ( i < 3 ) 
+START
+write "While 1er bloque";
+write "While 2do bloque";
+END
+
 
 IF ( i < 3 ) START
+    write "If: Primer bloque";
+    write "If: Segundo bloque";
+    write "If: Tercer bloque";
 
-    write "i es menor que 3";
-    write "otro write";
 END
 ELSE
 START

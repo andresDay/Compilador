@@ -190,7 +190,11 @@ bloque: sentencia
         desapilar(&pila_blo, &dato);
 
         crear_nodo(dato, p_aux, p_sent, pf);
+
         p_blo = p_aux;
+
+        dato = p_aux;
+        apilar(&pila_blo,&dato);
 }
 ;
 
@@ -277,11 +281,11 @@ seleccion: IF P_A condicion_mul P_C START bloque END
         p_sel = p_aux;
 }
           
-|IF P_A condicion_mul P_C START bloque
+|IF P_A condicion_mul P_C START bloque END 
 {
         p_aux2 = p_blo;
 }
-END ELSE START bloque END 
+ELSE START bloque END 
 {
         printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");
         
@@ -292,11 +296,11 @@ END ELSE START bloque END
         info->valor = "IF";
         info->indice++;
         p_aux = crear_hoja(info, pf);
-
-        crear_nodo(p_aux2, p_cuerpo, p_blo, pf);
-
+        desapilar(&pila_blo, &dato);
+        crear_nodo(p_aux2, p_cuerpo, dato , pf);
         crear_nodo(p_cond_mul, p_aux, p_cuerpo, pf);
         p_sel = p_aux;
+        desapilar(&pila_blo, &dato);
 }
 ;
 
@@ -629,10 +633,23 @@ factor_mod: ID
 }
 ;
 
-ciclo: WHILE P_A condicion_mul P_C START bloque END {printf("ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n");}
+ciclo: WHILE P_A  condicion_mul P_C START bloque END 
+{
+        info->valor = "WHILE";
+        info->indice++;       
+        p_aux = crear_hoja(info,pf);
+        desapilar(&pila_blo, &dato);
+        crear_nodo(p_cond_mul,p_aux,dato,pf);
+        p_c = p_aux;
+        printf("ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n");
+}
          
 ;
-ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE {printf("ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n");}
+ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
+{
+
+        printf("ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n");
+}
 ;
 lista_de_expresiones: expresion 
 {

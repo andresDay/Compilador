@@ -3,9 +3,16 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
-|"PROGRAMA PARA CONTAR LETRAS--" |string          |PROGRAMA PARA CONTAR LETRAS--   |29      |
-|"i es menor que 3"              |string          |i es menor que 3                |16      |
-|"otro write"                    |string          |otro write                      |10      |
+|"1er bloque"                    |string          |1er bloque                      |10      |
+|"2do bloque"                    |string          |2do bloque                      |10      |
+|"3er bloque"                    |string          |3er bloque                      |10      |
+|"4to bloque"                    |string          |4to bloque                      |10      |
+|"Esto es el else"               |string          |Esto es el else                 |15      |
+|"If: Primer bloque"             |string          |If: Primer bloque               |17      |
+|"If: Segundo bloque"            |string          |If: Segundo bloque              |18      |
+|"If: Tercer bloque"             |string          |If: Tercer bloque               |17      |
+|"While 1er bloque"              |string          |While 1er bloque                |16      |
+|"While 2do bloque"              |string          |While 2do bloque                |16      |
 |3                               |                |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
