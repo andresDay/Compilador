@@ -44,39 +44,63 @@ nodo21->nodo11
 nodo21->nodo20
 nodo22[label="i"];
 nodo23[label="3"];
-nodo24[label="MENOR"];
-nodo24->nodo22
-nodo24->nodo23
-nodo25[label="WRITE"];
-nodo26[label="\"If: Primer bloque\""];
-nodo25->nodo26
-nodo27[label="WRITE"];
-nodo28[label="\"If: Segundo bloque\""];
-nodo27->nodo28
-nodo29[label="BLOQUE"];
-nodo29->nodo25
+nodo24[label="2"];
+nodo25[label="MULT"];
+nodo25->nodo23
+nodo25->nodo24
+nodo26[label="MENOR"];
+nodo26->nodo22
+nodo26->nodo25
+nodo27[label="i"];
+nodo28[label="1"];
+nodo29[label="MAYOR"];
 nodo29->nodo27
-nodo30[label="WRITE"];
-nodo31[label="\"If: Tercer bloque\""];
-nodo30->nodo31
-nodo32[label="BLOQUE"];
-nodo32->nodo29
-nodo32->nodo30
+nodo29->nodo28
+nodo30[label="AND"];
+nodo30->nodo26
+nodo30->nodo29
+nodo31[label="WRITE"];
+nodo32[label="\"If: Primer bloque\""];
+nodo31->nodo32
 nodo33[label="WRITE"];
-nodo34[label="\"Esto es el else\""];
+nodo34[label="\"If: Segundo bloque\""];
 nodo33->nodo34
-nodo35[label="CUERPO"];
-nodo36[label="IF"];
-nodo35->nodo32
+nodo35[label="BLOQUE"];
+nodo35->nodo31
 nodo35->nodo33
-nodo36->nodo24
-nodo36->nodo35
-nodo37[label="BLOQUE"];
-nodo37->nodo21
-nodo37->nodo36
-nodo38[label="PROG"];
-nodo39[label="INICIO"];
-nodo38->nodo37
-nodo39->nodo0
-nodo39->nodo38
+nodo36[label="WRITE"];
+nodo37[label="\"If: Tercer bloque\""];
+nodo36->nodo37
+nodo38[label="BLOQUE"];
+nodo38->nodo35
+nodo38->nodo36
+nodo39[label="WRITE"];
+nodo40[label="\"Esto es el else\""];
+nodo39->nodo40
+nodo41[label="WRITE"];
+nodo42[label="\"2do write del else\""];
+nodo41->nodo42
+nodo43[label="BLOQUE"];
+nodo43->nodo39
+nodo43->nodo41
+nodo44[label="WRITE"];
+nodo45[label="\"3er write del else\""];
+nodo44->nodo45
+nodo46[label="BLOQUE"];
+nodo46->nodo43
+nodo46->nodo44
+nodo47[label="CUERPO"];
+nodo48[label="IF"];
+nodo47->nodo38
+nodo47->nodo46
+nodo48->nodo30
+nodo48->nodo47
+nodo49[label="BLOQUE"];
+nodo49->nodo21
+nodo49->nodo48
+nodo50[label="PROG"];
+nodo51[label="INICIO"];
+nodo50->nodo49
+nodo51->nodo0
+nodo51->nodo50
 }

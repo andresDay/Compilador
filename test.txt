@@ -24,7 +24,7 @@ write "While 2do bloque";
 END
 
 
-IF ( i < 3 ) START
+IF ( i < (3*2) AND i > 1 ) START
     write "If: Primer bloque";
     write "If: Segundo bloque";
     write "If: Tercer bloque";
@@ -33,4 +33,7 @@ END
 ELSE
 START
     WRITE "Esto es el else";
+    WRITE "2do write del else";
+    WRITE "3er write del else";
+
 END

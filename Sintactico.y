@@ -16,6 +16,8 @@ t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo;
 t_info *info;
 FILE *pf;
 t_pila pila_blo;
+t_pila pila_cond;
+t_pila pila_expr;
 t_dato_pila dato;
 
 %}
@@ -307,6 +309,9 @@ ELSE START bloque END
 condicion_mul: condicion 
 {
         p_aux = p_cond;
+        dato = p_aux;
+        apilar(&pila_cond,&dato);
+        
 }
 AND condicion 
 {
@@ -316,8 +321,11 @@ AND condicion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_aux, p_oper, p_cond, pf);
+        desapilar(&pila_cond,&dato);
+        crear_nodo(dato, p_oper, p_cond, pf);
         p_cond_mul = p_oper;
+        dato = p_cond_mul;
+        apilar(&pila_cond,&dato);
 }
 
 | condicion 
@@ -357,9 +365,7 @@ OR condicion
 
 condicion: expresion 
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        p_aux = p_exp;
 }
 MAYOR expresion 
 {
@@ -369,18 +375,12 @@ MAYOR expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
-
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
           
 |expresion 
 {
-        // info->valor = $1;
-        // info->indice++;
         p_aux = p_exp;
 }
 MENOR expresion 
@@ -391,19 +391,13 @@ MENOR expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        // info->valor = $3;
-        // info->indice++;
-        // p_exp = crear_hoja(info, pf);
-
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
 
 |expresion 
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        p_aux = p_exp;
 }
 MAYOR_IGUAL expresion 
 {
@@ -413,19 +407,13 @@ MAYOR_IGUAL expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
-
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
           
 |expresion 
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        p_aux = p_exp;
 }
 MENOR_IGUAL expresion 
 {
@@ -435,19 +423,13 @@ MENOR_IGUAL expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
-
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
 
 |expresion
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+        p_aux = p_exp;
 }  
 IGUAL expresion 
 {
@@ -456,20 +438,14 @@ IGUAL expresion
         info->valor = "IGUAL";
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
-
+        
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
 
 |expresion 
 {
-        info->valor = $1;
-        info->indice++;
-        p_aux = crear_hoja(info, pf);
+    p_aux = p_exp;
 } 
 DISTINTO expresion 
 {
@@ -478,10 +454,6 @@ DISTINTO expresion
         info->valor = "DISTINTO";
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        info->valor = $3;
-        info->indice++;
-        p_exp = crear_hoja(info, pf);
 
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
@@ -522,7 +494,7 @@ asignacion: ID ASIG expresion P_COMA
 }
 ;
 
-expresion:      expresion OP_SUMA termino  
+expresion: expresion OP_SUMA termino  
 {
         printf("expresion ---> expresion OP_SUMA termino \n");
         info->valor = "SUMA";
@@ -629,7 +601,7 @@ factor_mod: ID
 |P_A expresion P_C 
 {
         printf("factor_mod --> P_A expresion P_C \n");
-        // p_f_mod = p_exp;
+        p_f_mod = p_exp;
 }
 ;
 
@@ -655,6 +627,8 @@ lista_de_expresiones: expresion
 {
         printf("lista_de_expresiones ---> expresion\n");
         p_l_exp = p_exp;
+        dato = p_exp;
+        apilar(&pila_expr,&dato);
 }
 
 | lista_de_expresiones COMA expresion 
@@ -682,6 +656,8 @@ int main(int argc,char *argv[])
   {
         crear_lista_ts(&tablaSimbolos);
         crear_pila(&pila_blo);
+        crear_pila(&pila_cond);
+        crear_pila(&pila_expr);
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         info->indice=-1;

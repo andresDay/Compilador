@@ -5,7 +5,9 @@
 |--------------------------------|----------------|--------------------------------|--------|
 |"1er bloque"                    |string          |1er bloque                      |10      |
 |"2do bloque"                    |string          |2do bloque                      |10      |
+|"2do write del else"            |string          |2do write del else              |18      |
 |"3er bloque"                    |string          |3er bloque                      |10      |
+|"3er write del else"            |string          |3er write del else              |18      |
 |"4to bloque"                    |string          |4to bloque                      |10      |
 |"Esto es el else"               |string          |Esto es el else                 |15      |
 |"If: Primer bloque"             |string          |If: Primer bloque               |17      |
@@ -13,6 +15,8 @@
 |"If: Tercer bloque"             |string          |If: Tercer bloque               |17      |
 |"While 1er bloque"              |string          |While 1er bloque                |16      |
 |"While 2do bloque"              |string          |While 2do bloque                |16      |
+|1                               |                |                                |        |
+|2                               |                |                                |        |
 |3                               |                |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
