@@ -3,11 +3,15 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
+|"ESTOY DENTRO DEL IF "          |string          |ESTOY DENTRO DEL IF             |20      |
+|"HOLA PAPU"                     |string          |HOLA PAPU                       |9       |
 |"i es menor que 6"              |string          |i es menor que 6                |16      |
 |"y mayor que 3"                 |string          |y mayor que 3                   |13      |
 |12                              |                |                                |        |
 |3                               |                |                                |        |
+|5                               |                |                                |        |
 |6                               |                |                                |        |
+|A                               |id              |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
 |letra                           |id              |                                |        |

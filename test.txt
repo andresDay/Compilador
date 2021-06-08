@@ -26,3 +26,15 @@ START
 
     END
 end
+
+if ( i > 3 AND i < 5) 
+    START 
+        WRITE "ESTOY DENTRO DEL IF ";
+    END
+ELSE
+    START
+        IF (A > 3)
+            START
+                WRITE "HOLA PAPU";
+            END
+    END    

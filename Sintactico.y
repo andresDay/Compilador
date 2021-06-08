@@ -288,7 +288,9 @@ seleccion: IF P_A condicion_mul P_C START bloque END
           
 |IF P_A condicion_mul P_C START bloque END 
 {
-        p_aux2 = p_blo;
+        desapilar(&pila_blo,&dato);
+        
+        p_aux2 = dato;
 }
 ELSE START bloque END 
 {
@@ -308,8 +310,6 @@ ELSE START bloque END
         crear_nodo(p_aux2, p_cuerpo, dato , pf);
         crear_nodo(p_cond_mul, p_aux, p_cuerpo, pf);
         p_sel = p_aux;
-
-        // desapilar(&pila_blo, &dato);
 }
 ;
 
