@@ -48,31 +48,63 @@ nodo24[label="AND"];
 nodo24->nodo20
 nodo24->nodo23
 nodo25[label="WRITE"];
-nodo26[label="\"ESTOY DENTRO DEL IF \""];
+nodo26[label="\"IF 1 Primer nivel \""];
 nodo25->nodo26
-nodo27[label="A"];
+nodo27[label="a"];
 nodo28[label="3"];
 nodo29[label="MAYOR"];
 nodo29->nodo27
 nodo29->nodo28
 nodo30[label="WRITE"];
-nodo31[label="\"HOLA PAPU\""];
+nodo31[label="\" IF 2 SEGUNDO NIVEL\""];
 nodo30->nodo31
-nodo32[label="IF"];
-nodo32->nodo29
-nodo32->nodo30
-nodo33[label="CUERPO"];
-nodo34[label="IF"];
-nodo33->nodo25
-nodo33->nodo32
-nodo34->nodo24
-nodo34->nodo33
-nodo35[label="BLOQUE"];
-nodo35->nodo17
+nodo32[label="WRITE"];
+nodo33[label="\"ELSE DEL IF 2\""];
+nodo32->nodo33
+nodo34[label="CUERPO"];
+nodo35[label="IF"];
+nodo34->nodo32
+nodo34->nodo30
+nodo35->nodo29
 nodo35->nodo34
-nodo36[label="PROG"];
-nodo37[label="INICIO"];
+nodo36[label="BLOQUE"];
+nodo36->nodo25
 nodo36->nodo35
-nodo37->nodo0
-nodo37->nodo36
+nodo37[label="WRITE"];
+nodo38[label="\"ELSE 1\""];
+nodo37->nodo38
+nodo39[label="A"];
+nodo40[label="3"];
+nodo41[label="MAYOR"];
+nodo41->nodo39
+nodo41->nodo40
+nodo42[label="WRITE"];
+nodo43[label="\"IF 3 DEL ELSE 1\""];
+nodo42->nodo43
+nodo44[label="WRITE"];
+nodo45[label="\"ELSE DEL IF 3\""];
+nodo44->nodo45
+nodo46[label="CUERPO"];
+nodo47[label="IF"];
+nodo46->nodo44
+nodo46->nodo42
+nodo47->nodo41
+nodo47->nodo46
+nodo48[label="BLOQUE"];
+nodo48->nodo37
+nodo48->nodo47
+nodo49[label="CUERPO"];
+nodo50[label="IF"];
+nodo49->nodo48
+nodo49->nodo36
+nodo50->nodo24
+nodo50->nodo49
+nodo51[label="BLOQUE"];
+nodo51->nodo17
+nodo51->nodo50
+nodo52[label="PROG"];
+nodo53[label="INICIO"];
+nodo52->nodo51
+nodo53->nodo0
+nodo53->nodo52
 }

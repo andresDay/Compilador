@@ -29,12 +29,25 @@ end
 
 if ( i > 3 AND i < 5) 
     START 
-        WRITE "ESTOY DENTRO DEL IF ";
+            WRITE "IF 1 Primer nivel ";
+            IF( a > 3)
+                START
+                    WRITE " IF 2 SEGUNDO NIVEL";
+                END
+            ELSE 
+                START
+                    WRITE "ELSE DEL IF 2";
+                END
     END
 ELSE
     START
+        WRITE "ELSE 1";
         IF (A > 3)
             START
-                WRITE "HOLA PAPU";
+                WRITE "IF 3 DEL ELSE 1";
+            END
+        ELSE
+            START
+                WRITE "ELSE DEL IF 3";
             END
     END    

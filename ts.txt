@@ -3,8 +3,12 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
-|"ESTOY DENTRO DEL IF "          |string          |ESTOY DENTRO DEL IF             |20      |
-|"HOLA PAPU"                     |string          |HOLA PAPU                       |9       |
+|" IF 2 SEGUNDO NIVEL"           |string          | IF 2 SEGUNDO NIVEL             |19      |
+|"ELSE 1"                        |string          |ELSE 1                          |6       |
+|"ELSE DEL IF 2"                 |string          |ELSE DEL IF 2                   |13      |
+|"ELSE DEL IF 3"                 |string          |ELSE DEL IF 3                   |13      |
+|"IF 1 Primer nivel "            |string          |IF 1 Primer nivel               |18      |
+|"IF 3 DEL ELSE 1"               |string          |IF 3 DEL ELSE 1                 |15      |
 |"i es menor que 6"              |string          |i es menor que 6                |16      |
 |"y mayor que 3"                 |string          |y mayor que 3                   |13      |
 |12                              |                |                                |        |
@@ -12,6 +16,7 @@
 |5                               |                |                                |        |
 |6                               |                |                                |        |
 |A                               |id              |                                |        |
+|a                               |id              |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
 |letra                           |id              |                                |        |

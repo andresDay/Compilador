@@ -286,13 +286,7 @@ seleccion: IF P_A condicion_mul P_C START bloque END
         p_sel = p_aux;
 }
           
-|IF P_A condicion_mul P_C START bloque END 
-{
-        desapilar(&pila_blo,&dato);
-        
-        p_aux2 = dato;
-}
-ELSE START bloque END 
+|IF P_A condicion_mul P_C START bloque END ELSE START bloque END 
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);
         
@@ -304,6 +298,10 @@ ELSE START bloque END
         info->indice++;
         p_aux = crear_hoja(info, pf);
 
+     
+        desapilar(&pila_blo,&dato);        
+        p_aux2 = dato;  
+        
         desapilar(&pila_blo, &dato);
         desapilar(&pila_cond, &p_cond_mul);
 
