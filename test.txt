@@ -9,31 +9,20 @@ DECVAR
     -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
 
-write "1er bloque";
-
-write "2do bloque";
-
-write "3er bloque";
-
-write "4to bloque";
-
-WHILE ( i < 3 ) 
+while (variable <12)
 START
-write "While 1er bloque";
-write "While 2do bloque";
-END
 
+    IF ( i < 6 ) 
+    START
+        
+        write "i es menor que 6";
 
-IF ( i < (3*2) AND i > 1 ) START
-    write "If: Primer bloque";
-    write "If: Segundo bloque";
-    write "If: Tercer bloque";
+        if ( i > 3 )
+        START
 
-END
-ELSE
-START
-    WRITE "Esto es el else";
-    WRITE "2do write del else";
-    WRITE "3er write del else";
+            write "y mayor que 3";
 
-END
+        END
+
+    END
+end

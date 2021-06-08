@@ -12,7 +12,7 @@ extern int yylineno;
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
-t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo;
+t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
 t_info *info;
 FILE *pf;
 t_pila pila_blo;
@@ -50,7 +50,7 @@ char *comp
 %%
 
 inicio_prima:  inicio {
-        printf("inicio' ---> inicio \n");
+        printf("%d - inicio' ---> inicio \n", yylineno);
 
         p_ini_pri = p_ini;
 }
@@ -58,7 +58,7 @@ inicio_prima:  inicio {
 
 inicio: DECVAR bloque_declaraciones ENDDEC programa 
 {
-        printf("inicio ---> DECVAR bloque_declaraciones ENDDEC programa\n");
+        printf("%d - inicio ---> DECVAR bloque_declaraciones ENDDEC programa\n", yylineno);
 
         info->valor = "PROG";
         info->indice++;
@@ -76,14 +76,14 @@ inicio: DECVAR bloque_declaraciones ENDDEC programa
 
 | programa 
 {
-        printf("inicio ---> programa \n");
+        printf("%d - inicio ---> programa \n", yylineno);
 
         p_ini = p_prog;
 }
 ;
 bloque_declaraciones: declaraciones 
 {
-        printf("bloque_declaraciones ---> declaraciones\n");
+        printf("%d - bloque_declaraciones ---> declaraciones\n", yylineno);
         info->valor = "BLOQUE\nDECLARACIONES";
         info->indice++;
         p_blo_dec = crear_hoja(info, pf);
@@ -91,7 +91,7 @@ bloque_declaraciones: declaraciones
 
 | bloque_declaraciones declaraciones 
 {
-        printf("bloque_declaraciones ---> bloque_declaraciones declaraciones\n");
+        printf("%d - bloque_declaraciones ---> bloque_declaraciones declaraciones\n", yylineno);
         // info->valor = "BLOQUE\nDECLARACIONES";
         // info->indice++;
         // p_aux = crear_hoja(info, pf);
@@ -102,7 +102,7 @@ bloque_declaraciones: declaraciones
 ;
 declaraciones: lista_de_variables DECLARACION tipodato P_COMA 
 {
-        printf("declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n");
+        printf("%d - declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n", yylineno);
 
         // info->valor = ":";
         // info->indice++;
@@ -115,7 +115,7 @@ declaraciones: lista_de_variables DECLARACION tipodato P_COMA
 
 lista_de_variables: ID  
 {
-        printf("lista_de_variables ---> ID, %s\n",$1);
+        printf("%d - lista_de_variables ---> ID\n", yylineno);
 
 //         info->valor = $1;
 //         info->indice++;
@@ -124,7 +124,7 @@ lista_de_variables: ID
 
 | lista_de_variables COMA ID  
 {
-        printf("lista_de_variables ---> lista_de_variables COMA ID, %s\n", $3);
+        printf("%d - lista_de_variables ---> lista_de_variables COMA ID\n", yylineno);
 
         // info->valor = "CUERPO";
         // info->indice++;
@@ -169,13 +169,13 @@ tipodato: STRING
 
 programa: bloque
 {
-        printf("programa ---> bloque \n");
+        printf("%d - programa ---> bloque \n", yylineno);
         p_prog = p_blo;
 }
 ;
 bloque: sentencia 
 {
-        printf("bloque ---> sentencia \n");
+        printf("%d - bloque ---> sentencia \n", yylineno);
         p_blo = p_sent;
 
         dato = p_blo;
@@ -184,7 +184,7 @@ bloque: sentencia
 
 |bloque sentencia 
 {
-        printf("bloque ---> bloque sentencia\n");
+        printf("%d - bloque ---> bloque sentencia\n", yylineno);
         info->valor = "BLOQUE";
         info->indice++;
         p_aux = crear_hoja(info, pf);
@@ -202,38 +202,38 @@ bloque: sentencia
 
 sentencia: ciclo 
 {
-        printf("sentencia ---> ciclo \n");
+        printf("%d - sentencia ---> ciclo \n", yylineno);
         p_sent = p_c;
 }      
  
 |ciclo_especial 
 {
-        printf("sentencia ---> ciclo_especial \n");
+        printf("%d - sentencia ---> ciclo_especial \n", yylineno);
         p_sent = p_ce;
 }
 
 |asignacion 
 {
-        printf("sentencia ---> asignacion \n");
+        printf("%d - sentencia ---> asignacion \n", yylineno);
         p_sent = p_asig;
 }
 
 |seleccion 
 {
-        printf("sentencia ---> seleccion \n");
+        printf("%d - sentencia ---> seleccion \n", yylineno);
         p_sent = p_sel;
 }
 
 |funcion 
 {
-        printf("sentencia ---> funcion \n");
+        printf("%d - sentencia ---> funcion \n", yylineno);
         p_sent = p_func;
 }
 ;
 
 funcion:  ESCRIBIR factor_mod P_COMA 
 {
-        printf("funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA\n");
+        printf("%d - funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA\n", yylineno);
 
         info->valor = "WRITE";
         info->indice++;
@@ -245,7 +245,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
 
 |ESCRIBIR CTE_CADENA P_COMA 
 {
-        printf("funcion ---> ESCRIBIR CTE_CADENA P_COMA\n");
+        printf("%d - funcion ---> ESCRIBIR CTE_CADENA P_COMA\n", yylineno);
 
         info->valor = "WRITE";
         info->indice++;
@@ -259,7 +259,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
 
 |ESCANEAR ID P_COMA 
 {
-        printf("funcion ---> ESCANEAR P_A ID P_C P_COMA\n");
+        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
 
         info->valor = "READ";
         info->indice++;
@@ -273,13 +273,16 @@ funcion:  ESCRIBIR factor_mod P_COMA
 ;
 seleccion: IF P_A condicion_mul P_C START bloque END 
 {
-        printf("seleccion ---> IF P_A condicion_mul P_C START bloque END\n");
+        printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END\n", yylineno);
 
         info->valor = "IF";
         info->indice++;
         p_aux = crear_hoja(info, pf);
 
-        crear_nodo(p_cond_mul, p_aux, p_blo, pf);
+        desapilar(&pila_cond, &dato);
+        desapilar(&pila_blo, &p_blo);
+
+        crear_nodo(dato, p_aux, p_blo, pf);
         p_sel = p_aux;
 }
           
@@ -289,7 +292,7 @@ seleccion: IF P_A condicion_mul P_C START bloque END
 }
 ELSE START bloque END 
 {
-        printf("seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n");
+        printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);
         
         info->valor = "CUERPO";
         info->indice++;
@@ -298,11 +301,15 @@ ELSE START bloque END
         info->valor = "IF";
         info->indice++;
         p_aux = crear_hoja(info, pf);
+
         desapilar(&pila_blo, &dato);
+        desapilar(&pila_cond, &p_cond_mul);
+
         crear_nodo(p_aux2, p_cuerpo, dato , pf);
         crear_nodo(p_cond_mul, p_aux, p_cuerpo, pf);
         p_sel = p_aux;
-        desapilar(&pila_blo, &dato);
+
+        // desapilar(&pila_blo, &dato);
 }
 ;
 
@@ -315,7 +322,7 @@ condicion_mul: condicion
 }
 AND condicion 
 {
-        printf("condicion_mul ---> condicion AND condicion \n");
+        printf("%d - condicion_mul ---> condicion AND condicion \n", yylineno);
 
         info->valor = "AND";
         info->indice++;
@@ -334,7 +341,7 @@ AND condicion
 }
 OR condicion 
 {
-        printf("condicion_mul ---> condicion OR condicion \n");
+        printf("%d - condicion_mul ---> condicion OR condicion \n", yylineno);
 
         info->valor = "OR";
         info->indice++;
@@ -342,11 +349,12 @@ OR condicion
 
         crear_nodo(p_aux, p_oper, p_cond, pf);
         p_cond_mul = p_oper;
+        apilar(&pila_cond, &p_cond_mul);
 }
 
 | NOT condicion 
 {
-        printf("condicion_mul ---> NOT condicion \n");
+        printf("%d - condicion_mul ---> NOT condicion \n", yylineno);
 
         info->valor = "NOT";
         info->indice++;
@@ -354,12 +362,14 @@ OR condicion
 
         crear_nodo(NULL, p_oper, p_cond, pf);
         p_cond_mul = p_oper;
+        apilar(&pila_cond, &p_cond_mul);
 }
 
 | condicion 
 {
-        printf("condicion_mul ---> condicion \n");
+        printf("%d - condicion_mul ---> condicion \n", yylineno);
         p_cond_mul = p_cond;
+        apilar(&pila_cond, &p_cond_mul);
 }
 ;
 
@@ -369,7 +379,7 @@ condicion: expresion
 }
 MAYOR expresion 
 {
-        printf("condicion ---> expresion MAYOR expresion \n");
+        printf("%d - condicion ---> expresion MAYOR expresion \n", yylineno);
 
         info->valor = "MAYOR";
         info->indice++;
@@ -385,7 +395,7 @@ MAYOR expresion
 }
 MENOR expresion 
 {
-        printf("condicion ---> expresion MENOR expresion \n");
+        printf("%d - condicion ---> expresion MENOR expresion \n", yylineno);
 
         info->valor = "MENOR";
         info->indice++;
@@ -401,7 +411,7 @@ MENOR expresion
 }
 MAYOR_IGUAL expresion 
 {
-        printf("condicion ---> expresion MAYOR_IGUAL expresion \n");
+        printf("%d - condicion ---> expresion MAYOR_IGUAL expresion \n", yylineno);
 
         info->valor = "MAYOR O IGUAL";
         info->indice++;
@@ -417,7 +427,7 @@ MAYOR_IGUAL expresion
 }
 MENOR_IGUAL expresion 
 {
-        printf("condicion ---> expresion MENOR_IGUAL expresion \n");
+        printf("%d - condicion ---> expresion MENOR_IGUAL expresion \n", yylineno);
 
         info->valor = "MENOR O IGUAL";
         info->indice++;
@@ -433,7 +443,7 @@ MENOR_IGUAL expresion
 }  
 IGUAL expresion 
 {
-        printf("condicion ---> expresion IGUAL expresion \n");
+        printf("%d - condicion ---> expresion IGUAL expresion \n", yylineno);
 
         info->valor = "IGUAL";
         info->indice++;
@@ -449,7 +459,7 @@ IGUAL expresion
 } 
 DISTINTO expresion 
 {
-        printf("expresion DISTINTO expresion\n");
+        printf("%d - expresion DISTINTO expresion\n", yylineno);
 
         info->valor = "DISTINTO";
         info->indice++;
@@ -462,7 +472,7 @@ DISTINTO expresion
 
 asignacion: ID ASIG expresion P_COMA 
 {
-        printf("asignacion ---> ID ASIG expresion P_COMA \n");
+        printf("%d - asignacion ---> ID ASIG expresion P_COMA \n", yylineno);
         info->valor = "ASIG";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -478,7 +488,7 @@ asignacion: ID ASIG expresion P_COMA
 | ID ASIG CTE_CADENA P_COMA 
 {
 
-        printf("asignacion ---> ID ASIG CTE_CADENA P_COMA \n");
+        printf("%d - asignacion ---> ID ASIG CTE_CADENA P_COMA \n", yylineno);
         info->valor = $1;
         info->indice++;
         p_aux = crear_hoja(info, pf);
@@ -496,7 +506,7 @@ asignacion: ID ASIG expresion P_COMA
 
 expresion: expresion OP_SUMA termino  
 {
-        printf("expresion ---> expresion OP_SUMA termino \n");
+        printf("%d - expresion ---> expresion OP_SUMA termino \n", yylineno);
         info->valor = "SUMA";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -507,7 +517,7 @@ expresion: expresion OP_SUMA termino
 
 |expresion OP_RESTA termino 
 {
-        printf("expresion ---> expresion OP_RESTA termino \n");
+        printf("%d - expresion ---> expresion OP_RESTA termino \n", yylineno);
         info->valor = "RESTA";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -518,14 +528,14 @@ expresion: expresion OP_SUMA termino
 
 |termino 
 {
-        printf("expresion ---> termino \n");
+        printf("%d - expresion ---> termino \n", yylineno);
         p_exp = p_term;
 }
 ;
 
 termino:        termino OP_MULT factor 
 {
-        printf("termino ---> termino OP_MULT factor \n");
+        printf("%d - termino ---> termino OP_MULT factor \n", yylineno);
         info->valor = "MULT";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -536,7 +546,7 @@ termino:        termino OP_MULT factor
                 
 |termino OP_DIV factor 
 {
-        printf("termino ---> termino OP_DIV factor \n");
+        printf("%d - termino ---> termino OP_DIV factor \n", yylineno);
         info->valor = "DIV";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -547,13 +557,13 @@ termino:        termino OP_MULT factor
 
 |factor 
 {
-        printf("termino ---> factor \n");
+        printf("%d - termino ---> factor \n", yylineno);
         p_term = p_f;
 }
 ;
 factor: factor OP_MOD factor_mod 
 {
-        printf("factor --> factor OP_MOD factor_mod \n");
+        printf("%d - factor --> factor OP_MOD factor_mod \n", yylineno);
         info->valor = "MOD";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -564,13 +574,13 @@ factor: factor OP_MOD factor_mod
         
 | factor_mod 
 {
-        printf(" factor --> factor_mod \n");
+        printf("%d -  factor --> factor_mod \n", yylineno);
         p_f = p_f_mod;
 }
 ; 
 factor_mod: ID  
 {
-        printf(" factor_mod --> ID \n");
+        printf("%d -  factor_mod --> ID \n", yylineno);
         $<strVal>$ = $1;
         info->valor = $1;
         info->indice++;
@@ -579,7 +589,7 @@ factor_mod: ID
 
 |CTE_INT 
 {
-        printf(" factor_mod --> CTE_INT \n");
+        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
         $<intVal>$ = $1;
         itoa($1, info->valor, 10);
         info->indice++;
@@ -588,7 +598,7 @@ factor_mod: ID
 
 |CTE_REAL 
 {
-        printf(" factor_mod --> CTE_REAL \n");
+        printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
         $<realVal>$ = $1;
         info->valor = (char*)malloc(sizeof(char) * 20);
         info->indice++;
@@ -600,7 +610,7 @@ factor_mod: ID
 
 |P_A expresion P_C 
 {
-        printf("factor_mod --> P_A expresion P_C \n");
+        printf("%d - factor_mod --> P_A expresion P_C \n", yylineno);
         p_f_mod = p_exp;
 }
 ;
@@ -610,22 +620,42 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
         info->valor = "WHILE";
         info->indice++;       
         p_aux = crear_hoja(info,pf);
+
         desapilar(&pila_blo, &dato);
+        desapilar(&pila_cond, &p_cond_mul);
+
         crear_nodo(p_cond_mul,p_aux,dato,pf);
         p_c = p_aux;
-        printf("ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n");
+        printf("%d - ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n", yylineno);
 }
          
 ;
 ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {
+        info->valor = $2;
+        info->indice++;
+        p_id = crear_hoja(info, pf);
 
-        printf("ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n");
+        info->valor = "IN";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        crear_nodo(p_id, p_oper, p_l_exp, pf);
+
+        info->valor = "WHILE";
+        info->indice++;
+        p_aux = crear_hoja(info, pf);
+
+        desapilar(&pila_blo, &p_blo);
+        crear_nodo(p_oper, p_aux, p_blo, pf);
+        p_oper = p_aux;
+
+        printf("%d - ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n", yylineno);
 }
 ;
 lista_de_expresiones: expresion 
 {
-        printf("lista_de_expresiones ---> expresion\n");
+        printf("%d - lista_de_expresiones ---> expresion\n", yylineno);
         p_l_exp = p_exp;
         dato = p_exp;
         apilar(&pila_expr,&dato);
@@ -633,7 +663,7 @@ lista_de_expresiones: expresion
 
 | lista_de_expresiones COMA expresion 
 {
-        printf("lista_de_expresiones ---> lista_de_expresiones COMA expresion\n");
+        printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
 
         info->valor = "COMA";
         info->indice++;
@@ -650,7 +680,7 @@ int main(int argc,char *argv[])
 {
   if ((yyin = fopen(argv[1], "rt")) == NULL || (pf = fopen("arbol.txt", "wt")) == NULL)
   {
-	  printf("\nNo se puede abrir el archivo!");
+	printf("\nNo se puede abrir el archivo!");
   }
   else
   {
@@ -678,7 +708,7 @@ int main(int argc,char *argv[])
 int yyerror(void)
 {
     printf("Syntax Error\n");
-    fprintf(stderr,"error: in line %d\n", yylineno);
+    fprintf(stderr,"error: in line %d\n");
     system ("Pause");
     exit (1);
 }

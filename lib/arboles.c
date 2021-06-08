@@ -34,7 +34,6 @@ t_nodoa* crear_hoja(const t_info* d,FILE* pf)
     p_nodo->izq=NULL;
     p_nodo->der=NULL;
     p_nodo->info=*d;
-	printf("nodo%d[label=%c%s%c];\n",d->indice,comillas,d->valor,comillas);
 	fprintf(pf,"nodo%d[label=%c%s%c];\n",d->indice,comillas,d->valor,comillas);
 	return p_nodo;
 }
