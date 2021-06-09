@@ -51,3 +51,10 @@ ELSE
                 WRITE "ELSE DEL IF 3";
             END
     END    
+
+
+WHILE A IN [A+2,B,C] 
+DO
+    WRITE "HOLA MAMA";
+    WRITE "HOLA PAPA";
+ENDWHILE

@@ -7,15 +7,20 @@
 |"ELSE 1"                        |string          |ELSE 1                          |6       |
 |"ELSE DEL IF 2"                 |string          |ELSE DEL IF 2                   |13      |
 |"ELSE DEL IF 3"                 |string          |ELSE DEL IF 3                   |13      |
+|"HOLA MAMA"                     |string          |HOLA MAMA                       |9       |
+|"HOLA PAPA"                     |string          |HOLA PAPA                       |9       |
 |"IF 1 Primer nivel "            |string          |IF 1 Primer nivel               |18      |
 |"IF 3 DEL ELSE 1"               |string          |IF 3 DEL ELSE 1                 |15      |
 |"i es menor que 6"              |string          |i es menor que 6                |16      |
 |"y mayor que 3"                 |string          |y mayor que 3                   |13      |
 |12                              |                |                                |        |
+|2                               |                |                                |        |
 |3                               |                |                                |        |
 |5                               |                |                                |        |
 |6                               |                |                                |        |
 |A                               |id              |                                |        |
+|B                               |id              |                                |        |
+|C                               |id              |                                |        |
 |a                               |id              |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |

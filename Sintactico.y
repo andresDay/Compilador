@@ -13,12 +13,16 @@ t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
 t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
+t_nodoa* p_auxM;
 t_info *info;
 FILE *pf;
 t_pila pila_blo;
+t_pila pila_m;
 t_pila pila_cond;
 t_pila pila_expr;
 t_dato_pila dato;
+t_dato_pila dato_m;
+char * auxID;
 
 %}
 %locations
@@ -301,7 +305,7 @@ seleccion: IF P_A condicion_mul P_C START bloque END
      
         desapilar(&pila_blo,&dato);        
         p_aux2 = dato;  
-        
+
         desapilar(&pila_blo, &dato);
         desapilar(&pila_cond, &p_cond_mul);
 
@@ -628,26 +632,48 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 }
          
 ;
-ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
+ciclo_especial: WHILE ID { auxID= $2; } IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {
-        info->valor = $2;
-        info->indice++;
-        p_id = crear_hoja(info, pf);
-
-        info->valor = "IN";
+        info->valor = "IF";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_id, p_oper, p_l_exp, pf);
+        info->valor = "==";
+        info->indice++;
+        p_aux = crear_hoja(info,pf);
+
+        info->valor = auxID;
+        info->indice++;
+        p_aux2= crear_hoja(info,pf);
+
+        //Nodo con padre == e hijo izquierdo el ID y hijo derecho expresion
+
+        desapilar(&pila_expr,&dato);
+        crear_nodo(dato,p_aux,p_aux2 ,pf);       
+
+        info->valor="cant++";
+        info->indice++;
+        p_aux2= crear_hoja(info,pf),
+        crear_nodo(p_aux,p_oper, p_aux2 ,pf);
+
+
+        info->valor="M";
+        info->indice++;
+        p_aux = crear_hoja(info,pf);
+
+        //CANT++
+        desapilar(&pila_m,&dato_m);
+        crear_nodo(dato_m ,p_aux, p_oper,pf);         
 
         info->valor = "WHILE";
         info->indice++;
-        p_aux = crear_hoja(info, pf);
+        p_aux2 = crear_hoja(info,pf);
+        
+        desapilar(&pila_blo,&dato);
 
-        desapilar(&pila_blo, &p_blo);
-        crear_nodo(p_oper, p_aux, p_blo, pf);
-        p_oper = p_aux;
+        crear_nodo(p_aux,p_aux2,dato  ,pf);
 
+        p_ce = p_aux2;
         printf("%d - ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n", yylineno);
 }
 ;
@@ -657,17 +683,51 @@ lista_de_expresiones: expresion
         p_l_exp = p_exp;
         dato = p_exp;
         apilar(&pila_expr,&dato);
+ 
 }
 
 | lista_de_expresiones COMA expresion 
 {
         printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
 
-        info->valor = "COMA";
+        
+        info->valor = "IF";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_l_exp, p_oper, p_exp, pf);
+        info->valor = "==";
+        info->indice++;
+        p_aux = crear_hoja(info,pf);
+
+        info->valor = auxID;
+        info->indice++;
+        p_aux2= crear_hoja(info,pf);
+
+        //Nodo con padre == e hijo izquierdo el ID y hijo derecho expresion
+
+        desapilar(&pila_expr,&dato);
+        crear_nodo(dato,p_aux,p_aux2 ,pf);
+        
+        info->valor="CANT++";
+        info->indice++;
+        p_aux2 = crear_hoja(info,pf);
+        crear_nodo(p_aux,p_oper,p_aux2,pf);
+
+        info->valor="M";
+        info->indice++;
+        p_aux = crear_hoja(info,pf);
+
+        //CANT++
+        desapilar(&pila_m,&dato_m);
+        crear_nodo(dato_m,p_aux,p_oper ,pf);
+
+      
+        dato = p_exp;
+        apilar(&pila_expr,&dato);        
+
+        dato_m  = p_aux;
+        apilar(&pila_m,&dato_m);
+        
 }
 ;
 
@@ -686,6 +746,7 @@ int main(int argc,char *argv[])
         crear_pila(&pila_blo);
         crear_pila(&pila_cond);
         crear_pila(&pila_expr);
+        crear_pila(&pila_m);
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         info->indice=-1;
