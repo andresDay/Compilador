@@ -3,38 +3,31 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
-|" IF 2 SEGUNDO NIVEL"           |string          | IF 2 SEGUNDO NIVEL             |19      |
-|"ELSE 1"                        |string          |ELSE 1                          |6       |
-|"ELSE DEL IF 2"                 |string          |ELSE DEL IF 2                   |13      |
-|"ELSE DEL IF 3"                 |string          |ELSE DEL IF 3                   |13      |
-|"HOLA MAMA"                     |string          |HOLA MAMA                       |9       |
-|"HOLA PAPA"                     |string          |HOLA PAPA                       |9       |
-|"IF 1 Primer nivel "            |string          |IF 1 Primer nivel               |18      |
-|"IF 3 DEL ELSE 1"               |string          |IF 3 DEL ELSE 1                 |15      |
-|"i es menor que 6"              |string          |i es menor que 6                |16      |
-|"y mayor que 3"                 |string          |y mayor que 3                   |13      |
+|"--INGRESE EXIT PARA SALIR--"   |string          |--INGRESE EXIT PARA SALIR--     |27      |
+|"A"                             |string          |A                               |1       |
+|"B"                             |string          |B                               |1       |
+|"PROGRAMA PARA CONTAR LETRAS--" |string          |PROGRAMA PARA CONTAR LETRAS--   |29      |
+|"es una palabra corta"          |string          |es una palabra corta            |20      |
+|"es una palabra larga"          |string          |es una palabra larga            |20      |
+|"es una palabra no tan larga"   |string          |es una palabra no tan larga     |27      |
+|"ingresa una palabra:"          |string          |ingresa una palabra:            |20      |
+|"la cantidad es total"          |string          |la cantidad es total            |20      |
+|0                               |                |                                |        |
 |1                               |                |                                |        |
-|100                             |                |                                |        |
-|12                              |                |                                |        |
 |2                               |                |                                |        |
+|2.25                            |                |                                |        |
 |20                              |                |                                |        |
-|201                             |                |                                |        |
-|227                             |                |                                |        |
+|25                              |                |                                |        |
 |3                               |                |                                |        |
+|3.5                             |                |                                |        |
 |4                               |                |                                |        |
+|4.5                             |                |                                |        |
 |5                               |                |                                |        |
 |6                               |                |                                |        |
-|8                               |                |                                |        |
-|80                              |                |                                |        |
-|8000                            |                |                                |        |
 |9                               |                |                                |        |
-|A                               |id              |                                |        |
-|B                               |id              |                                |        |
-|a                               |id              |                                |        |
 |cantidadLetras                  |id              |                                |        |
 |i                               |id              |                                |        |
 |letra                           |id              |                                |        |
 |palabra                         |id              |                                |        |
 |variable                        |id              |                                |        |
-|word                            |id              |                                |        |
 |___________________________________________________________________________________________|

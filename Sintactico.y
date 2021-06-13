@@ -44,7 +44,9 @@ char *comp
 %token IF ELSE WHILE START END IN DO ENDWHILE
 %token OP_MULT OP_DIV OP_SUMA OP_RESTA OP_MOD
 
-%left OP_MULT OP_DIV OP_SUMA OP_RESTA OP_MOD
+%left OP_SUMA OP_RESTA OP_MOD
+%left OP_MULT OP_DIV
+%left OP_RESTA_UNARIA 
 
 %type<intVal> condicion condicion_mul
 %type<strVal> expresion
@@ -482,6 +484,8 @@ asignacion: ID ASIG expresion P_COMA
         info->indice++;
         p_aux = crear_hoja(info, pf);
 
+        desapilar(&pila_expr, &p_exp);
+
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_asig = p_oper;
 }
@@ -634,6 +638,28 @@ factor_mod: ID
         p_f_mod = crear_hoja(info, pf); 
 }
 
+|OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
+{
+        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
+        $<intVal>$ = $2 * (-1);
+        info->valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(info->valor,"-%d", $2);
+        // itoa($1, info->valor, 10);
+        info->indice++;
+        p_f_mod = crear_hoja(info, pf); 
+}
+
+|OP_RESTA CTE_REAL %prec OP_RESTA_UNARIA
+{
+        printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
+        $<realVal>$ = $2 * (-1);
+        info->valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(info->valor,"-%.10f", $2);
+        // itoa($1, info->valor, 10);
+        info->indice++;
+        p_f_mod = crear_hoja(info, pf); 
+}
+
 |P_A expresion P_C 
 {
         printf("%d - factor_mod --> P_A expresion P_C \n", yylineno); 
@@ -699,8 +725,8 @@ lista_de_expresiones: expresion
 {
         printf("%d - lista_de_expresiones ---> expresion\n", yylineno);
         p_l_exp = p_exp;
-        dato = p_exp;
-        apilar(&pila_list_exp,&dato);
+        // desapilar(&pila_expr, &p_exp);
+        apilar(&pila_list_exp,&p_exp);
  
 }
 

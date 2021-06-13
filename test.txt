@@ -9,57 +9,12 @@ DECVAR
     -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
 
- A := 5 * ( 2 - 3) + 8 DIV (5 MOD 100 + 2 + (3+5)) ;
+a := -2;
+variable := -3.45;
 
-B := 8 MOD ( 9 - 3 * 4 DIV 227 ) + 5 DIV ( 5 - 2 * ( 3 + 8 ) ) ;
-
-
-while (variable <12)
+if(a == -3)
 START
+    write "una cosa";
+END
 
-    IF ( i < 6 ) 
-    START
-        
-        write "i es menor que 6";
-
-        if ( i > 3 )
-        START
-
-            write "y mayor que 3";
-
-        END
-
-    END
-end
-
-if ( i > (3*2+5) AND i < 5) 
-    START 
-            WRITE "IF 1 Primer nivel ";
-            IF( a > 3)
-                START
-                    WRITE " IF 2 SEGUNDO NIVEL";
-                END
-            ELSE 
-                START
-                    WRITE "ELSE DEL IF 2";
-                END
-    END
-ELSE
-    START
-        WRITE "ELSE 1";
-        IF (A > 3)
-            START
-                WRITE "IF 3 DEL ELSE 1";
-            END
-        ELSE
-            START
-                WRITE "ELSE DEL IF 3";
-            END
-    END    
-
-
-WHILE A IN [A+2,2 + (3+5),2,3,20+1*5 DIV 5+(80*3 MOD 201 DIV 8000) + 5 ] 
-DO
-    WRITE "HOLA MAMA";
-    WRITE "HOLA PAPA";
-ENDWHILE
+variable := a - - 5;
