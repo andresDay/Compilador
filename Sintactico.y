@@ -13,15 +13,14 @@ t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
 t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
-t_nodoa* p_auxM;
+t_nodoa* p_auxM, *p_aux3;
 t_info *info;
 FILE *pf;
-t_pila pila_blo;
-t_pila pila_m;
-t_pila pila_cond;
-t_pila pila_expr;
-t_dato_pila dato;
-t_dato_pila dato_m;
+t_pila pila_cond, pila_term, pila_expr, pila_m, pila_blo,pila_list_exp, pila_factor;
+
+
+t_dato_pila dato,dato_m,dato_aux;
+t_dato_pila ;
 char * auxID;
 
 %}
@@ -512,8 +511,11 @@ expresion: expresion OP_SUMA termino
         info->valor = "SUMA";
         info->indice++;
         p_oper = crear_hoja(info, pf);
+        desapilar(&pila_term,&dato);            
+        desapilar(&pila_expr,&dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+        apilar(&pila_expr,&p_oper);
 
-        crear_nodo(p_exp, p_oper, p_term, pf);
         p_exp = p_oper;
 }
 
@@ -523,26 +525,36 @@ expresion: expresion OP_SUMA termino
         info->valor = "RESTA";
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        crear_nodo(p_exp, p_oper, p_term, pf);
+        desapilar(&pila_term,&dato);        
+        desapilar(&pila_expr,&dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+        apilar(&pila_expr,&p_oper);
         p_exp = p_oper;
 }
 
 |termino 
 {
         printf("%d - expresion ---> termino \n", yylineno);
-        p_exp = p_term;
+        dato = p_term;
+        apilar(&pila_expr,&dato);
+        p_exp = dato;
+        desapilar(&pila_term,&dato);
 }
 ;
 
-termino:        termino OP_MULT factor 
+termino: termino OP_MULT factor 
 {
         printf("%d - termino ---> termino OP_MULT factor \n", yylineno);
         info->valor = "MULT";
         info->indice++;
         p_oper = crear_hoja(info, pf);
+        desapilar(&pila_term,&dato);
+        desapilar(&pila_factor,&dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
 
-        crear_nodo(p_term, p_oper, p_f, pf);
+        dato = p_oper;
+        apilar(&pila_term,&dato);
+
         p_term = p_oper;
 }
                 
@@ -552,14 +564,20 @@ termino:        termino OP_MULT factor
         info->valor = "DIV";
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        crear_nodo(p_term, p_oper, p_f, pf);
+        desapilar(&pila_term,&dato);
+        desapilar(&pila_factor,&dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
+        dato = p_oper;
+        apilar(&pila_term,&dato);
         p_term = p_oper;
 }                
 
 |factor 
 {
         printf("%d - termino ---> factor \n", yylineno);
+        dato = p_f;
+        apilar(&pila_term,&dato);
+        desapilar(&pila_factor,&dato);
         p_term = p_f;
 }
 ;
@@ -569,14 +587,18 @@ factor: factor OP_MOD factor_mod
         info->valor = "MOD";
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        crear_nodo(p_f, p_oper, p_f_mod, pf);
+        desapilar(&pila_factor,&dato);
+        crear_nodo(dato, p_oper, p_f_mod, pf);
+        dato = p_oper;
+        apilar(&pila_factor,&dato);
         p_f = p_oper;
 }
         
 | factor_mod 
 {
         printf("%d -  factor --> factor_mod \n", yylineno);
+        dato = p_f_mod;
+        apilar(&pila_factor,&dato);
         p_f = p_f_mod;
 }
 ; 
@@ -593,7 +615,9 @@ factor_mod: ID
 {
         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
         $<intVal>$ = $1;
-        itoa($1, info->valor, 10);
+        info->valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(info->valor,"%d", $1);
+        // itoa($1, info->valor, 10);
         info->indice++;
         p_f_mod = crear_hoja(info, pf); 
 }
@@ -612,8 +636,9 @@ factor_mod: ID
 
 |P_A expresion P_C 
 {
-        printf("%d - factor_mod --> P_A expresion P_C \n", yylineno);
-        p_f_mod = p_exp;
+        printf("%d - factor_mod --> P_A expresion P_C \n", yylineno); 
+        desapilar(&pila_expr,&dato);
+        p_f_mod = dato;
 }
 ;
 
@@ -632,40 +657,19 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 }
          
 ;
-ciclo_especial: WHILE ID { auxID= $2; } IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
-{
-        info->valor = "IF";
-        info->indice++;
-        p_oper = crear_hoja(info, pf);
+ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
+{  
 
-        info->valor = "==";
+        info->valor = "IN";
         info->indice++;
         p_aux = crear_hoja(info,pf);
 
-        info->valor = auxID;
+        info->valor = $2;
         info->indice++;
-        p_aux2= crear_hoja(info,pf);
-
-        //Nodo con padre == e hijo izquierdo el ID y hijo derecho expresion
-
-        desapilar(&pila_expr,&dato);
-        crear_nodo(dato,p_aux,p_aux2 ,pf);       
-
-        info->valor="cant++";
-        info->indice++;
-        p_aux2= crear_hoja(info,pf),
-        crear_nodo(p_aux,p_oper, p_aux2 ,pf);
+        p_aux3=crear_hoja(info,pf);        
 
 
-        info->valor="M";
-        info->indice++;
-        p_aux = crear_hoja(info,pf);
-
-        //CANT++
-        desapilar(&pila_m,&dato_m);
-        crear_nodo(dato_m ,p_aux, p_oper,pf);         
-
-        info->valor = "WHILE";
+        info->valor = "WHILE_ESP";
         info->indice++;
         p_aux2 = crear_hoja(info,pf);
         
@@ -673,7 +677,21 @@ ciclo_especial: WHILE ID { auxID= $2; } IN C_A lista_de_expresiones C_C DO bloqu
 
         crear_nodo(p_aux,p_aux2,dato  ,pf);
 
-        p_ce = p_aux2;
+        p_ce = p_aux2;        
+
+        info->valor = "Lista_exp";
+        info->indice++;
+        p_oper = crear_hoja(info,pf);
+
+        //Obtengo expresion
+        desapilar(&pila_list_exp,&dato);
+        
+        desapilar(&pila_m,&dato_m);
+
+        crear_nodo(dato_m,p_oper,dato,pf);
+        
+
+        crear_nodo( p_aux3 , p_aux, p_oper ,pf);
         printf("%d - ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n", yylineno);
 }
 ;
@@ -682,7 +700,7 @@ lista_de_expresiones: expresion
         printf("%d - lista_de_expresiones ---> expresion\n", yylineno);
         p_l_exp = p_exp;
         dato = p_exp;
-        apilar(&pila_expr,&dato);
+        apilar(&pila_list_exp,&dato);
  
 }
 
@@ -690,44 +708,22 @@ lista_de_expresiones: expresion
 {
         printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
 
+        info->valor = "Lista_exp";
+        info->indice++;
+        p_oper = crear_hoja(info,pf);
+
+        //Obtengo expresion
+        desapilar(&pila_list_exp,&dato);
         
-        info->valor = "IF";
-        info->indice++;
-        p_oper = crear_hoja(info, pf);
-
-        info->valor = "==";
-        info->indice++;
-        p_aux = crear_hoja(info,pf);
-
-        info->valor = auxID;
-        info->indice++;
-        p_aux2= crear_hoja(info,pf);
-
-        //Nodo con padre == e hijo izquierdo el ID y hijo derecho expresion
-
-        desapilar(&pila_expr,&dato);
-        crear_nodo(dato,p_aux,p_aux2 ,pf);
-        
-        info->valor="CANT++";
-        info->indice++;
-        p_aux2 = crear_hoja(info,pf);
-        crear_nodo(p_aux,p_oper,p_aux2,pf);
-
-        info->valor="M";
-        info->indice++;
-        p_aux = crear_hoja(info,pf);
-
-        //CANT++
         desapilar(&pila_m,&dato_m);
-        crear_nodo(dato_m,p_aux,p_oper ,pf);
 
+        crear_nodo(dato_m,p_oper,dato,pf);
       
         dato = p_exp;
-        apilar(&pila_expr,&dato);        
+        apilar(&pila_list_exp,&dato);        
 
-        dato_m  = p_aux;
-        apilar(&pila_m,&dato_m);
-        
+        dato_m  = p_oper;
+        apilar(&pila_m,&dato_m);        
 }
 ;
 
@@ -747,6 +743,9 @@ int main(int argc,char *argv[])
         crear_pila(&pila_cond);
         crear_pila(&pila_expr);
         crear_pila(&pila_m);
+        crear_pila(&pila_term);
+        crear_pila(&pila_list_exp);
+        crear_pila(&pila_factor);
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         info->indice=-1;

@@ -9,6 +9,11 @@ DECVAR
     -/esto_es_un_id_muy_largo: STRING;/-
 ENDDEC
 
+ A := 5 * ( 2 - 3) + 8 DIV (5 MOD 100 + 2 + (3+5)) ;
+
+B := 8 MOD ( 9 - 3 * 4 DIV 227 ) + 5 DIV ( 5 - 2 * ( 3 + 8 ) ) ;
+
+
 while (variable <12)
 START
 
@@ -27,7 +32,7 @@ START
     END
 end
 
-if ( i > 3 AND i < 5) 
+if ( i > (3*2+5) AND i < 5) 
     START 
             WRITE "IF 1 Primer nivel ";
             IF( a > 3)
@@ -53,7 +58,7 @@ ELSE
     END    
 
 
-WHILE A IN [A+2,B,C] 
+WHILE A IN [A+2,2 + (3+5),2,3,20+1*5 DIV 5+(80*3 MOD 201 DIV 8000) + 5 ] 
 DO
     WRITE "HOLA MAMA";
     WRITE "HOLA PAPA";
