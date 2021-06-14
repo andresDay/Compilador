@@ -16,11 +16,10 @@ t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
 t_nodoa* p_auxM, *p_aux3;
 t_info *info;
 FILE *pf;
-t_pila pila_cond, pila_term, pila_expr, pila_m, pila_blo,pila_list_exp, pila_factor;
+t_pila pila_cond, pila_term, pila_expr, pila_blo,pila_list_exp, pila_factor;
 
 
 t_dato_pila dato,dato_m,dato_aux;
-t_dato_pila ;
 char * auxID;
 
 %}
@@ -97,79 +96,29 @@ bloque_declaraciones: declaraciones
 | bloque_declaraciones declaraciones 
 {
         printf("%d - bloque_declaraciones ---> bloque_declaraciones declaraciones\n", yylineno);
-        // info->valor = "BLOQUE\nDECLARACIONES";
-        // info->indice++;
-        // p_aux = crear_hoja(info, pf);
-
-        // crear_nodo(p_blo_dec, p_aux, p_dec, pf);
-        // p_blo_dec = p_aux;
 }
 ;
 declaraciones: lista_de_variables DECLARACION tipodato P_COMA 
 {
         printf("%d - declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n", yylineno);
-
-        // info->valor = ":";
-        // info->indice++;
-        // p_oper = crear_hoja(info, pf);
-
-        // crear_nodo(p_l_var, p_oper, p_tdato, pf);
-        // p_dec = p_oper;
 }                 
 ;
 
 lista_de_variables: ID  
 {
         printf("%d - lista_de_variables ---> ID\n", yylineno);
-
-//         info->valor = $1;
-//         info->indice++;
-//         p_l_var = crear_hoja(info, pf);
 }
 
 | lista_de_variables COMA ID  
 {
         printf("%d - lista_de_variables ---> lista_de_variables COMA ID\n", yylineno);
-
-        // info->valor = "CUERPO";
-        // info->indice++;
-        // p_oper = crear_hoja(info, pf);
-
-        // info->valor = $3;
-        // info->indice++;
-        // crear_nodo(p_l_var, p_oper, crear_hoja(info, pf), pf);
-        // p_l_var = p_oper;
 }
 ;
 
 tipodato: STRING
-{
-        // info->valor = "STRING";
-        // info->indice++;
-        // p_tdato = crear_hoja(info, pf);
-}
-
 |CHAR
-{
-        // info->valor = "CHAR";
-        // info->indice++;
-        // p_tdato = crear_hoja(info, pf);
-}
-       
 |INTEGER     
-{
-        // info->valor = "INTEGER";
-        // info->indice++;
-        // p_tdato = crear_hoja(info, pf);
-}
-  
 |FLOAT
-{
-        // info->valor = "FLOAT";
-        // info->indice++;
-        // p_tdato = crear_hoja(info, pf);
-}
-
 ;
 
 programa: bloque
@@ -685,47 +634,33 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 ;
 ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {  
+        info->valor = "WHILE_ESP";
+        info->indice++;
+        p_ce = crear_hoja(info,pf);
 
         info->valor = "IN";
         info->indice++;
-        p_aux = crear_hoja(info,pf);
+        p_oper = crear_hoja(info,pf);
 
         info->valor = $2;
         info->indice++;
-        p_aux3=crear_hoja(info,pf);        
+        p_id = crear_hoja(info,pf);
 
+        desapilar(&pila_list_exp,&p_l_exp);
 
-        info->valor = "WHILE_ESP";
-        info->indice++;
-        p_aux2 = crear_hoja(info,pf);
+        crear_nodo(p_id, p_oper, p_l_exp, pf);
+
+        desapilar(&pila_blo, &p_blo);
+        crear_nodo(p_oper, p_ce, p_blo, pf);
         
-        desapilar(&pila_blo,&dato);
-
-        crear_nodo(p_aux,p_aux2,dato  ,pf);
-
-        p_ce = p_aux2;        
-
-        info->valor = "Lista_exp";
-        info->indice++;
-        p_oper = crear_hoja(info,pf);
-
-        //Obtengo expresion
-        desapilar(&pila_list_exp,&dato);
-        
-        desapilar(&pila_m,&dato_m);
-
-        crear_nodo(dato_m,p_oper,dato,pf);
-        
-
-        crear_nodo( p_aux3 , p_aux, p_oper ,pf);
         printf("%d - ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n", yylineno);
 }
 ;
 lista_de_expresiones: expresion 
 {
         printf("%d - lista_de_expresiones ---> expresion\n", yylineno);
-        p_l_exp = p_exp;
-        // desapilar(&pila_expr, &p_exp);
+        
+        desapilar(&pila_expr, &p_exp);
         apilar(&pila_list_exp,&p_exp);
  
 }
@@ -734,22 +669,16 @@ lista_de_expresiones: expresion
 {
         printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
 
+        desapilar(&pila_expr, &p_exp);
+
+        desapilar(&pila_list_exp,&p_l_exp);
+
         info->valor = "Lista_exp";
         info->indice++;
         p_oper = crear_hoja(info,pf);
 
-        //Obtengo expresion
-        desapilar(&pila_list_exp,&dato);
-        
-        desapilar(&pila_m,&dato_m);
-
-        crear_nodo(dato_m,p_oper,dato,pf);
-      
-        dato = p_exp;
-        apilar(&pila_list_exp,&dato);        
-
-        dato_m  = p_oper;
-        apilar(&pila_m,&dato_m);        
+        crear_nodo(p_l_exp, p_oper, p_exp, pf);
+        apilar(&pila_list_exp, &p_oper);     
 }
 ;
 
@@ -768,7 +697,6 @@ int main(int argc,char *argv[])
         crear_pila(&pila_blo);
         crear_pila(&pila_cond);
         crear_pila(&pila_expr);
-        crear_pila(&pila_m);
         crear_pila(&pila_term);
         crear_pila(&pila_list_exp);
         crear_pila(&pila_factor);
@@ -776,7 +704,7 @@ int main(int argc,char *argv[])
         indice=0;
         info->indice=-1;
 
-        fprintf(pf,"digraph G {\n");
+        fprintf(pf,"digraph G {\ngraph [ordering=\"out\"];\n");
 	yyparse();
         fprintf(pf,"}");
 

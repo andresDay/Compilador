@@ -1,0 +1,75 @@
+
+DECVAR
+    palabra : STRING ;
+    cantidadLetras : INTEGER;
+    letra : CHAR;
+    i : INTEGER;
+    variable : FLOAT;
+
+    -/Ejemplo de declaracion de id fuera de rango/-
+    -/esto_es_un_id_muy_largo: STRING;/-
+ENDDEC
+-/este es un programa muy simple -/comentario anidado/--/con un comentario anidado/- de prueba -/otroo comentario/-/-
+
+write "PROGRAMA PARA CONTAR LETRAS--";
+write "--INGRESE EXIT PARA SALIR--";
+write "ingresa una palabra:";
+read palabra;
+i:=0;
+variable:=4.5;
+
+WHILE variable IN [i+2,2.25*2,variable-3.5,4 MOD 4,9 DIV 2] 
+DO
+i:= i + 1;
+
+    WHILE variable IN [4+6,i*4,-5+4] 
+    DO
+    i:= i + 5;
+    ENDWHILE
+
+ENDWHILE
+
+-/Declaracion erronea fuera del bloque de declaraciones/-
+-/prueba: STRING;/-
+
+-/Ejemplos de asignaciones fuera de rango para validar longitud/-
+-/i:=456548556;/-
+-/variable:=3402823466385288598117041834845169254431.0000000000000000;/-
+-/palabra:="abcdefgdidfgdfgofhgisdfuhgdfsrg";/-
+
+WHILE ( palabra != 2 )
+START
+    letra:="A";
+    WHILE(letra != 3)
+    START
+        letra:="B";
+        i:=i+1;
+    END
+    i:=i+1;
+    IF( i > 20 AND letra == 4 )
+    -/faltaria hacer un write con variable/-
+    START
+        IF(cantidadLetras>=25)
+        START
+            write "es una palabra larga";
+            write palabra;
+            variable:= i MOD 6;
+        END
+        ELSE
+        START
+            write "es una palabra no tan larga";
+            write palabra;
+            variable:= i DIV 6;
+        END
+    END
+    ELSE
+    START
+        write "es una palabra corta";
+    END
+    write "la cantidad es total";
+    i:=0;
+    write "ingresa una palabra:";
+    read palabra;
+END
+
+i:=palabra * (2 + 2) mod 2;

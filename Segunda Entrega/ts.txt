@@ -1,0 +1,33 @@
+|-------------------------------------------------------------------------------------------|
+|            					    TABLA DE SIMBOLOS                                       |
+|-------------------------------------------------------------------------------------------|
+|LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
+|--------------------------------|----------------|--------------------------------|--------|
+|"--INGRESE EXIT PARA SALIR--"   |string          |--INGRESE EXIT PARA SALIR--     |27      |
+|"A"                             |string          |A                               |1       |
+|"B"                             |string          |B                               |1       |
+|"PROGRAMA PARA CONTAR LETRAS--" |string          |PROGRAMA PARA CONTAR LETRAS--   |29      |
+|"es una palabra corta"          |string          |es una palabra corta            |20      |
+|"es una palabra larga"          |string          |es una palabra larga            |20      |
+|"es una palabra no tan larga"   |string          |es una palabra no tan larga     |27      |
+|"ingresa una palabra:"          |string          |ingresa una palabra:            |20      |
+|"la cantidad es total"          |string          |la cantidad es total            |20      |
+|0                               |                |                                |        |
+|1                               |                |                                |        |
+|2                               |                |                                |        |
+|2.25                            |                |                                |        |
+|20                              |                |                                |        |
+|25                              |                |                                |        |
+|3                               |                |                                |        |
+|3.5                             |                |                                |        |
+|4                               |                |                                |        |
+|4.5                             |                |                                |        |
+|5                               |                |                                |        |
+|6                               |                |                                |        |
+|9                               |                |                                |        |
+|cantidadLetras                  |id              |                                |        |
+|i                               |id              |                                |        |
+|letra                           |id              |                                |        |
+|palabra                         |id              |                                |        |
+|variable                        |id              |                                |        |
+|___________________________________________________________________________________________|
