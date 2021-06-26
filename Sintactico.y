@@ -57,6 +57,7 @@ inicio_prima:  inicio {
         printf("%d - inicio' ---> inicio \n", yylineno);
 
         p_ini_pri = p_ini;
+        generar_assembler("final.asm",p_ini_pri,&tablaSimbolos,indice-1);
 }
 ;
 
@@ -207,6 +208,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
 
         info->valor = obtenerStringHoja($2);
         info->indice++;
+        info->tipo = T_STRING; 
         crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
         p_func = p_oper;
 }
@@ -453,6 +455,7 @@ asignacion: ID ASIG expresion P_COMA
 
         info->valor = obtenerStringHoja($3);
         info->indice++; 
+        info->tipo = T_STRING; 
         crear_nodo(p_aux, p_oper, crear_hoja(info, pf), pf);
         p_asig = p_oper;
 }
@@ -569,9 +572,13 @@ factor_mod: ID
         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
         $<intVal>$ = $1;
         info->valor = (char*)malloc(sizeof(char) * 20);
-        sprintf(info->valor,"%d", $1);
-        // itoa($1, info->valor, 10);
         info->indice++;
+        info->tipo = T_INTEGER;
+        sprintf(info->valor,"%d", $1);
+        
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+
         p_f_mod = crear_hoja(info, pf); 
 }
 
@@ -580,9 +587,18 @@ factor_mod: ID
         printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
         $<realVal>$ = $1;
         info->valor = (char*)malloc(sizeof(char) * 20);
-        info->indice++;
-
 	sprintf(info->valor,"%.10f", $1);
+        info->indice++;
+        info->tipo = T_FLOAT;
+
+        char* val = (char*)malloc(sizeof(char) * 20);
+        sprintf(val,"%g", $1);
+
+        printf("\n\n%s\n\n", val);
+        printf("\n\n%s\n\n", info->valor);
+
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(val), T_FLOAT);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(val), val);
 
         p_f_mod = crear_hoja(info, pf); 
 }
@@ -593,8 +609,12 @@ factor_mod: ID
         $<intVal>$ = $2 * (-1);
         info->valor = (char*)malloc(sizeof(char) * 20);
         sprintf(info->valor,"-%d", $2);
-        // itoa($1, info->valor, 10);
         info->indice++;
+        info->tipo = T_INTEGER;
+
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+
         p_f_mod = crear_hoja(info, pf); 
 }
 
@@ -604,8 +624,15 @@ factor_mod: ID
         $<realVal>$ = $2 * (-1);
         info->valor = (char*)malloc(sizeof(char) * 20);
         sprintf(info->valor,"-%.10f", $2);
-        // itoa($1, info->valor, 10);
         info->indice++;
+        info->tipo = T_FLOAT;
+
+        char* val = (char*)malloc(sizeof(char) * 20);
+        sprintf(val,"%g", $2);
+
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(val), T_FLOAT);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(val), val);
+
         p_f_mod = crear_hoja(info, pf); 
 }
 

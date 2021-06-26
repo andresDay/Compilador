@@ -8,5 +8,6 @@
 
 char* obtenerValorString(const char *);
 char* obtenerStringHoja(const char *);
+char* agregarGuionBajo(const char *);
 
 #endif

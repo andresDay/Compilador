@@ -54,3 +54,16 @@ char* obtenerStringHoja(const char *s){
 	*resultado = '\0';
 	return inicio;		
 }
+
+char* agregarGuionBajo(const char *s)
+{
+	char *resultado;
+	resultado =(char*) malloc(sizeof(char) * strlen(s) + LEXICO_CANTIDAD_GUIONES_BAJOS + 1);
+	if(resultado == NULL)
+	{
+		return NULL;
+	}
+	strcpy(resultado, "_");
+	strcat(resultado, s);
+	return resultado;
+}

@@ -88,6 +88,24 @@ int cambiar_campo_tipo(t_lista_ts *pl, const char *lexema, const char *tipo)
 	return ERROR;
 }
 
+int cambiar_campo_valor(t_lista_ts *pl, const char *lexema, const char *valor)
+{
+	while(*pl)
+    {
+        if( strcmp((*pl)->dato.lexema, lexema) == 0)
+		{
+			free(&(*pl)->dato.valor);
+			if(((*pl)->dato.valor = strdup(valor)) == NULL)
+			{
+				return ERROR;
+			}
+			return TODO_BIEN;
+		}
+        pl=&(*pl)->psig;
+    }
+	return ERROR;
+}
+
 char* buscar_tipo(t_lista_ts *pl, const char *lexema)
 {
 	while(*pl)

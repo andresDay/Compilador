@@ -1,21 +1,12 @@
 DECVAR
-    palabra, word : STRING ;
-    cantidadLetras : INTEGER;
-    letra : CHAR;
-    i : INTEGER;
-    variable : FLOAT;
-
-    -/Ejemplo de declaracion de id fuera de rango/-
-    -/esto_es_un_id_muy_largo: STRING;/-
+    z, a, b, c, d, e, f: integer;
 ENDDEC
 
-WHILE variable IN [i+2,2.25*2,variable-3.5,4 MOD 4,9 DIV 2] 
-DO
-i:= i + 1;
+a := 1;
+b := 1;
+c := 1;
+d := 1;
+e := 1;
+f := 1;
 
-    WHILE variable IN [4+6,i*4,-5+4] 
-    DO
-    i:= i + 5;
-    ENDWHILE
-
-ENDWHILE
+z := a + b * c - d DIV (e + f) + 20;

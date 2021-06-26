@@ -122,9 +122,25 @@ void guardarSimbolo(const char *type){
 
         insertar_ordenado_ts(&tablaSimbolos, &dato, comparacion_ts);
     }
-    else{
+    else if(type != NULL && strcmp(type,"id") == 0){
 
         if((dato.lexema = strdup(yytext)) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }       
+        if((dato.tipo = strdup(type)) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }
+        dato.valor = NULL;
+        dato.longitud = 0;
+
+        insertar_ordenado_ts(&tablaSimbolos, &dato, comparacion_ts);
+
+    }
+    else{
+
+        if((dato.lexema = strdup(agregarGuionBajo(yytext))) == NULL){
             puts("Memoria insuficiente!");
             exit(1);
         }       

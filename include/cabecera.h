@@ -15,6 +15,7 @@
 #include "./lista_ts.h"
 #include "./arboles.h"
 #include "./pila.h"
+#include "./assembler.h"
 extern int yylineno;
 extern FILE *yyin;
 extern FILE *pf;

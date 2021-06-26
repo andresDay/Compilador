@@ -31,6 +31,7 @@ void vaciar_lista_ts(t_lista_ts*);
 int insertar_ordenado_ts(t_lista_ts*,const t_dato_lista_ts*,t_cmp_ts);
 void guardar_lista_en_archivo_ts(t_lista_ts*, const char*);
 int cambiar_campo_tipo(t_lista_ts*, const char*, const char*);
+int cambiar_campo_valor(t_lista_ts*, const char*, const char*);
 char* buscar_tipo(t_lista_ts*, const char*);
 
 
