@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./cabecera.h"
 #include "./constantes.h"
 
 char* obtenerValorString(const char *);
 char* obtenerStringHoja(const char *);
 char* agregarGuionBajo(const char *);
+void guardarAuxiliares(int);
 
 #endif

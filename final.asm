@@ -6,6 +6,12 @@ include macros2.asm
 .STACK 200h
 
 .DATA
+@aux1                              	dd	?
+@aux2                              	dd	?
+@aux3                              	dd	?
+@aux4                              	dd	?
+@aux5                              	dd	?
+@aux6                              	dd	?
 _1                                 	dd	1.00
 _20                                	dd	20.00
 a                                  	dd	?
@@ -23,23 +29,29 @@ MOV DS, EAX
 MOV ES, EAX
 
 FLD b
-FLD c
+FLD _c
 FMUL
+FSTP @aux1
 FLD a
-FLD MULT
+FLD _@aux1
 FADD
+FSTP @aux2
 FLD e
-FLD f
+FLD _f
 FADD
+FSTP @aux3
 FLD d
-FLD SUMA
+FLD _@aux3
 FDIV
-FLD SUMA
-FLD DIV
+FSTP @aux4
+FLD @aux2
+FLD _@aux4
 FSUB
-FLD RESTA
-FLD 20
+FSTP @aux5
+FLD @aux5
+FLD _20
 FADD
+FSTP @aux6
 
 _ET_SALIR:
 MOV EAX, 4C00H

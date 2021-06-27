@@ -7,6 +7,7 @@ FILE  *yyin;
 char *yyltext;
 char *yytext;
 extern int yylineno;
+int cont_auxiliares;
 
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
@@ -57,6 +58,8 @@ inicio_prima:  inicio {
         printf("%d - inicio' ---> inicio \n", yylineno);
 
         p_ini_pri = p_ini;
+
+        guardarAuxiliares(cont_auxiliares);
         generar_assembler("final.asm",p_ini_pri,&tablaSimbolos,indice-1);
 }
 ;
@@ -473,6 +476,8 @@ expresion: expresion OP_SUMA termino
         apilar(&pila_expr,&p_oper);
 
         p_exp = p_oper;
+
+        cont_auxiliares++;
 }
 
 |expresion OP_RESTA termino 
@@ -486,6 +491,8 @@ expresion: expresion OP_SUMA termino
         crear_nodo(dato_aux, p_oper, dato, pf);
         apilar(&pila_expr,&p_oper);
         p_exp = p_oper;
+
+        cont_auxiliares++;
 }
 
 |termino 
@@ -512,6 +519,8 @@ termino: termino OP_MULT factor
         apilar(&pila_term,&dato);
 
         p_term = p_oper;
+
+        cont_auxiliares++;
 }
                 
 |termino OP_DIV factor 
@@ -526,6 +535,8 @@ termino: termino OP_MULT factor
         dato = p_oper;
         apilar(&pila_term,&dato);
         p_term = p_oper;
+
+        cont_auxiliares++;
 }                
 
 |factor 
@@ -729,6 +740,7 @@ int main(int argc,char *argv[])
         crear_pila(&pila_factor);
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
+        cont_auxiliares = 0;
         info->indice=-1;
 
         fprintf(pf,"digraph G {\ngraph [ordering=\"out\"];\n");
@@ -736,9 +748,10 @@ int main(int argc,char *argv[])
         fprintf(pf,"}");
 
         fclose(pf);
+        printf("\n\nCantidad de auxiliares: %d\n\n", cont_auxiliares);
   }
-     fclose(yyin);
-     guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
+        fclose(yyin);
+        guardar_lista_en_archivo_ts(&tablaSimbolos, "ts.txt");
 
   return 0;
 }
@@ -747,7 +760,7 @@ int main(int argc,char *argv[])
 int yyerror(void)
 {
     printf("Syntax Error\n");
-    fprintf(stderr,"error: in line %d\n");
+    fprintf(stderr,"error: in line %d\n", yylineno);
     system ("Pause");
     exit (1);
 }

@@ -17,5 +17,8 @@ void generar_declaraciones(FILE*, const t_lista_ts*);
 void generar_codigo(FILE*, t_nodoa*,int);
 void generar_final(FILE*);
 char* transformar_a_etiqueta(const char*);
+char *obtenerValorOperando(const t_nodoa *);
+
+int cont_auxiliares;
 
 #endif //ASSEMBLER_H_INCLUDED

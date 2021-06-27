@@ -9,6 +9,8 @@ void generar_assembler(const char *path_assembler, t_nodoa *p_arbol, const t_lis
 		exit(ERROR);
 	}
 
+	cont_auxiliares = 1;
+
 	generar_encabezado(pf);
 	generar_declaraciones(pf, p_ts);
 	generar_codigo(pf, p_arbol,indice);
@@ -83,7 +85,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 {
 	char *string_guion_bajo_est, *aux;
 	char *etiqueta;
-	char cadena_aux[100];
+	char cadena_aux[100], *num, *aux2, base[5] = "@aux";
 	if (p_nodo == NULL)
 	{
 		return;
@@ -149,26 +151,58 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
 	{ //ES UNA SUMA
 		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		fprintf(pf, "FLD %s\n", p_nodo->der->info.valor);
+		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FADD\n");
+		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+
+		itoa(cont_auxiliares, num, 10);
+		aux2 = strdup(base);
+		strcat(aux2, num);
+		p_nodo->info.valor = aux2;
+		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "RESTA") == 0)
 	{ //ES UNA RESTA
 		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		fprintf(pf, "FLD %s\n", p_nodo->der->info.valor);
+		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FSUB\n");
+		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+
+		itoa(cont_auxiliares, num, 10);
+		aux2 = strdup(base);
+		strcat(aux2, num);
+		p_nodo->info.valor = aux2;
+		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MULT") == 0)
 	{ //ES UNA MULTIPLICACION
 		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		fprintf(pf, "FLD %s\n", p_nodo->der->info.valor);
+		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FMUL\n");
+		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+
+		itoa(cont_auxiliares, num, 10);
+		aux2 = strdup(base);
+		strcat(aux2, num);
+		p_nodo->info.valor = aux2;
+		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
 	{ //ES UNA DIVISION
 		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		fprintf(pf, "FLD %s\n", p_nodo->der->info.valor);
+		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FDIV\n");
+		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+
+		itoa(cont_auxiliares, num, 10);
+		aux2 = strdup(base);
+		strcat(aux2, num);
+		p_nodo->info.valor = aux2;
+		cont_auxiliares++;
 	}
 }
 
