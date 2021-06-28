@@ -18,6 +18,7 @@
 #define T_INTEGER "integer"
 #define T_FLOAT "float"
 #define T_STRING "string"
+#define T_ID "id"
 
 /* CONSTANTES DE ASSEMBLER */
 

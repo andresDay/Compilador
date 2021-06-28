@@ -87,3 +87,36 @@ void guardarAuxiliares(int cont_auxiliares)
 		_cont++;
 	}
 }
+
+char *obtenerLexemaFloat(const char *s)
+{
+	int i, largo = strlen(s);
+	char *inicio, *resultado;
+	resultado = (char *)malloc(sizeof(char) * largo + 1);
+	if (resultado == NULL)
+	{
+		return NULL;
+	}
+	inicio = resultado;
+	if(*s != '_'){
+		*resultado = '_';
+		resultado++;
+	}
+	while (*s)
+	{
+		if (*s != '.')
+		{
+			*resultado = *s;
+			resultado++;
+			s++;
+		}
+		else
+		{
+			*resultado = '_';
+			resultado++;
+			s++;
+		}
+	}
+	*resultado = '\0';
+	return inicio;
+}

@@ -9,4 +9,6 @@ d := 1;
 e := 1;
 f := 1;
 
-z := a + b * c - d DIV (e + f) + 20;
+z := 2;
+
+write z;

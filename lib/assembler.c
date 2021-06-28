@@ -30,6 +30,7 @@ void generar_encabezado(FILE *pf)
 
 void generar_declaraciones(FILE *pf, const t_lista_ts *pl)
 {
+	char *aux;
 	fprintf(pf, "\n.DATA\n");
 	while (*pl)
 	{
@@ -45,7 +46,8 @@ void generar_declaraciones(FILE *pf, const t_lista_ts *pl)
 			}
 			else if (strcmp((*pl)->dato.tipo, T_FLOAT) == 0)
 			{
-				fprintf(pf, "%-35s\t%-2s\t%s.00\n", (*pl)->dato.lexema, PRECISION_FLOAT, (*pl)->dato.valor);
+				aux=(char*)obtenerLexemaFloat((*pl)->dato.lexema);
+				fprintf(pf, "%-35s\t%-2s\t%s\n", aux, PRECISION_FLOAT, (*pl)->dato.valor);
 			}
 		}
 		else
@@ -93,13 +95,20 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 	if (strcmp(p_nodo->info.valor, "WRITE") == 0)
 	{ //ES UNA SENTENCIA DE WRITE
 
-		// if(strcmp(p_nodo->der->info.tipo,T_STRING)==0){
-		// 	string_guion_bajo_est = (char*)obtenerValorString(p_nodo->der->info.valor);
-		// 	fprintf(pf,"displayString %s\nnewline 1\n",string_guion_bajo_est);
-		// }
-		// else{
-		// 	fprintf(pf,"displayFloat %s , 2\nnewline 1\n",p_nodo->der->info.valor);
-		// }
+		if(strcmp(p_nodo->der->info.tipo,T_STRING) == 0){
+			// string_guion_bajo_est = (char*)obtenerValorString(p_nodo->der->info.valor);
+			// fprintf(pf,"displayString %s\nnewline 1\n",string_guion_bajo_est);
+		}
+		else if(strcmp(p_nodo->der->info.tipo,T_INTEGER) == 0){
+
+		}
+		else if(strcmp(p_nodo->der->info.tipo,T_FLOAT) == 0){
+			aux=(char*)obtenerLexemaFloat(p_nodo->der->info.valor);
+			fprintf(pf,"displayFloat %s , 2\nnewline 1\n",aux);
+		}
+		else if(strcmp(p_nodo->der->info.tipo,"id") == 0){
+			fprintf(pf,"displayFloat %s , 2\nnewline 1\n",p_nodo->der->info.valor);
+		}
 	}
 	else if (strcmp(p_nodo->info.valor, "READ") == 0)
 	{	//ES UNA SENTENCIA DE READ
@@ -134,74 +143,74 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		// aux=transformar_a_etiqueta(etiqueta);
 		// fprintf(pf,"JE %s\n",aux);
 	}
-	else if (strcmp(p_nodo->info.valor, "=") == 0)
+	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
 	{	//ES UNA ASIGNACION
-		// if(strcmp(p_nodo->der->info.valor,"+")==0){
-		// 	fprintf(pf,"FSTP %s\n",p_nodo->izq->info.valor);
-		// }
-		// else if(strcmp(p_nodo->der->info.valor,"0")==0){
-		// 	fprintf(pf,"FLD _@cero\n");
-		// 	fprintf(pf,"FSTP %s\n",p_nodo->izq->info.valor);
-		// }
-		// else{
-		// 	fprintf(pf,"FLD %s\n",p_nodo->der->info.valor);
-		// 	fprintf(pf,"FSTP %s\n",p_nodo->izq->info.valor);
-		// }
+		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
 	{ //ES UNA SUMA
-		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FADD\n");
-		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
 		itoa(cont_auxiliares, num, 10);
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
+		p_nodo->info.tipo = "id";
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "RESTA") == 0)
 	{ //ES UNA RESTA
-		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FSUB\n");
-		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
 		itoa(cont_auxiliares, num, 10);
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
+		p_nodo->info.tipo = "id";
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MULT") == 0)
 	{ //ES UNA MULTIPLICACION
-		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FMUL\n");
-		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
 		itoa(cont_auxiliares, num, 10);
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
+		p_nodo->info.tipo = "id";
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
 	{ //ES UNA DIVISION
-		fprintf(pf, "FLD %s\n", p_nodo->izq->info.valor);
-		aux=(char*)agregarGuionBajo(p_nodo->der->info.valor);
+		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FDIV\n");
-		fprintf(pf, "FSTP %s%d\n", "@aux", cont_auxiliares);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
 		itoa(cont_auxiliares, num, 10);
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
+		p_nodo->info.tipo = "id";
 		cont_auxiliares++;
 	}
 }
@@ -231,4 +240,16 @@ char *transformar_a_etiqueta(const char *s)
 int es_constante(const char *s)
 {
 	return *s == '_';
+}
+
+char* obtenerValorOperando(const char* op){
+	char* res;
+	if(*op >= '0' && *op <= '9'){
+		res = agregarGuionBajo(op);
+	}
+	else{
+		res = strdup(op);
+	}
+
+	return res;
 }

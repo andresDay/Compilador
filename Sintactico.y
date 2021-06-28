@@ -226,6 +226,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
 
         info->valor = $2;
         info->indice++;
+        info->tipo = T_ID;
         crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
         p_func = p_oper;
 }
@@ -436,6 +437,7 @@ asignacion: ID ASIG expresion P_COMA
 
         info->valor = $1;
         info->indice++;
+        info->tipo = T_ID;
         p_aux = crear_hoja(info, pf);
 
         desapilar(&pila_expr, &p_exp);
@@ -450,6 +452,7 @@ asignacion: ID ASIG expresion P_COMA
         printf("%d - asignacion ---> ID ASIG CTE_CADENA P_COMA \n", yylineno);
         info->valor = $1;
         info->indice++;
+        info->tipo = T_ID;
         p_aux = crear_hoja(info, pf);
         
         info->valor = "ASIG";
@@ -575,6 +578,7 @@ factor_mod: ID
         $<strVal>$ = $1;
         info->valor = $1;
         info->indice++;
+        info->tipo = T_ID;
         p_f_mod = crear_hoja(info, pf); 
 }
 
@@ -598,7 +602,7 @@ factor_mod: ID
         printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
         $<realVal>$ = $1;
         info->valor = (char*)malloc(sizeof(char) * 20);
-	sprintf(info->valor,"%.10f", $1);
+	sprintf(info->valor,"%g", $1);
         info->indice++;
         info->tipo = T_FLOAT;
 
@@ -634,7 +638,7 @@ factor_mod: ID
         printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
         $<realVal>$ = $2 * (-1);
         info->valor = (char*)malloc(sizeof(char) * 20);
-        sprintf(info->valor,"-%.10f", $2);
+        sprintf(info->valor,"-%g", $2);
         info->indice++;
         info->tipo = T_FLOAT;
 
@@ -682,6 +686,7 @@ ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE
 
         info->valor = $2;
         info->indice++;
+        info->tipo = T_ID;
         p_id = crear_hoja(info,pf);
 
         desapilar(&pila_list_exp,&p_l_exp);
