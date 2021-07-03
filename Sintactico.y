@@ -115,6 +115,11 @@ declaraciones: lista_de_variables DECLARACION tipodato P_COMA
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
+        printf("\n----------------------\n");
+        printf("%s: ", p_tdato->info.valor);
+        set_tipo_ids(p_l_var, p_tdato->info.valor);
+        printf("\n----------------------\n");
+
         crear_nodo(p_l_var, p_oper, p_tdato, pf);
         p_dec = p_oper;
 }                 
@@ -131,7 +136,7 @@ lista_de_variables: ID
 | lista_de_variables COMA ID  
 {
         printf("%d - lista_de_variables ---> lista_de_variables COMA ID\n", yylineno);
-        info->valor = "CUERPO";
+        info->valor = "COMA";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
@@ -144,28 +149,28 @@ lista_de_variables: ID
 
 tipodato: STRING
 {
-        info->valor = "STRING";
+        info->valor = T_STRING;
         info->indice++;
         p_tdato = crear_hoja(info, pf);
 }
 
-|CHAR
-{
-        info->valor = "CHAR";
-        info->indice++;
-        p_tdato = crear_hoja(info, pf);
-}
+// |CHAR
+// {
+//         info->valor = "CHAR";
+//         info->indice++;
+//         p_tdato = crear_hoja(info, pf);
+// }
    
 |INTEGER   
 {
-        info->valor = "INTEGER";
+        info->valor = T_INTEGER;
         info->indice++;
         p_tdato = crear_hoja(info, pf);
 }
        
 |FLOAT
 {
-        info->valor = "FLOAT";
+        info->valor = T_FLOAT;
         info->indice++;
         p_tdato = crear_hoja(info, pf);
 }
