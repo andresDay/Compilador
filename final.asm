@@ -1,19 +1,21 @@
 include number.asm
-include macros2.asm
+include macros.asm
 
 .MODEL LARGE
 .386
 .STACK 200h
 
 .DATA
-_1                                 	dd	1.00
-_2                                 	dd	2.00
+_escribo_un_salto                  	db	"escribo un salto"                 , '$', 16 dup (?)
+_escribo_un_test                   	db	"escribo un test"                  , '$', 15 dup (?)
 a                                  	dd	?
 b                                  	dd	?
 c                                  	dd	?
 d                                  	dd	?
 e                                  	dd	?
 f                                  	dd	?
+palabra                            	dd	?
+var                                	dd	?
 z                                  	dd	?
 
 .CODE
@@ -22,28 +24,12 @@ MOV EAX, @DATA
 MOV DS, EAX
 MOV ES, EAX
 
-FLD _1
-FSTP a
+displayString _escribo_un_test
+newline 1
 
-FLD _1
-FSTP b
+newline 1
 
-FLD _1
-FSTP c
-
-FLD _1
-FSTP d
-
-FLD _1
-FSTP e
-
-FLD _1
-FSTP f
-
-FLD _2
-FSTP z
-
-displayFloat z , 2
+displayString _escribo_un_salto
 newline 1
 
 _ET_SALIR:

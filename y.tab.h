@@ -62,26 +62,27 @@
      P_C = 278,
      ESCRIBIR = 279,
      ESCANEAR = 280,
-     DECVAR = 281,
-     ENDDEC = 282,
-     STRING = 283,
-     CHAR = 284,
-     INTEGER = 285,
-     FLOAT = 286,
-     IF = 287,
-     ELSE = 288,
-     WHILE = 289,
-     START = 290,
-     END = 291,
-     IN = 292,
-     DO = 293,
-     ENDWHILE = 294,
-     OP_MULT = 295,
-     OP_DIV = 296,
-     OP_SUMA = 297,
-     OP_RESTA = 298,
-     OP_MOD = 299,
-     OP_RESTA_UNARIA = 300
+     NEWLINE = 281,
+     DECVAR = 282,
+     ENDDEC = 283,
+     STRING = 284,
+     CHAR = 285,
+     INTEGER = 286,
+     FLOAT = 287,
+     IF = 288,
+     ELSE = 289,
+     WHILE = 290,
+     START = 291,
+     END = 292,
+     IN = 293,
+     DO = 294,
+     ENDWHILE = 295,
+     OP_MULT = 296,
+     OP_DIV = 297,
+     OP_SUMA = 298,
+     OP_RESTA = 299,
+     OP_MOD = 300,
+     OP_RESTA_UNARIA = 301
    };
 #endif
 /* Tokens.  */
@@ -108,26 +109,27 @@
 #define P_C 278
 #define ESCRIBIR 279
 #define ESCANEAR 280
-#define DECVAR 281
-#define ENDDEC 282
-#define STRING 283
-#define CHAR 284
-#define INTEGER 285
-#define FLOAT 286
-#define IF 287
-#define ELSE 288
-#define WHILE 289
-#define START 290
-#define END 291
-#define IN 292
-#define DO 293
-#define ENDWHILE 294
-#define OP_MULT 295
-#define OP_DIV 296
-#define OP_SUMA 297
-#define OP_RESTA 298
-#define OP_MOD 299
-#define OP_RESTA_UNARIA 300
+#define NEWLINE 281
+#define DECVAR 282
+#define ENDDEC 283
+#define STRING 284
+#define CHAR 285
+#define INTEGER 286
+#define FLOAT 287
+#define IF 288
+#define ELSE 289
+#define WHILE 290
+#define START 291
+#define END 292
+#define IN 293
+#define DO 294
+#define ENDWHILE 295
+#define OP_MULT 296
+#define OP_DIV 297
+#define OP_SUMA 298
+#define OP_RESTA 299
+#define OP_MOD 300
+#define OP_RESTA_UNARIA 301
 
 
 
@@ -147,7 +149,7 @@ char *comp
 
 
 /* Line 1676 of yacc.c  */
-#line 151 "y.tab.h"
+#line 153 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

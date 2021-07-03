@@ -13,7 +13,7 @@ void generar_assembler(const char *path_assembler, t_nodoa *p_arbol, const t_lis
 
 	generar_encabezado(pf);
 	generar_declaraciones(pf, p_ts);
-	generar_codigo(pf, p_arbol,indice);
+	generar_codigo(pf, p_arbol, indice);
 	generar_final(pf);
 
 	fclose(pf);
@@ -22,7 +22,7 @@ void generar_assembler(const char *path_assembler, t_nodoa *p_arbol, const t_lis
 void generar_encabezado(FILE *pf)
 {
 	fprintf(pf, "include number.asm\n");
-	fprintf(pf, "include macros2.asm\n\n");
+	fprintf(pf, "include macros.asm\n\n");
 	fprintf(pf, ".MODEL LARGE\n");
 	fprintf(pf, ".386\n");
 	fprintf(pf, ".STACK 200h\n");
@@ -38,7 +38,7 @@ void generar_declaraciones(FILE *pf, const t_lista_ts *pl)
 		{
 			if (strcmp((*pl)->dato.tipo, T_STRING) == 0)
 			{
-				fprintf(pf, "%-35s\t%-2s\t%-35s, \'$\', %d dup (?)\n", (*pl)->dato.lexema, PRECISION_STRING, obtenerValorString((*pl)->dato.valor), (*pl)->dato.longitud);
+				fprintf(pf, "%-35s\t%-2s\t%-35s, \'$\', %d dup (?)\n", (*pl)->dato.lexema, PRECISION_STRING, (*pl)->dato.valor, (*pl)->dato.longitud);
 			}
 			else if (strcmp((*pl)->dato.tipo, T_INTEGER) == 0)
 			{
@@ -46,7 +46,7 @@ void generar_declaraciones(FILE *pf, const t_lista_ts *pl)
 			}
 			else if (strcmp((*pl)->dato.tipo, T_FLOAT) == 0)
 			{
-				aux=(char*)obtenerLexemaFloat((*pl)->dato.lexema);
+				aux = (char *)obtenerLexemaFloat((*pl)->dato.lexema);
 				fprintf(pf, "%-35s\t%-2s\t%s\n", aux, PRECISION_FLOAT, (*pl)->dato.valor);
 			}
 		}
@@ -95,22 +95,46 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 	if (strcmp(p_nodo->info.valor, "WRITE") == 0)
 	{ //ES UNA SENTENCIA DE WRITE
 
-		if(strcmp(p_nodo->der->info.tipo,T_STRING) == 0){
-			// string_guion_bajo_est = (char*)obtenerValorString(p_nodo->der->info.valor);
-			// fprintf(pf,"displayString %s\nnewline 1\n",string_guion_bajo_est);
+		if (esCteOrString(p_nodo->der->info.valor))
+		{
+			// printf("\n\n------------------------------\n\nEs constante string\n\n-----------------------------\n\n");
+			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
+			{
+				string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
+				fprintf(pf, "displayString %s\nnewline 1\n", agregarGuionBajo(string_guion_bajo_est));
+			}
+			else if (strcmp(p_nodo->der->info.tipo, T_INTEGER) == 0)
+			{
+				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
+			}
+			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
+			{
+				aux = (char *)obtenerLexemaFloat(p_nodo->der->info.valor);
+				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", aux);
+			}
 		}
-		else if(strcmp(p_nodo->der->info.tipo,T_INTEGER) == 0){
-
-		}
-		else if(strcmp(p_nodo->der->info.tipo,T_FLOAT) == 0){
-			aux=(char*)obtenerLexemaFloat(p_nodo->der->info.valor);
-			fprintf(pf,"displayFloat %s , 2\nnewline 1\n",aux);
-		}
-		else if(strcmp(p_nodo->der->info.tipo,"id") == 0){
-			fprintf(pf,"displayFloat %s , 2\nnewline 1\n",p_nodo->der->info.valor);
+		else
+		{
+			// printf("\n\n------------------------------\n\nNo es constante string\n\n-----------------------------\n\n");
+			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
+			{
+				fprintf(pf, "displayString %s\nnewline 1\n", p_nodo->der->info.valor);
+			}
+			else if (strcmp(p_nodo->der->info.tipo, T_INTEGER) == 0)
+			{
+				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
+			}
+			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
+			{
+				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
+			}
+			else if (strcmp(p_nodo->der->info.tipo, T_NEWLINE) == 0)
+			{
+				fprintf(pf, "\nnewline 1\n\n");
+			}
 		}
 	}
-	else if (strcmp(p_nodo->info.valor, "READ") == 0)
+	else if (strcmp(p_nodo->info.valor, "READ STRING") == 0)
 	{	//ES UNA SENTENCIA DE READ
 		// fprintf(pf,"getFloat %s\n",p_nodo->der->info.valor);
 	}
@@ -144,16 +168,25 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		// fprintf(pf,"JE %s\n",aux);
 	}
 	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
-	{	//ES UNA ASIGNACION
-		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
-		fprintf(pf, "FLD %s\n", aux);
+	{ //ES UNA ASIGNACION
+		if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
+		{
+			// string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
+			// fprintf(pf, "FLD %s\n", agregarGuionBajo(string_guion_bajo_est));
+		}
+		else
+		{
+			aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+			fprintf(pf, "FLD %s\n", aux);
+		}
+
 		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
 	{ //ES UNA SUMA
-		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
-		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FADD\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -162,14 +195,14 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = "id";
+		p_nodo->info.tipo = T_FLOAT;
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "RESTA") == 0)
 	{ //ES UNA RESTA
-		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
-		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FSUB\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -178,14 +211,14 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = "id";
+		p_nodo->info.tipo = T_FLOAT;
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MULT") == 0)
 	{ //ES UNA MULTIPLICACION
-		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
-		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FMUL\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -194,14 +227,14 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = "id";
+		p_nodo->info.tipo = T_FLOAT;
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
 	{ //ES UNA DIVISION
-		aux=(char*)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
-		aux=(char*)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FDIV\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -210,7 +243,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		aux2 = strdup(base);
 		strcat(aux2, num);
 		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = "id";
+		p_nodo->info.tipo = T_FLOAT;
 		cont_auxiliares++;
 	}
 }
@@ -242,12 +275,20 @@ int es_constante(const char *s)
 	return *s == '_';
 }
 
-char* obtenerValorOperando(const char* op){
-	char* res;
-	if(*op >= '0' && *op <= '9'){
+int esCteOrString(const char *s)
+{
+	return (*s >= '0' && *s <= '9') || *s == '"' || *s == '\\';
+}
+
+char *obtenerValorOperando(const char *op)
+{
+	char *res;
+	if (*op >= '0' && *op <= '9')
+	{
 		res = agregarGuionBajo(op);
 	}
-	else{
+	else
+	{
 		res = strdup(op);
 	}
 

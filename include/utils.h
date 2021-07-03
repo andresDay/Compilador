@@ -11,6 +11,11 @@ char* obtenerValorString(const char *);
 char* obtenerStringHoja(const char *);
 char* agregarGuionBajo(const char *);
 void guardarAuxiliares(int);
-char *obtenerLexemaFloat(const char *);
+char* obtenerLexemaFloat(const char *);
+char* estandarizarString(const char *);
+int esCaracterValido(const char);
+int esNumero(const char);
+int esLetraMin(const char);
+int esLetraMayus(const char);
 
 #endif

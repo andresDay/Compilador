@@ -14,7 +14,7 @@ ENDDEC
 write "PROGRAMA PARA CONTAR LETRAS--";
 write "--INGRESE EXIT PARA SALIR--";
 write "ingresa una palabra:";
-read palabra;
+read string palabra;
 i:=0;
 variable:=-4.5;
 
@@ -69,7 +69,7 @@ START
     write "la cantidad es total";
     i:=0;
     write "ingresa una palabra:";
-    read palabra;
+    read string palabra;
 END
 
 i:=palabra * (2 + 2) mod 2;

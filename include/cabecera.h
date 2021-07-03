@@ -9,6 +9,7 @@
 #include <limits.h>
 #include <float.h>
 #include <conio.h>
+#include <ctype.h>
 #include "../y.tab.h"
 #include "./utils.h"
 #include "./constantes.h"

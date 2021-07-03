@@ -18,6 +18,7 @@ void generar_codigo(FILE*, t_nodoa*,int);
 void generar_final(FILE*);
 char* transformar_a_etiqueta(const char*);
 char *obtenerValorOperando(const char *);
+int esCteOrString(const char *);
 
 int cont_auxiliares;
 

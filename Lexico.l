@@ -44,6 +44,7 @@ ENDWHILE    [Ee][Nn][Dd][Ww][Hh][Ii][Ll][Ee]
 NOT         [Nn][Oo][Tt]
 AND         [Aa][Nn][Dd]
 OR          [Oo][Rr]
+NEWLINE     [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
 
 %%
 
@@ -71,6 +72,7 @@ OR          [Oo][Rr]
 "]"         { return C_C;}
 {WRITE}  { return ESCRIBIR;}
 {READ}  { return ESCANEAR;}
+{NEWLINE}   {return NEWLINE;}
 {DECVAR}    {return DECVAR;}
 {ENDDEC}    {return ENDDEC;}
 {STRING}    {return STRING;}
@@ -103,17 +105,12 @@ void guardarSimbolo(const char *type){
 
     t_dato_lista_ts dato;
     if(type != NULL && strcmp(type,"string") == 0){
-        if((dato.lexema = strdup(yytext)) == NULL){
-            puts("Memoria insuficiente!");
-            exit(1);
-        }
+        char* estandar = estandarizarString(obtenerValorString(yytext));
 
-        if((dato.tipo = strdup("string")) == NULL){
-            puts("Memoria insuficiente!");
-            exit(1);
-        }
+        dato.lexema = agregarGuionBajo(estandar);
+        dato.tipo = T_STRING;
 
-        if((dato.valor = strdup(obtenerValorString(yytext))) == NULL){
+        if((dato.valor = strdup(yytext)) == NULL){
             puts("Memoria insuficiente!");
             exit(1);
         }

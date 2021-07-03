@@ -1,14 +1,16 @@
 DECVAR
     z, a, b, c, d, e, f: integer;
+    palabra: string;
+    var: float;
 ENDDEC
 
-a := 1;
-b := 1;
-c := 1;
-d := 1;
-e := 1;
-f := 1;
+-/a := 1;/-
+-/b := 1;/-
+-/c := 1;/-
+-/d := 1;/-
+-/e := 1;/-
+-/f := 1;/-
 
-z := 2;
-
-write z;
+write "escribo un test";
+write newline;
+write "escribo un salto";

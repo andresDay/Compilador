@@ -37,7 +37,7 @@ char *comp
 %token P_COMA DECLARACION COMA C_A C_C AND OR NOT <comp>IGUAL <comp>DISTINTO <comp>MAYOR <comp>MENOR <comp>MENOR_IGUAL <comp>MAYOR_IGUAL
 %token <strVal>ID
 %token ASIG P_A P_C 
-%token ESCRIBIR ESCANEAR 
+%token ESCRIBIR ESCANEAR NEWLINE
 %token DECVAR ENDDEC
 %token STRING
 %token CHAR INTEGER FLOAT
@@ -91,38 +91,84 @@ inicio: DECVAR bloque_declaraciones ENDDEC programa
 ;
 bloque_declaraciones: declaraciones 
 {
-        printf("%d - bloque_declaraciones ---> declaraciones\n", yylineno);
-        info->valor = "BLOQUE\nDECLARACIONES";
-        info->indice++;
-        p_blo_dec = crear_hoja(info, pf);
+        // printf("%d - bloque_declaraciones ---> declaraciones\n", yylineno);
+        // info->valor = "BLOQUE\nDECLARACIONES";
+        // info->indice++;
+        p_blo_dec = p_dec;
 }
 
 | bloque_declaraciones declaraciones 
 {
         printf("%d - bloque_declaraciones ---> bloque_declaraciones declaraciones\n", yylineno);
+        info->valor = "BLOQUE\nDECLARACIONES";
+        info->indice++;
+        p_aux = crear_hoja(info, pf);
+
+        crear_nodo(p_blo_dec, p_aux, p_dec, pf);
+        p_blo_dec = p_aux;
 }
 ;
 declaraciones: lista_de_variables DECLARACION tipodato P_COMA 
 {
         printf("%d - declaraciones ---> lista_de_variables DECLARACION tipodato P_COMA\n", yylineno);
+        info->valor = "DEC";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        crear_nodo(p_l_var, p_oper, p_tdato, pf);
+        p_dec = p_oper;
 }                 
 ;
 
 lista_de_variables: ID  
 {
         printf("%d - lista_de_variables ---> ID\n", yylineno);
+        info->valor = $1;
+        info->indice++;
+        p_l_var = crear_hoja(info, pf);
 }
 
 | lista_de_variables COMA ID  
 {
         printf("%d - lista_de_variables ---> lista_de_variables COMA ID\n", yylineno);
+        info->valor = "CUERPO";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        info->valor = $3;
+        info->indice++;
+        crear_nodo(p_l_var, p_oper, crear_hoja(info, pf), pf);
+        p_l_var = p_oper;
 }
 ;
 
 tipodato: STRING
+{
+        info->valor = "STRING";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+
 |CHAR
-|INTEGER     
+{
+        info->valor = "CHAR";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+   
+|INTEGER   
+{
+        info->valor = "INTEGER";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
+       
 |FLOAT
+{
+        info->valor = "FLOAT";
+        info->indice++;
+        p_tdato = crear_hoja(info, pf);
+}
 ;
 
 programa: bloque
@@ -216,17 +262,60 @@ funcion:  ESCRIBIR factor_mod P_COMA
         p_func = p_oper;
 }
 
-|ESCANEAR ID P_COMA 
+|ESCRIBIR NEWLINE P_COMA
 {
-        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
-
-        info->valor = "READ";
+        info->valor = "WRITE";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = $2;
+        info->valor = "NEWLINE";
         info->indice++;
-        info->tipo = T_ID;
+        info->tipo = T_NEWLINE; 
+        crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
+        p_func = p_oper;
+}
+
+|ESCANEAR STRING ID P_COMA 
+{
+        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
+
+        info->valor = "READ STRING";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        info->valor = $3;
+        info->indice++;
+        info->tipo = T_STRING;
+        crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
+        p_func = p_oper;
+}
+
+|ESCANEAR INTEGER ID P_COMA 
+{
+        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
+
+        info->valor = "READ INTEGER";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        info->valor = $3;
+        info->indice++;
+        info->tipo = T_INTEGER;
+        crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
+        p_func = p_oper;
+}
+
+|ESCANEAR FLOAT ID P_COMA 
+{
+        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
+
+        info->valor = "READ FLOAT";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        info->valor = $3;
+        info->indice++;
+        info->tipo = T_FLOAT;
         crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
         p_func = p_oper;
 }
@@ -437,7 +526,7 @@ asignacion: ID ASIG expresion P_COMA
 
         info->valor = $1;
         info->indice++;
-        info->tipo = T_ID;
+        info->tipo = T_FLOAT;
         p_aux = crear_hoja(info, pf);
 
         desapilar(&pila_expr, &p_exp);
@@ -452,7 +541,7 @@ asignacion: ID ASIG expresion P_COMA
         printf("%d - asignacion ---> ID ASIG CTE_CADENA P_COMA \n", yylineno);
         info->valor = $1;
         info->indice++;
-        info->tipo = T_ID;
+        info->tipo = T_STRING;
         p_aux = crear_hoja(info, pf);
         
         info->valor = "ASIG";

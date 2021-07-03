@@ -12,7 +12,7 @@ char *obtenerValorString(const char *s)
 	inicio = resultado;
 	while (*s)
 	{
-		if (*s != '\"')
+		if (*s != '\"' && *s != '\\')
 		{
 			*resultado = *s;
 			resultado++;
@@ -119,4 +119,49 @@ char *obtenerLexemaFloat(const char *s)
 	}
 	*resultado = '\0';
 	return inicio;
+}
+
+char* estandarizarString(const char *s)
+{
+	char *resultado, *paux;
+	resultado = (char*) malloc(sizeof(char)* strlen(s) + 1);
+	if(resultado == NULL)
+	{
+		return NULL;
+	}
+	strcpy(resultado, s);
+	paux = resultado;
+	while(*paux != '\0')
+	{
+		if(!esCaracterValido(*paux))
+		{
+			*paux = '_';
+		} 
+		else if(esLetraMayus(*paux))
+		{
+			*paux = tolower(*paux);
+		}
+		paux++;
+	}
+	return resultado;
+}
+
+int esCaracterValido(const char c)
+{
+	return esNumero(c) || esLetraMin(c) || esLetraMayus(c) || c == '_';
+}	
+
+int esNumero(const char c)
+{
+	return c >= '0' && c <= '9';
+}
+
+int esLetraMin(const char c)
+{
+	return c >= 'a' && c <= 'z';
+}
+
+int esLetraMayus(const char c)
+{
+	return c >= 'A' && c <= 'Z';
 }
