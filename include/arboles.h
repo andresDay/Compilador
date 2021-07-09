@@ -38,6 +38,5 @@ t_nodoa* obtener_nodo_con_hojas_mas_izq(t_nodoa *,FILE*);
 void eliminar_hijos_hoja(t_nodoa* );
 int es_padre_con_hojas(const t_nodoa*);
 int es_hoja(const t_nodoa*);
-void set_tipo_ids(t_nodoa*, const char*);
 
 #endif // ARBOLES_H_INCLUDED

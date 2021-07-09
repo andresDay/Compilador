@@ -3,15 +3,14 @@
 |-------------------------------------------------------------------------------------------|
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
-|_escribo_un_salto               |string          |"escribo un salto"              |16      |
-|_escribo_un_test                |string          |"escribo un test"               |15      |
-|a                               |id              |                                |        |
-|b                               |id              |                                |        |
-|c                               |id              |                                |        |
-|d                               |id              |                                |        |
-|e                               |id              |                                |        |
-|f                               |id              |                                |        |
-|palabra                         |id              |                                |        |
-|var                             |id              |                                |        |
-|z                               |id              |                                |        |
+|_1                              |integer         |1                               |        |
+|a                               |integer         |                                |        |
+|b                               |integer         |                                |        |
+|c                               |integer         |                                |        |
+|d                               |integer         |                                |        |
+|e                               |integer         |                                |        |
+|f                               |integer         |                                |        |
+|palabra                         |string          |                                |        |
+|var                             |float           |                                |        |
+|z                               |integer         |                                |        |
 |___________________________________________________________________________________________|

@@ -4,13 +4,5 @@ DECVAR
     var: float;
 ENDDEC
 
--/a := 1;/-
--/b := 1;/-
--/c := 1;/-
--/d := 1;/-
--/e := 1;/-
--/f := 1;/-
-
-write "escribo un test";
-write newline;
-write "escribo un salto";
+a:= 1;
+write a;

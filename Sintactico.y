@@ -59,7 +59,7 @@ inicio_prima:  inicio {
 
         p_ini_pri = p_ini;
 
-        guardarAuxiliares(cont_auxiliares);
+        guardarAuxiliares(cont_auxiliares, &tablaSimbolos);
         generar_assembler("final.asm",p_ini_pri,&tablaSimbolos,indice-1);
 }
 ;
@@ -117,7 +117,7 @@ declaraciones: lista_de_variables DECLARACION tipodato P_COMA
 
         printf("\n----------------------\n");
         printf("%s: ", p_tdato->info.valor);
-        set_tipo_ids(p_l_var, p_tdato->info.valor);
+        set_tipo_ids(p_l_var, p_tdato->info.valor, &tablaSimbolos);
         printf("\n----------------------\n");
 
         crear_nodo(p_l_var, p_oper, p_tdato, pf);

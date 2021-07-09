@@ -173,19 +173,3 @@ void graficar_arbol_rec(t_arbol *pa, int n)
 	printf("%s\n", (*pa)->info.valor);
 	graficar_arbol_rec(&(*pa)->izq, n + 1);
 }
-
-void set_tipo_ids(t_nodoa *pa, const char *tipo)
-{
-	if (pa == NULL)
-	{
-		return;
-	}
-
-	set_tipo_ids(pa->izq, tipo);
-	set_tipo_ids(pa->der, tipo);
-	if (pa->izq == NULL && pa->der == NULL)
-	{
-		printf("%s, ", pa->info.valor);
-		pa->info.tipo = strdup(tipo);
-	}	
-}

@@ -6,8 +6,7 @@ include macros.asm
 .STACK 200h
 
 .DATA
-_escribo_un_salto                  	db	"escribo un salto"                 , '$', 16 dup (?)
-_escribo_un_test                   	db	"escribo un test"                  , '$', 15 dup (?)
+_1                                 	dd	1.00
 a                                  	dd	?
 b                                  	dd	?
 c                                  	dd	?
@@ -24,12 +23,10 @@ MOV EAX, @DATA
 MOV DS, EAX
 MOV ES, EAX
 
-displayString _escribo_un_test
-newline 1
+FLD _1
+FSTP a
 
-newline 1
-
-displayString _escribo_un_salto
+displayFloat a , 2
 newline 1
 
 _ET_SALIR:
