@@ -106,7 +106,7 @@ int cambiar_campo_valor(t_lista_ts *pl, const char *lexema, const char *valor)
 	return ERROR;
 }
 
-char* buscar_tipo(t_lista_ts *pl, const char *lexema)
+char* buscar_tipo(const t_lista_ts *pl, const char *lexema)
 {
 	while(*pl)
     {

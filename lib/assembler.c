@@ -13,7 +13,7 @@ void generar_assembler(const char *path_assembler, t_nodoa *p_arbol, const t_lis
 
 	generar_encabezado(pf);
 	generar_declaraciones(pf, p_ts);
-	generar_codigo(pf, p_arbol, indice);
+	generar_codigo(pf, p_arbol, indice, p_ts);
 	generar_final(pf);
 
 	fclose(pf);
@@ -59,7 +59,7 @@ void generar_declaraciones(FILE *pf, const t_lista_ts *pl)
 	}
 }
 
-void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont)
+void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont, const t_lista_ts* ts)
 {
 	fprintf(pf, "\n.CODE\n");
 	fprintf(pf, "START:\n");
@@ -71,7 +71,7 @@ void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont)
 	while (nodo_objetivo != NULL)
 	{
 		nodo_objetivo = obtener_nodo_con_hojas_mas_izq(nodo_aux, pf);
-		generar_sentencia(nodo_objetivo, pf, cont);
+		generar_sentencia(nodo_objetivo, pf, cont, ts);
 		if (nodo_objetivo != NULL)
 		{
 			if (strcmp(nodo_objetivo->info.valor, ">=") == 0 || strcmp(nodo_objetivo->info.valor, "==") == 0)
@@ -83,8 +83,8 @@ void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont)
 	}
 }
 
-void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
-{	
+void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts* ts)
+{
 	char *string_guion_bajo_est, *aux;
 	char *etiqueta;
 	char cadena_aux[100], *num, *aux2, base[5] = "@aux";	
@@ -97,7 +97,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 
 		if (esCteOrString(p_nodo->der->info.valor))
 		{
-			// printf("\n\n------------------------------\n\nEs constante string\n\n-----------------------------\n\n");
+			printf("\n\n------------------------------\n\nEs constante string\n\n-----------------------------\n\n");
 			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
 			{
 				string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
@@ -114,18 +114,19 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 			}
 		}
 		else
-		{			
-			// printf("\n\n------------------------------\n\nNo es constante string\n\n-----------------------------\n\n");
-			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
+		{
+			char* tipo = buscar_tipo(ts, p_nodo->der->info.valor);
+			printf("\n\n------------------------------\n\nNo es constante string\nTipo: %s\n\n-----------------------------\n\n", p_nodo->der->info.tipo);
+			if (strcmp(tipo, T_STRING) == 0)
 			{
 				fprintf(pf, "displayString %s\nnewline 1\n", p_nodo->der->info.valor);
 			}
-			else if (strcmp(p_nodo->der->info.tipo, T_INTEGER) == 0)
+			else if (strcmp(tipo, T_INTEGER) == 0)
 			{
 				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
 			}
-			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
-			{							
+			else if (strcmp(tipo, T_FLOAT) == 0)
+			{
 				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_NEWLINE) == 0)

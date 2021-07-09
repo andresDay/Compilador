@@ -71,7 +71,7 @@ char *agregarGuionBajo(const char *s)
 	return resultado;
 }
 
-void guardarAuxiliares(int cont_auxiliares)
+void guardarAuxiliares(int cont_auxiliares, t_lista_ts* ts)
 {
 	int _cont = 1;
 	t_dato_lista_ts dato;
@@ -83,7 +83,7 @@ void guardarAuxiliares(int cont_auxiliares)
 		dato.valor = NULL;
 		dato.longitud = 0;
 
-		insertar_ordenado_ts(&tablaSimbolos, &dato, comparacion_ts);
+		insertar_ordenado_ts(ts, &dato, comparacion_ts);
 		_cont++;
 	}
 }
@@ -164,4 +164,21 @@ int esLetraMin(const char c)
 int esLetraMayus(const char c)
 {
 	return c >= 'A' && c <= 'Z';
+}
+
+void set_tipo_ids(t_nodoa *pa, const char *tipo, t_lista_ts* ts)
+{
+	if (pa == NULL)
+	{
+		return;
+	}
+
+	set_tipo_ids(pa->izq, tipo, ts);
+	set_tipo_ids(pa->der, tipo, ts);
+	if (pa->izq == NULL && pa->der == NULL)
+	{
+		printf("%s, ", pa->info.valor);
+		pa->info.tipo = strdup(tipo);
+		cambiar_campo_tipo(ts, pa->info.valor, tipo);
+	}	
 }
