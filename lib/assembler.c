@@ -84,10 +84,10 @@ void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont)
 }
 
 void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
-{
+{	
 	char *string_guion_bajo_est, *aux;
 	char *etiqueta;
-	char cadena_aux[100], *num, *aux2, base[5] = "@aux";
+	char cadena_aux[100], *num, *aux2, base[5] = "@aux";	
 	if (p_nodo == NULL)
 	{
 		return;
@@ -114,7 +114,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 			}
 		}
 		else
-		{
+		{			
 			// printf("\n\n------------------------------\n\nNo es constante string\n\n-----------------------------\n\n");
 			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
 			{
@@ -125,7 +125,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
-			{
+			{							
 				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_NEWLINE) == 0)
@@ -177,13 +177,15 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		else
 		{
 			aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+			printf("Valor del auxiliar: %s\n",aux);
 			fprintf(pf, "FLD %s\n", aux);
 		}
 
 		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
+
 	}
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
-	{ //ES UNA SUMA
+	{ //ES UNA SUMA	
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
@@ -191,12 +193,14 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		fprintf(pf, "FADD\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
-		itoa(cont_auxiliares, num, 10);
-		aux2 = strdup(base);
-		strcat(aux2, num);
-		p_nodo->info.valor = aux2;
+		char texto[100]="@aux";
+		char variable[10];
+		itoa(cont_auxiliares, variable, 10);
+		strcat(texto,variable);
+		p_nodo->info.valor = texto;
 		p_nodo->info.tipo = T_FLOAT;
-		cont_auxiliares++;
+		cont_auxiliares++;			
+
 	}
 	else if (strcmp(p_nodo->info.valor, "RESTA") == 0)
 	{ //ES UNA RESTA
@@ -207,11 +211,12 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		fprintf(pf, "FSUB\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
-		itoa(cont_auxiliares, num, 10);
-		aux2 = strdup(base);
-		strcat(aux2, num);
-		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = T_FLOAT;
+		char texto[100]="@aux";
+		char variable[10] ;
+		itoa(cont_auxiliares, variable, 10);
+		strcat(texto,variable);		
+		p_nodo->info.valor = texto;
+		p_nodo->info.tipo = T_FLOAT;		
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MULT") == 0)
@@ -221,13 +226,14 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FMUL\n");
-		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);		
 
-		itoa(cont_auxiliares, num, 10);
-		aux2 = strdup(base);
-		strcat(aux2, num);
-		p_nodo->info.valor = aux2;
-		p_nodo->info.tipo = T_FLOAT;
+		char texto[100]="@aux";
+		char variable[10] ;
+		itoa(cont_auxiliares, variable, 10);
+		strcat(texto,variable);
+		p_nodo->info.valor = texto;
+		p_nodo->info.tipo = T_FLOAT;		
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
@@ -239,11 +245,12 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont)
 		fprintf(pf, "FDIV\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
 
-		itoa(cont_auxiliares, num, 10);
-		aux2 = strdup(base);
-		strcat(aux2, num);
-		p_nodo->info.valor = aux2;
+		char texto[100]="@aux";
+		char variable[10] ;
+		itoa(cont_auxiliares, variable, 10);
+		strcat(texto,variable);		
 		p_nodo->info.tipo = T_FLOAT;
+		p_nodo->info.valor = texto;
 		cont_auxiliares++;
 	}
 }

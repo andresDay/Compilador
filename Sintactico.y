@@ -14,7 +14,7 @@ t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
 t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
-t_nodoa* p_auxM, *p_aux3;
+t_nodoa* p_auxM, *p_aux1 , *p_aux2, *p_aux3 ,*p_aux4;
 t_info *info;
 FILE *pf;
 t_pila pila_cond, pila_term, pila_expr, pila_blo,pila_list_exp, pila_factor;
@@ -768,13 +768,13 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 }
          
 ;
-ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
+ciclo_especial: WHILE ID { p_aux = $2;} IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {  
         info->valor = "WHILE_ESP";
         info->indice++;
         p_ce = crear_hoja(info,pf);
 
-        info->valor = "IN";
+        info->valor = "COND";
         info->indice++;
         p_oper = crear_hoja(info,pf);
 
@@ -785,7 +785,7 @@ ciclo_especial: WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE
 
         desapilar(&pila_list_exp,&p_l_exp);
 
-        crear_nodo(p_id, p_oper, p_l_exp, pf);
+        crear_nodo(p_l_exp, p_oper, NULL, pf);
 
         desapilar(&pila_blo, &p_blo);
         crear_nodo(p_oper, p_ce, p_blo, pf);
@@ -798,7 +798,19 @@ lista_de_expresiones: expresion
         printf("%d - lista_de_expresiones ---> expresion\n", yylineno);
         
         desapilar(&pila_expr, &p_exp);
-        apilar(&pila_list_exp,&p_exp);
+        // apilar(&pila_list_exp,&p_exp);
+
+        info->valor=p_aux;
+        info->indice++;        
+        p_aux2=crear_hoja(info,pf);
+
+        info->valor="==";
+        info->indice++;
+        p_l_exp=crear_hoja(info,pf);
+
+        crear_nodo(p_aux2, p_l_exp ,p_exp,pf);
+
+        apilar(&pila_list_exp, &p_l_exp );
  
 }
 
@@ -808,14 +820,32 @@ lista_de_expresiones: expresion
 
         desapilar(&pila_expr, &p_exp);
 
+        info->valor=p_aux;
+        info->indice++;        
+        p_aux2=crear_hoja(info,pf);
+
+        info->valor="==";
+        info->indice++;
+        p_aux3=crear_hoja(info,pf);
+
+        crear_nodo(p_aux2, p_aux3 ,p_exp,pf);
+
+        info->valor=";";
+        info->indice++;
+        p_aux2=crear_hoja(info,pf);
+
         desapilar(&pila_list_exp,&p_l_exp);
 
-        info->valor = "Lista_exp";
-        info->indice++;
-        p_oper = crear_hoja(info,pf);
+        crear_nodo(p_l_exp ,p_aux2 ,p_aux3,pf );
 
-        crear_nodo(p_l_exp, p_oper, p_exp, pf);
-        apilar(&pila_list_exp, &p_oper);     
+        apilar(&pila_list_exp , &p_aux2);
+
+        // info->valor = "Lista_exp";
+        // info->indice++;
+        // p_oper = crear_hoja(info,pf);
+
+        // crear_nodo(p_l_exp, p_oper, p_exp, pf);
+        // apilar(&pila_list_exp, &p_oper);     
 }
 ;
 
