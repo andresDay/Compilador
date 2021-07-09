@@ -6,15 +6,11 @@ include macros.asm
 .STACK 200h
 
 .DATA
-_1                                 	dd	1.00
+_10                                	dd	10.00
+_5                                 	dd	5.00
+_es_false                          	db	"es false"                         , '$', 8 dup (?)
+_es_true                           	db	"es true"                          , '$', 7 dup (?)
 a                                  	dd	?
-b                                  	dd	?
-c                                  	dd	?
-d                                  	dd	?
-e                                  	dd	?
-f                                  	dd	?
-palabra                            	dd	?
-var                                	dd	?
 z                                  	dd	?
 
 .CODE
@@ -23,11 +19,29 @@ MOV EAX, @DATA
 MOV DS, EAX
 MOV ES, EAX
 
-FLD _1
+FLD _5
 FSTP a
 
-displayFloat a , 2
+FLD a
+FLD _10
+FXCH
+FCOM
+FSTSW ax
+SAHF
+FFREE
+JNA _ENDIF_1
+
+displayString _es_true
 newline 1
+
+BI _ENDIF_1
+
+_ELSE_1
+
+displayString _es_false
+newline 1
+
+_ENDIF_1
 
 _ET_SALIR:
 MOV EAX, 4C00H

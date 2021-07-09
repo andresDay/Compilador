@@ -21,5 +21,6 @@ char *obtenerValorOperando(const char *);
 int esCteOrString(const char *);
 
 int cont_auxiliares;
+int cont_if;
 
 #endif //ASSEMBLER_H_INCLUDED

@@ -1,8 +1,14 @@
 DECVAR
-    z, a, b, c, d, e, f: integer;
-    palabra: string;
-    var: float;
+    z, a: integer;
 ENDDEC
 
-a:= 1;
-write a;
+a:=5;
+
+if (a > 10)
+START
+    write "es true";
+end
+ELSE
+START
+    write "es false";
+end

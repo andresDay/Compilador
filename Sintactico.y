@@ -8,13 +8,15 @@ char *yyltext;
 char *yytext;
 extern int yylineno;
 int cont_auxiliares;
+int cont_if;
+char etiqueta[200];
 
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
 t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
-t_nodoa* p_auxM, *p_aux1 , *p_aux2, *p_aux3 ,*p_aux4;
+t_nodoa* p_auxM, *p_aux1 , *p_aux2, *p_aux3 ,*p_aux4, *p_then, *p_else;
 t_info *info;
 FILE *pf;
 t_pila pila_cond, pila_term, pila_expr, pila_blo,pila_list_exp, pila_factor;
@@ -325,7 +327,8 @@ funcion:  ESCRIBIR factor_mod P_COMA
         p_func = p_oper;
 }
 ;
-seleccion: IF P_A condicion_mul P_C START bloque END 
+seleccion: 
+IF P_A condicion_mul P_C START bloque END 
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END\n", yylineno);
 
@@ -344,11 +347,21 @@ seleccion: IF P_A condicion_mul P_C START bloque END
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);
         
+        info->valor = "THEN";
+        info->indice++;
+        info->etiqueta_escrita = cont_if;
+        info->etiqueta = strdup(etiqueta);
+        p_then = crear_hoja(info, pf);
+
+        info->valor = "ELSE";
+        info->indice++;
+        p_else = crear_hoja(info, pf);
+        
         info->valor = "CUERPO";
         info->indice++;
         p_cuerpo = crear_hoja(info, pf);
         
-        info->valor = "IF";
+        info->valor = "IF_ELSE";
         info->indice++;
         p_aux = crear_hoja(info, pf);
 
@@ -359,7 +372,9 @@ seleccion: IF P_A condicion_mul P_C START bloque END
         desapilar(&pila_blo, &dato);
         desapilar(&pila_cond, &p_cond_mul);
 
-        crear_nodo(p_aux2, p_cuerpo, dato , pf);
+        crear_nodo(NULL, p_then, dato, pf);
+        crear_nodo(NULL, p_else, p_aux2, pf);
+        crear_nodo(p_then, p_cuerpo, p_else , pf);
         crear_nodo(p_cond_mul, p_aux, p_cuerpo, pf);
         p_sel = p_aux;
 }
@@ -432,9 +447,13 @@ condicion: expresion
 MAYOR expresion 
 {
         printf("%d - condicion ---> expresion MAYOR expresion \n", yylineno);
+        // etiqueta = "ELSE";
+        cont_if++;
+        sprintf(etiqueta, "_ENDIF_%d", cont_if);
 
         info->valor = "MAYOR";
         info->indice++;
+        info->etiqueta = strdup(etiqueta);
         p_oper = crear_hoja(info, pf);
 
         crear_nodo(p_aux, p_oper, p_exp, pf);
@@ -673,6 +692,7 @@ factor_mod: ID
         info->valor = $1;
         info->indice++;
         info->tipo = T_ID;
+        info->etiqueta = strdup(etiqueta);
         p_f_mod = crear_hoja(info, pf); 
 }
 
@@ -683,6 +703,7 @@ factor_mod: ID
         info->valor = (char*)malloc(sizeof(char) * 20);
         info->indice++;
         info->tipo = T_INTEGER;
+        info->etiqueta = strdup(etiqueta);
         sprintf(info->valor,"%d", $1);
         
         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
@@ -870,6 +891,7 @@ int main(int argc,char *argv[])
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         cont_auxiliares = 0;
+        cont_if = 0;
         info->indice=-1;
 
         fprintf(pf,"digraph G {\ngraph [ordering=\"out\"];\n");
