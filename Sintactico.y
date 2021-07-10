@@ -9,9 +9,12 @@ char *yytext;
 extern int yylineno;
 int cont_auxiliares;
 int cont_if;
-int cont_then;
-char etiqueta[200];
+int cont_while;
+char etiquetaElse[200];
 char etiquetaThen[200];
+char etiquetaEnd[200];
+char etiquetaStartWhile[200];
+char etiquetaEndWhile[200];
 
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
@@ -336,6 +339,7 @@ IF P_A condicion_mul P_C START bloque END
 
         info->valor = "IF";
         info->indice++;
+        info->etiquetaEnd = strdup(etiquetaElse);
         p_aux = crear_hoja(info, pf);
 
         desapilar(&pila_cond, &dato);
@@ -347,21 +351,18 @@ IF P_A condicion_mul P_C START bloque END
           
 |IF P_A condicion_mul P_C START bloque END ELSE START bloque END 
 {
-        printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);
-        cont_then++;        
+        printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);              
         info->valor = "THEN";
         info->indice++;        
-        info->etiqueta = strdup(etiqueta);        
-        sprintf(etiquetaThen, "_FIN_%d", cont_then);
-        info->etiquetaThen = strdup(etiquetaThen);
+        info->etiquetaEnd = strdup(etiquetaEnd);
+        info->etiquetaElse =strdup(etiquetaElse);
+        // sprintf(etiquetaThen, "_FIN_%d", cont_then);
+        // info->etiquetaThen = strdup(etiquetaThen);
         p_then = crear_hoja(info, pf);
 
         info->valor = "ELSE";
-        info->indice++;
-        info->etiquetaThen =strdup(etiquetaThen);
-        p_else = crear_hoja(info, pf);
-        
-        
+        info->indice++;        
+        p_else = crear_hoja(info, pf);    
 
         info->valor = "CUERPO";
         info->indice++;
@@ -388,15 +389,19 @@ IF P_A condicion_mul P_C START bloque END
 
 condicion_mul:condicion 
 {
+        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        p_cond->info.etiquetaElse=strdup(etiquetaElse);
         p_cond->info.cond="AND";
         p_aux = p_cond;        
         dato = p_aux;
-        apilar(&pila_cond,&dato);
-        
+        apilar(&pila_cond,&dato);     
 }
 AND condicion 
 {
         printf("%d - condicion_mul ---> condicion AND condicion \n", yylineno);
+        sprintf(etiquetaEnd, "_End_%d", cont_if);
+        p_cond->info.cond="AND";     
+        p_cond->info.etiquetaElse=strdup(etiquetaElse);
 
         info->valor = "AND";
         info->indice++;
@@ -407,28 +412,53 @@ AND condicion
         p_cond_mul = p_oper;
         dato = p_cond_mul;
         apilar(&pila_cond,&dato);
+
+        cont_if++;
 }
 
 | condicion 
-{
-        p_aux = p_cond;
+{  
+        sprintf(etiquetaThen, "_then_%d", cont_if); 
+        p_cond->info.etiquetaThen=strdup(etiquetaThen);
+        p_cond->info.cond="OR";
+        p_aux = p_cond;        
+        dato = p_aux;
+        apilar(&pila_cond,&dato);        
 }
 OR condicion 
 {
         printf("%d - condicion_mul ---> condicion OR condicion \n", yylineno);
+        
+        p_cond->info.cond="OR";     
+        p_cond->info.etiquetaThen=strdup(etiquetaThen);
 
+        sprintf(etiquetaElse, "_else_%d", cont_if);    
+        info->etiquetaElse=strdup(etiquetaElse);
+        info->etiquetaThen=strdup(etiquetaThen);
         info->valor = "OR";
+        sprintf(etiquetaEnd, "_End_%d", cont_if);
+        info->etiquetaEnd = strdup(etiquetaEnd);
         info->indice++;
         p_oper = crear_hoja(info, pf);
-
-        crear_nodo(p_aux, p_oper, p_cond, pf);
+        desapilar(&pila_cond,&dato);
+        crear_nodo(dato, p_oper, p_cond, pf);
         p_cond_mul = p_oper;
         apilar(&pila_cond, &p_cond_mul);
+
+        cont_if++;
 }
 
 | NOT condicion 
 {
         printf("%d - condicion_mul ---> NOT condicion \n", yylineno);
+
+        p_cond->info.cond="NOT";     
+        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        p_cond->info.etiquetaElse=strdup(etiquetaElse);
+        sprintf(etiquetaEnd, "_End_%d", cont_if);
+        p_cond->info.etiquetaEnd=strdup(etiquetaEnd);
+        // p_cond_mul = p_cond;
+        // apilar(&pila_cond, &p_cond_mul);
 
         info->valor = "NOT";
         info->indice++;
@@ -437,13 +467,21 @@ OR condicion
         crear_nodo(NULL, p_oper, p_cond, pf);
         p_cond_mul = p_oper;
         apilar(&pila_cond, &p_cond_mul);
+
+        cont_if++;
 }
 
 | condicion 
 {
         printf("%d - condicion_mul ---> condicion \n", yylineno);
+        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        p_cond->info.etiquetaElse=strdup(etiquetaElse);
+        sprintf(etiquetaEnd, "_End_%d", cont_if);
+        p_cond->info.etiquetaEnd=strdup(etiquetaEnd);
         p_cond_mul = p_cond;
         apilar(&pila_cond, &p_cond_mul);
+
+        cont_if++;
 }
 ;
 
@@ -454,13 +492,8 @@ condicion: expresion
 MAYOR expresion 
 {
         printf("%d - condicion ---> expresion MAYOR expresion \n", yylineno);
-        // etiqueta = "ELSE";
-        cont_if++;
-        sprintf(etiqueta, "_NoCumple_%d", cont_if);
-
         info->valor = "MAYOR";
         info->indice++;
-        info->etiqueta = strdup(etiqueta);
         p_oper = crear_hoja(info, pf);
         
         crear_nodo(p_aux, p_oper, p_exp, pf);
@@ -699,7 +732,6 @@ factor_mod: ID
         info->valor = $1;
         info->indice++;
         info->tipo = T_ID;
-        info->etiqueta = strdup(etiqueta);
         p_f_mod = crear_hoja(info, pf); 
 }
 
@@ -710,7 +742,6 @@ factor_mod: ID
         info->valor = (char*)malloc(sizeof(char) * 20);
         info->indice++;
         info->tipo = T_INTEGER;
-        info->etiqueta = strdup(etiqueta);
         sprintf(info->valor,"%d", $1);
         
         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
@@ -783,20 +814,39 @@ factor_mod: ID
 
 ciclo: WHILE P_A  condicion_mul P_C START bloque END 
 {
+        
+        sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
+
+        info->etiquetaEnd=strdup(etiquetaElse);
+        info->etiquetaStart=strdup(etiquetaStartWhile);
         info->valor = "WHILE";
         info->indice++;       
         p_aux = crear_hoja(info,pf);
 
         desapilar(&pila_blo, &dato);
         desapilar(&pila_cond, &p_cond_mul);
+       if ( strcmp(p_cond_mul->info.valor, "AND") == 0 ||  strcmp(p_cond_mul->info.valor, "OR") == 0  || strcmp(p_cond_mul->info.valor, "NOT") == 0  ){           
+                p_cond_mul->izq->info.esWhile = 1;     
+                sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
+                p_cond_mul->izq->info.etiquetaStart=strdup(etiquetaStartWhile);   
+        }               
+        else{       
+                sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
+                p_cond_mul->info.etiquetaStart=strdup(etiquetaStartWhile);
+                p_cond_mul->info.esWhile = 1;  
+        }
+	
+       
 
         crear_nodo(p_cond_mul,p_aux,dato,pf);
         p_c = p_aux;
         printf("%d - ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n", yylineno);
+
+        cont_while++;
 }
          
 ;
-ciclo_especial: WHILE ID { p_aux = $2;} IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
+ciclo_especial: WHILE ID { auxID = $2;} IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {  
         info->valor = "WHILE_ESP";
         info->indice++;
@@ -828,7 +878,7 @@ lista_de_expresiones: expresion
         desapilar(&pila_expr, &p_exp);
         // apilar(&pila_list_exp,&p_exp);
 
-        info->valor=p_aux;
+        info->valor=auxID;
         info->indice++;        
         p_aux2=crear_hoja(info,pf);
 
@@ -848,7 +898,7 @@ lista_de_expresiones: expresion
 
         desapilar(&pila_expr, &p_exp);
 
-        info->valor=p_aux;
+        info->valor=auxID;
         info->indice++;        
         p_aux2=crear_hoja(info,pf);
 
@@ -899,7 +949,7 @@ int main(int argc,char *argv[])
         indice=0;
         cont_auxiliares = 0;
         cont_if = 0;
-        cont_then = 0;
+        cont_while = 0;
         
         info->indice=-1;
 

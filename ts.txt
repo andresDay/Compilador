@@ -4,14 +4,9 @@
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
 |@aux1                           |id              |                                |        |
-|@aux2                           |id              |                                |        |
-|Z                               |id              |                                |        |
 |_1                              |integer         |1                               |        |
 |_10                             |integer         |10                              |        |
-|_20                             |integer         |20                              |        |
-|_50                             |integer         |50                              |        |
-|_es_false                       |string          |"es false"                      |8       |
-|_es_sin_else                    |string          |"es sin else"                   |11      |
+|_estoy_dentro_del_bucle         |string          |"ESTOY DENTRO DEL BUCLE"        |22      |
 |a                               |integer         |                                |        |
 |z                               |integer         |                                |        |
 |___________________________________________________________________________________________|

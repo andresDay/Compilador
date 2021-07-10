@@ -2,19 +2,11 @@ DECVAR
     z, a: integer;
 ENDDEC
 
-a:=20;
+a:=1;
+z:= 1;
+WHILE (a < 10 AND z < 10 ) 
+START 
+a:= a + 1;
+write "ESTOY DENTRO DEL BUCLE";
+END 
 
-if (a > 50 AND Z < 10)
-START
-    a:=z+1;
-    z:=a+1;
-end
-ELSE
-START
-    write "es false";
-end
-
-if (a > 10)
-START
-    write "es sin else";
-end
