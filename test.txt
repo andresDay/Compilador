@@ -2,13 +2,19 @@ DECVAR
     z, a: integer;
 ENDDEC
 
-a:=5;
+a:=20;
 
-if (a > 10)
+if (a > 50 AND Z < 10)
 START
-    write "es true";
+    a:=z+1;
+    z:=a+1;
 end
 ELSE
 START
     write "es false";
+end
+
+if (a > 10)
+START
+    write "es sin else";
 end

@@ -9,7 +9,9 @@ char *yytext;
 extern int yylineno;
 int cont_auxiliares;
 int cont_if;
+int cont_then;
 char etiqueta[200];
+char etiquetaThen[200];
 
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
@@ -346,17 +348,21 @@ IF P_A condicion_mul P_C START bloque END
 |IF P_A condicion_mul P_C START bloque END ELSE START bloque END 
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);
-        
+        cont_then++;        
         info->valor = "THEN";
-        info->indice++;
-        info->etiqueta_escrita = cont_if;
-        info->etiqueta = strdup(etiqueta);
+        info->indice++;        
+        info->etiqueta = strdup(etiqueta);        
+        sprintf(etiquetaThen, "_FIN_%d", cont_then);
+        info->etiquetaThen = strdup(etiquetaThen);
         p_then = crear_hoja(info, pf);
 
         info->valor = "ELSE";
         info->indice++;
+        info->etiquetaThen =strdup(etiquetaThen);
         p_else = crear_hoja(info, pf);
         
+        
+
         info->valor = "CUERPO";
         info->indice++;
         p_cuerpo = crear_hoja(info, pf);
@@ -380,9 +386,10 @@ IF P_A condicion_mul P_C START bloque END
 }
 ;
 
-condicion_mul: condicion 
+condicion_mul:condicion 
 {
-        p_aux = p_cond;
+        p_cond->info.cond="AND";
+        p_aux = p_cond;        
         dato = p_aux;
         apilar(&pila_cond,&dato);
         
@@ -449,13 +456,13 @@ MAYOR expresion
         printf("%d - condicion ---> expresion MAYOR expresion \n", yylineno);
         // etiqueta = "ELSE";
         cont_if++;
-        sprintf(etiqueta, "_ENDIF_%d", cont_if);
+        sprintf(etiqueta, "_NoCumple_%d", cont_if);
 
         info->valor = "MAYOR";
         info->indice++;
         info->etiqueta = strdup(etiqueta);
         p_oper = crear_hoja(info, pf);
-
+        
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
 }
@@ -892,6 +899,8 @@ int main(int argc,char *argv[])
         indice=0;
         cont_auxiliares = 0;
         cont_if = 0;
+        cont_then = 0;
+        
         info->indice=-1;
 
         fprintf(pf,"digraph G {\ngraph [ordering=\"out\"];\n");

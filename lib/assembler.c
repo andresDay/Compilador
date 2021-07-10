@@ -249,26 +249,26 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		p_nodo->info.tipo = T_FLOAT;
 		cont_auxiliares++;
 	}
-	else if (strcmp(p_nodo->info.valor, "IF") == 0)
-	{
-		//ES UNA SELECCIÓN
-		
-		fprintf(pf, "%s\n", p_nodo->izq->info.etiqueta);
-	}
-	else if (strcmp(p_nodo->info.valor, "IF_ELSE") == 0)
-	{
-		//ES UNA SELECCIÓN CON ELSE
-		fprintf(pf, "%s\n", p_nodo->izq->info.etiqueta);
-	}
+
 	else if (strcmp(p_nodo->info.valor, "THEN") == 0)
 	{
 		//ES UN BLOQUE THEN
-		fprintf(pf, "BI %s\n\n", p_nodo->info.etiqueta);
-		fprintf(pf, "_ELSE_%d\n\n", p_nodo->info.etiqueta_escrita);
+		fprintf(pf, "JMP %s\n\n", p_nodo->info.etiquetaThen);
+		fprintf(pf, "%s:\n\n", p_nodo->info.etiqueta);		
+	}
+	else if (strcmp(p_nodo->info.valor, "IF") == 0)
+	{
+		//ES UNA SELECCIÓN		
+		fprintf(pf, "%s:\n", p_nodo->izq->info.etiqueta);
+	}
+	else if (strcmp(p_nodo->info.valor, "IF_ELSE") == 0)
+	{
+		//ES UNA SELECCIÓN CON ELSE		
+		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaThen);
 	}
 	else if (strcmp(p_nodo->info.valor, "MAYOR") == 0)
-	{
-
+	{	
+			
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
@@ -278,7 +278,11 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		fprintf(pf, "FSTSW ax\n");
 		fprintf(pf, "SAHF\n");
 		fprintf(pf, "FFREE\n");
+		if(strcmp(p_nodo->info.cond, "AND") == 0){
 		fprintf(pf, "JNA %s\n\n", p_nodo->info.etiqueta);
+		}else{			
+			fprintf(pf, "JA %s\n\n", p_nodo->info.etiqueta);
+		}
 	}
 }
 

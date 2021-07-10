@@ -10,6 +10,8 @@ typedef struct
 	char* tipo;//PARA SABER SI ES UNA CTE O UNA STRING
 	int etiqueta_escrita;
 	char* etiqueta;
+	char * etiquetaThen;
+	char * cond;
 }t_info;
 
 typedef struct s_nodoa
