@@ -157,18 +157,30 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		// aux=transformar_a_etiqueta(etiqueta);
 		// fprintf(pf,"JNB %s\n",aux);
 	}
-	else if (strcmp(p_nodo->info.valor, "==") == 0)
+	else if (strcmp(p_nodo->info.valor, "IGUAL") == 0)
 	{	//ES LA COMPARACION CON EL PIVOTE
-		// fprintf(pf,"FLD %s\n",p_nodo->izq->info.valor);
-		// aux=(char*)agregar_guion_bajo(p_nodo->der->info.valor);
-		// fprintf(pf,"FLD %s\n",aux);
-		// fprintf(pf,"FXCH\nFCOM\nFSTSW\tAX\nSAHF\nFFREE\n");
-		// sprintf(cadena_aux,"%d",cont);
-		// etiqueta=(char*)malloc(sizeof(cadena_aux)+sizeof("CUERPO"));
-		// strcpy(etiqueta,"CUERPO");
-		// strcat(etiqueta,cadena_aux);
-		// aux=transformar_a_etiqueta(etiqueta);
-		// fprintf(pf,"JE %s\n",aux);
+		if (p_nodo->info.esWhile == 1){
+			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
+			p_nodo->info.esWhile =0;
+		}
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		fprintf(pf, "FXCH\n");
+		fprintf(pf, "FCOM\n");
+		fprintf(pf, "FSTSW ax\n");
+		fprintf(pf, "SAHF\n");
+		fprintf(pf, "FFREE\n");
+		//Si no hay cond entonces es condicion simple
+		if (!p_nodo->info.cond)
+			fprintf(pf, "JNE %s\n\n", p_nodo->info.etiquetaElse);
+		else if (strcmp(p_nodo->info.cond, "AND") == 0)
+			fprintf(pf, "JNE %s\n\n", p_nodo->info.etiquetaElse);
+		else if (strcmp(p_nodo->info.cond, "OR") == 0)
+			fprintf(pf, "JE %s\n\n", p_nodo->info.etiquetaThen);
+		else if (strcmp(p_nodo->info.cond, "NOT") == 0)
+			fprintf(pf, "JE %s\n\n", p_nodo->info.etiquetaElse);
 	}
 	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
 	{ //ES UNA ASIGNACION
@@ -304,7 +316,6 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	else if (strcmp(p_nodo->info.valor, "MENOR") == 0)
 	{
 		if (p_nodo->info.esWhile == 1){
-			printf("QUE PASA?");
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}

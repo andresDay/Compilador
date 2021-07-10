@@ -6,10 +6,10 @@ include macros.asm
 .STACK 200h
 
 .DATA
-@aux1                              	dd	?
 _1                                 	dd	1.00
-_10                                	dd	10.00
-_estoy_dentro_del_bucle            	db	"ESTOY DENTRO DEL BUCLE"           , '$', 22 dup (?)
+_21                                	dd	21.00
+_no_soy_mayor                      	db	"NO SOY MAYOR"                     , '$', 12 dup (?)
+_soy_mayor                         	db	"SOY MAYOR"                        , '$', 9 dup (?)
 a                                  	dd	?
 z                                  	dd	?
 
@@ -25,10 +25,8 @@ FSTP a
 FLD _1
 FSTP z
 
-_StartWhile_0:
-
 FLD a
-FLD _10
+FLD a
 FXCH
 FCOM
 FSTSW ax
@@ -36,29 +34,21 @@ SAHF
 FFREE
 JNB _else_0
 
-FLD z
-FLD _10
-FXCH
-FCOM
-FSTSW ax
-SAHF
-FFREE
-JNB _else_0
-
-FLD a
-FLD _1
-FADD
-FSTP @aux1
-
-FLD @aux1
-FSTP a
-
-displayString _estoy_dentro_del_bucle
+displayString _soy_mayor
 newline 1
 
-JMP _StartWhile_0
+JMP _End_0
 
 _else_0:
+
+a:
+displayString _no_soy_mayor
+newline 1
+
+_End_0:
+
+FLD _21
+FSTP a
 
 
 _ET_SALIR:

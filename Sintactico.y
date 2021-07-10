@@ -834,9 +834,7 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
                 sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
                 p_cond_mul->info.etiquetaStart=strdup(etiquetaStartWhile);
                 p_cond_mul->info.esWhile = 1;  
-        }
-	
-       
+        }       
 
         crear_nodo(p_cond_mul,p_aux,dato,pf);
         p_c = p_aux;

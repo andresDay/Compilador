@@ -4,9 +4,14 @@ ENDDEC
 
 a:=1;
 z:= 1;
-WHILE (a < 10 AND z < 10 ) 
-START 
-a:= a + 1;
-write "ESTOY DENTRO DEL BUCLE";
-END 
 
+if( a < a)
+START
+WRITE "SOY MAYOR";
+END
+ELSE
+START
+WRITE "NO SOY MAYOR";
+END
+
+a:=21;
