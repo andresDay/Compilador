@@ -74,12 +74,6 @@ void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont, const t_lista_ts *ts)
 		nodo_objetivo = obtener_nodo_con_hojas_mas_izq(nodo_aux, pf);
 		generar_sentencia(nodo_objetivo, pf, cont, ts);
 		if (nodo_objetivo != NULL)
-			// {
-			// 	if (strcmp(nodo_objetivo->info.valor, ">=") == 0 || strcmp(nodo_objetivo->info.valor, "==") == 0)
-			// 	{
-			// 		cont--;
-			// 	}
-			// }
 			eliminar_hijos_hoja(nodo_objetivo);
 	}
 }
