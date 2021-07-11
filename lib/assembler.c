@@ -390,25 +390,24 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MOD") == 0)
-	{ //ES UNA DIVISION
-		// aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
-		// fprintf(pf, "FLD %s\n", aux);
-		// fflush(pf);
-		// aux2 = (char *)obtenerValorOperando(p_nodo->der->info.valor);
-		// fprintf(pf, "FLD %s\n", aux);
-		// fflush(pf);
-		//         // MOV     R1,#12 MOD 7   ; R1 = 5
-		// fprintf(pf, "FDIV\n");
-		// fflush(pf);
-		// fprintf(pf, "MOV %s%d,  \n\n", "@aux", cont_auxiliares);
-		// fflush(pf);
+	{ //ES UN MOD
+		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		fflush(pf);
+		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		fprintf(pf, "FLD %s\n", aux);
+		fflush(pf);
+		fprintf(pf, "FPREM\n");
+		fflush(pf);
+		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
+		fflush(pf);
 
-		// itoa(cont_auxiliares, num, 10);
-		// aux2 = strdup(base);
-		// strcat(aux2, num);
-		// p_nodo->info.valor = aux2;
-		// p_nodo->info.tipo = T_FLOAT;
-		// cont_auxiliares++;
+		itoa(cont_auxiliares, num, 10);
+		aux2 = strdup(base);
+		strcat(aux2, num);
+		p_nodo->info.valor = aux2;
+		p_nodo->info.tipo = T_FLOAT;
+		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "THEN") == 0)
 	{

@@ -773,6 +773,7 @@ factor: factor OP_MOD factor_mod
         dato = p_oper;
         apilar(&pila_factor,&dato);
         p_f = p_oper;
+        cont_auxiliares++;
 }
         
 | factor_mod 

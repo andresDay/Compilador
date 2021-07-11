@@ -19,4 +19,6 @@ del y.output
 @REM del y.tab.h
 del Primera.exe
 
+
+
 pause
