@@ -1,6 +1,6 @@
 c:\GnuWin32\bin\flex Lexico.l
 pause
-c:\GnuWin32\bin\bison -dyv Sintactico.y
+c:\GnuWin32\bin\bison -dyv Sintactico.y 
 pause
 c:\MinGW\bin\gcc.exe ./lib/assembler.c ./lib/pila.c ./lib/arboles.c ./lib/utils.c ./lib/lista_ts.c lex.yy.c y.tab.c -o Primera.exe
 pause
@@ -18,5 +18,7 @@ del y.tab.c
 del y.output
 @REM del y.tab.h
 del Primera.exe
+
+
 
 pause
