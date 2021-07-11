@@ -6,13 +6,14 @@ include macros.asm
 .STACK 200h
 
 .DATA
+@aux1                              	dd	?
+_4                                 	dd	4.00
 _5                                 	dd	5.00
-_5_5                               	dd	5.5
-_5_es_mayor_que_5_5                	db	"5 es mayor que 5.5"               , '$', 18 dup (?)
-_5_es_menor_que_5_5                	db	"5 es menor que 5.5"               , '$', 18 dup (?)
-a                                  	dd	?
-b                                  	dd	?
-z                                  	dd	?
+_programa_para_contar_letras__     	db	"PROGRAMA PARA CONTAR LETRAS--"    , '$', 29 dup (?)
+cantidadLetras                     	dd	?
+i                                  	dd	?
+palabra                            	dd	?
+variable                           	dd	?
 
 .CODE
 START:
@@ -20,26 +21,19 @@ MOV EAX, @DATA
 MOV DS, EAX
 MOV ES, EAX
 
+displayString _programa_para_contar_letras__
+newline 1
+
 FLD _5
-FLD _5_5
-FXCH
-FCOM
-FSTSW ax
-SAHF
-FFREE
-JNA _else_0
+FLD _4
+FPREM
+FSTP @aux1
 
-displayString _5_es_mayor_que_5_5
+FLD @aux1
+FSTP i
+
+displayFloat i , 2
 newline 1
-
-JMP _End_0
-
-_else_0:
-
-displayString _5_es_menor_que_5_5
-newline 1
-
-_End_0:
 
 
 _ET_SALIR:
