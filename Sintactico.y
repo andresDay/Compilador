@@ -16,6 +16,8 @@ char etiquetaEnd[200];
 char etiquetaStartWhile[200];
 char etiquetaEndWhile[200];
 
+void guardarBooleanos();
+
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
@@ -67,6 +69,7 @@ inicio_prima:  inicio {
         p_ini_pri = p_ini;
 
         guardarAuxiliares(cont_auxiliares, &tablaSimbolos);
+        guardarBooleanos();
         generar_assembler("final.asm",p_ini_pri,&tablaSimbolos,indice-1);
 }
 ;
@@ -337,6 +340,10 @@ IF P_A condicion_mul P_C START bloque END
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END\n", yylineno);
 
+        // info->valor = "THEN";
+        // info->indice++;
+        // p_then = crear_hoja(info, pf);
+
         info->valor = "IF";
         info->indice++;
         info->etiquetaEnd = strdup(etiquetaElse);
@@ -345,6 +352,8 @@ IF P_A condicion_mul P_C START bloque END
         desapilar(&pila_cond, &dato);
         desapilar(&pila_blo, &p_blo);
 
+        // crear_nodo(NULL, p_then, p_blo, pf);
+        // crear_nodo(dato, p_aux, p_then, pf);
         crear_nodo(dato, p_aux, p_blo, pf);
         p_sel = p_aux;
 }
@@ -495,6 +504,8 @@ MAYOR expresion
         info->valor = "MAYOR";
         info->indice++;
         p_oper = crear_hoja(info, pf);
+
+        cont_auxiliares++;
         
         crear_nodo(p_aux, p_oper, p_exp, pf);
         p_cond = p_oper;
@@ -973,3 +984,17 @@ int yyerror(void)
     exit (1);
 }
 
+void guardarBooleanos(){
+        t_dato_lista_ts dato;
+        dato.lexema = strdup("@cero");
+        dato.tipo = T_INTEGER;
+        dato.valor = strdup("0");
+        dato.longitud = 0;
+        insertar_ordenado_ts(&tablaSimbolos, &dato, comparacion_ts);
+
+        dato.lexema = strdup("@uno");
+        dato.tipo = T_INTEGER;
+        dato.valor = strdup("1");
+        dato.longitud = 0;
+        insertar_ordenado_ts(&tablaSimbolos, &dato, comparacion_ts);
+}

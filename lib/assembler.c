@@ -11,6 +11,10 @@ void generar_assembler(const char *path_assembler, t_nodoa *p_arbol, const t_lis
 
 	cont_auxiliares = 1;
 	cont_if = 1;
+	cont_cond = 1;
+
+	stackCond = NULL;
+	stackIf = NULL;
 
 	generar_encabezado(pf);
 	generar_declaraciones(pf, p_ts);
@@ -73,14 +77,7 @@ void generar_codigo(FILE *pf, t_nodoa *p_arbol, int cont, const t_lista_ts *ts)
 	{
 		nodo_objetivo = obtener_nodo_con_hojas_mas_izq(nodo_aux, pf);
 		generar_sentencia(nodo_objetivo, pf, cont, ts);
-		if (nodo_objetivo != NULL)
-			// {
-			// 	if (strcmp(nodo_objetivo->info.valor, ">=") == 0 || strcmp(nodo_objetivo->info.valor, "==") == 0)
-			// 	{
-			// 		cont--;
-			// 	}
-			// }
-			eliminar_hijos_hoja(nodo_objetivo);
+		eliminar_hijos_hoja(nodo_objetivo);
 	}
 }
 
@@ -158,10 +155,11 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		// fprintf(pf,"JNB %s\n",aux);
 	}
 	else if (strcmp(p_nodo->info.valor, "IGUAL") == 0)
-	{	//ES LA COMPARACION CON EL PIVOTE
-		if (p_nodo->info.esWhile == 1){
+	{ //ES LA COMPARACION CON EL PIVOTE
+		if (p_nodo->info.esWhile == 1)
+		{
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-			p_nodo->info.esWhile =0;
+			p_nodo->info.esWhile = 0;
 		}
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
@@ -263,36 +261,55 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	else if (strcmp(p_nodo->info.valor, "THEN") == 0)
 	{
 		//ES UN BLOQUE THEN
-		fprintf(pf, "JMP %s\n\n", p_nodo->info.etiquetaEnd);
-		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaElse);
+
+		fprintf(pf, "JMP _IF_END%d\n\n", cont_if);
+		fprintf(pf, "_COMP_FALSE%d:\n\n", pop(&stackCond));
+
+		push(&stackIf, cont_if);
+		cont_if++;
+	}
+	else if (strcmp(p_nodo->info.valor, "ELSE") == 0)
+	{
+		//ES UN BLOQUE ELSE
 	}
 	else if (strcmp(p_nodo->info.valor, "IF") == 0)
 	{
 		//ES UNA SELECCIÓN
-		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaEnd);
+		fprintf(pf, "_COMP_FALSE%d:\n\n", pop(&stackCond));
 	}
 	else if (strcmp(p_nodo->info.valor, "IF_ELSE") == 0)
 	{
 		//ES UNA SELECCIÓN CON ELSE
-		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaEnd);
+		fprintf(pf, "_IF_END%d:\n\n", pop(&stackIf));
+	}
+	else if (strcmp(p_nodo->info.valor, "AND") == 0)
+	{
+		//ES UNA CONDICION CON AND
+		int condAct = pop(&stackCond);
+		fprintf(pf, "_COMP_FALSE%d:\n", pop(&stackCond));
+		fprintf(pf, "JMP _COMP_FALSE%d\n\n", condAct);
+
+		push(&stackCond, condAct);
 	}
 	else if (strcmp(p_nodo->info.valor, "OR") == 0)
 	{
-		//ES UNA SELECCIÓN CON ELSE
-		fprintf(pf, "JMP %s\n\n", p_nodo->info.etiquetaElse);
-		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaThen);
+		//ES UNA CONDICION CON OR
+		int condAct = pop(&stackCond);
+		fprintf(pf, "_COMP_FALSE%d:\n", pop(&stackCond));
+		fprintf(pf, "JMP _COMP%d\n\n", condAct);
+
+		push(&stackCond, condAct);
+		
 	}
 	else if (strcmp(p_nodo->info.valor, "WHILE") == 0)
-	{		
+	{
 		fprintf(pf, "JMP %s\n\n", p_nodo->info.etiquetaStart);
 		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaEnd);
 	}
 	else if (strcmp(p_nodo->info.valor, "MAYOR") == 0)
 	{
-		if (p_nodo->info.esWhile == 1){
-			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-			p_nodo->info.esWhile =0;
-		}
+		fprintf(pf, "_COMP%d:\n\n", cont_cond);
+
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
 		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
@@ -302,22 +319,17 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		fprintf(pf, "FSTSW ax\n");
 		fprintf(pf, "SAHF\n");
 		fprintf(pf, "FFREE\n");
-		//Si no hay cond entonces es condicion simple
-		if (!p_nodo->info.cond)
-			fprintf(pf, "JNA %s\n\n", p_nodo->info.etiquetaElse);
-		else if (strcmp(p_nodo->info.cond, "AND") == 0)
-			fprintf(pf, "JNA %s\n\n", p_nodo->info.etiquetaElse);
-		else if (strcmp(p_nodo->info.cond, "OR") == 0)
-			fprintf(pf, "JA %s\n\n", p_nodo->info.etiquetaThen);
-		else if (strcmp(p_nodo->info.cond, "NOT") == 0)
-			fprintf(pf, "JA %s\n\n", p_nodo->info.etiquetaElse);
-		
+
+		fprintf(pf, "JNA _COMP_FALSE%d\n\n", cont_cond);
+		push(&stackCond, cont_cond);
+		cont_cond++;
 	}
 	else if (strcmp(p_nodo->info.valor, "MENOR") == 0)
 	{
-		if (p_nodo->info.esWhile == 1){
+		if (p_nodo->info.esWhile == 1)
+		{
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-			p_nodo->info.esWhile =0;
+			p_nodo->info.esWhile = 0;
 		}
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
@@ -340,9 +352,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "MENOR O IGUAL") == 0)
 	{
-		if (p_nodo->info.esWhile == 1){
+		if (p_nodo->info.esWhile == 1)
+		{
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-			p_nodo->info.esWhile =0;
+			p_nodo->info.esWhile = 0;
 		}
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);
@@ -365,9 +378,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "MAYOR O IGUAL") == 0)
 	{
-		if (p_nodo->info.esWhile == 1){
+		if (p_nodo->info.esWhile == 1)
+		{
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-			p_nodo->info.esWhile =0;
+			p_nodo->info.esWhile = 0;
 		}
 		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
 		fprintf(pf, "FLD %s\n", aux);

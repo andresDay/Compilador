@@ -5,13 +5,13 @@ ENDDEC
 a:=1;
 z:= 1;
 
-if( a < a)
+if( a > 10 OR a > 11)
 START
 WRITE "SOY MAYOR";
 END
 ELSE
 START
-WRITE "NO SOY MAYOR";
+    WRITE "NO SOY MAYOR";
 END
 
 a:=21;
