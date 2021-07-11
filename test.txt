@@ -3,11 +3,6 @@ DECVAR
     b: integer;
 ENDDEC
 
-if( 5 > 5.5 )
-START
-    write "5 es mayor que 5.5";
-END
-ELSE
-START
-    write "5 es menor que 5.5";
-END
+b:= 2+2;
+
+write 4;

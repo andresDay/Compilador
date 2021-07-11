@@ -7,13 +7,10 @@ include macros.asm
 
 .DATA
 @aux1                              	dd	?
-_4                                 	dd	4.00
-_5                                 	dd	5.00
-_programa_para_contar_letras__     	db	"PROGRAMA PARA CONTAR LETRAS--"    , '$', 29 dup (?)
-cantidadLetras                     	dd	?
-i                                  	dd	?
-palabra                            	dd	?
-variable                           	dd	?
+_2                                 	dd	2.00
+a                                  	dd	?
+b                                  	dd	?
+z                                  	dd	?
 
 .CODE
 START:
@@ -21,18 +18,15 @@ MOV EAX, @DATA
 MOV DS, EAX
 MOV ES, EAX
 
-displayString _programa_para_contar_letras__
-newline 1
-
-FLD _5
-FLD _4
-FPREM
+FLD _2
+FLD _2
+FADD
 FSTP @aux1
 
 FLD @aux1
-FSTP i
+FSTP 4
 
-displayFloat i , 2
+displayInteger 4
 newline 1
 
 

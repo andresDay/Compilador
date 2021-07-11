@@ -125,7 +125,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_INTEGER) == 0)
 			{
-				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
+				fprintf(pf, "displayInteger %s\nnewline 1\n", p_nodo->der->info.valor);
 				fflush(pf);
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
@@ -147,6 +147,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			else if (strcmp(tipo, T_INTEGER) == 0)
 			{
 				fprintf(pf, "displayFloat %s , 0\nnewline 1\n", p_nodo->der->info.valor);
+				// fprintf(pf, "displayInteger %s\nnewline 1\n", p_nodo->der->info.valor);
 			}
 			else if (strcmp(tipo, T_FLOAT) == 0)
 			{
@@ -187,10 +188,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 		fflush(pf);	
 	
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
 		fprintf(pf, "FXCH\n");
@@ -257,10 +258,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fflush(pf);
 			p_nodo->info.esWhile = 0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
 		fprintf(pf, "FXCH\n");
@@ -303,10 +304,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		{
 			aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 			fprintf(pf, "FLD %s\n", aux);
-			fflush(pf);
+			// fflush(pf);
 		}
 		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
-		fflush(pf);
+		// fflush(pf);
 	}
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
 	{ //ES UNA SUMA
@@ -386,10 +387,10 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "MOD") == 0)
 	{ //ES UN MOD
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
 		fprintf(pf, "FPREM\n");

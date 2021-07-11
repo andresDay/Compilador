@@ -242,15 +242,60 @@ sentencia: ciclo
 }
 ;
 
-funcion:  ESCRIBIR factor_mod P_COMA 
+funcion:  ESCRIBIR CTE_REAL P_COMA 
 {
         printf("%d - funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA\n", yylineno);
+
+        itoa($2, info->valor, 10);
+        info->indice++;
+        info->tipo = T_FLOAT;
+
+        p_aux = crear_hoja(info, pf);
 
         info->valor = "WRITE";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(NULL, p_oper, p_f_mod, pf);
+        crear_nodo(NULL, p_oper, p_aux, pf);
+        p_func = p_oper;
+}
+
+|ESCRIBIR CTE_INT P_COMA 
+{
+        printf("%d - funcion ---> ESCRIBIR P_A factorInt P_C P_COMA\n", yylineno);
+
+        itoa($2, info->valor, 10);
+        info->indice++;
+        info->tipo = T_INTEGER;
+
+        p_aux = crear_hoja(info, pf);
+
+        info->valor = "WRITE";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        ver_tope(&pilaFactInt, &p_f_int);
+
+        crear_nodo(NULL, p_oper, p_aux, pf);
+        p_func = p_oper;
+}
+
+|ESCRIBIR ID P_COMA 
+{
+        idExists(&tablaSimbolos, $2, yylineno);
+        printf("%d - funcion ---> ESCRIBIR ID P_COMA\n", yylineno);
+
+        info->valor = strdup($2);
+        info->indice++;
+        info->tipo = T_ID;
+
+        p_aux = crear_hoja(info, pf);
+
+        info->valor = "WRITE";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        crear_nodo(NULL, p_oper, p_aux, pf);
         p_func = p_oper;
 }
 
@@ -282,23 +327,9 @@ funcion:  ESCRIBIR factor_mod P_COMA
         p_func = p_oper;
 }
 
-|ESCANEAR STRING ID P_COMA 
-{
-        printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
-
-        info->valor = "READ STRING";
-        info->indice++;
-        p_oper = crear_hoja(info, pf);
-
-        info->valor = $3;
-        info->indice++;
-        info->tipo = T_STRING;
-        crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
-        p_func = p_oper;
-}
-
 |ESCANEAR INTEGER ID P_COMA 
 {
+        validateId(&tablaSimbolos, $3, T_INTEGER, yylineno);
         printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
 
         info->valor = "READ INTEGER";
@@ -314,6 +345,7 @@ funcion:  ESCRIBIR factor_mod P_COMA
 
 |ESCANEAR FLOAT ID P_COMA 
 {
+        validateId(&tablaSimbolos, $3, T_FLOAT, yylineno);
         printf("%d - funcion ---> ESCANEAR P_A ID P_C P_COMA\n", yylineno);
 
         info->valor = "READ FLOAT";
@@ -948,21 +980,6 @@ factor_mod: ID
         p_f_mod = crear_hoja(info, pf); 
 }
 
-// |CTE_INT 
-// {
-//         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
-//         $<intVal>$ = $1;
-//         info->valor = (char*)malloc(sizeof(char) * 20);
-//         info->indice++;
-//         info->tipo = T_INTEGER;
-//         sprintf(info->valor,"%d", $1);
-        
-//         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
-//         cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
-
-//         p_f_mod = crear_hoja(info, pf); 
-// }
-
 |CTE_REAL 
 {
         printf("%d -  factor_mod --> CTE_REAL \n", yylineno);
@@ -983,21 +1000,6 @@ factor_mod: ID
 
         p_f_mod = crear_hoja(info, pf); 
 }
-
-// |OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
-// {
-//         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
-//         $<intVal>$ = $2 * (-1);
-//         info->valor = (char*)malloc(sizeof(char) * 20);
-//         sprintf(info->valor,"-%d", $2);
-//         info->indice++;
-//         info->tipo = T_INTEGER;
-
-//         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
-//         cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
-
-//         p_f_mod = crear_hoja(info, pf); 
-// }
 
 |OP_RESTA CTE_REAL %prec OP_RESTA_UNARIA
 {
@@ -1116,16 +1118,6 @@ factorInt: CTE_INT
         p_f_int = crear_hoja(info, pf); 
         apilar(&pilaFactInt, &p_f_int);
 }
-
-// |ID  
-// {
-//         printf("%d -  factor_mod --> ID \n", yylineno);
-//         $<strVal>$ = $1;
-//         info->valor = $1;
-//         info->indice++;
-//         info->tipo = T_ID;
-//         p_f_mod = crear_hoja(info, pf); 
-// }
 
 |OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
 {
