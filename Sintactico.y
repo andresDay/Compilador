@@ -16,15 +16,19 @@ char etiquetaEnd[200];
 char etiquetaStartWhile[200];
 char etiquetaEndWhile[200];
 
+void initPilas();
+
 //DECLARACION DE VARIABLES GLOBALES
 t_nodoa *p_f_mod, *p_exp, *p_f, *p_term, *p_asig, *p_aux, *p_cond;
 t_nodoa *p_cond_mul, *p_func, *p_sent, *p_sel, *p_ce, *p_c, *p_blo;
 t_nodoa *p_prog, *p_tdato, *p_l_var, *p_dec, *p_blo_dec, *p_ini;
 t_nodoa *p_ini_pri, *p_l_exp, *p_oper, *p_aux2, *p_cuerpo, *p_id;
 t_nodoa* p_auxM, *p_aux1 , *p_aux2, *p_aux3 ,*p_aux4, *p_then, *p_else;
+t_nodoa *p_f_int, *p_term_int, *p_exp_int, *p_cond_fact;
 t_info *info;
 FILE *pf;
 t_pila pila_cond, pila_term, pila_expr, pila_blo,pila_list_exp, pila_factor;
+t_pila pilaFactInt, pilaTermInt, pilaExpInt, pilaCondFact;
 
 
 t_dato_pila dato,dato_m,dato_aux;
@@ -98,9 +102,6 @@ inicio: DECVAR bloque_declaraciones ENDDEC programa
 ;
 bloque_declaraciones: declaraciones 
 {
-        // printf("%d - bloque_declaraciones ---> declaraciones\n", yylineno);
-        // info->valor = "BLOQUE\nDECLARACIONES";
-        // info->indice++;
         p_blo_dec = p_dec;
 }
 
@@ -122,10 +123,10 @@ declaraciones: lista_de_variables DECLARACION tipodato P_COMA
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        printf("\n----------------------\n");
-        printf("%s: ", p_tdato->info.valor);
+        // printf("\n----------------------\n");
+        // printf("%s: ", p_tdato->info.valor);
         set_tipo_ids(p_l_var, p_tdato->info.valor, &tablaSimbolos);
-        printf("\n----------------------\n");
+        // printf("\n----------------------\n");
 
         crear_nodo(p_l_var, p_oper, p_tdato, pf);
         p_dec = p_oper;
@@ -160,13 +161,6 @@ tipodato: STRING
         info->indice++;
         p_tdato = crear_hoja(info, pf);
 }
-
-// |CHAR
-// {
-//         info->valor = "CHAR";
-//         info->indice++;
-//         p_tdato = crear_hoja(info, pf);
-// }
    
 |INTEGER   
 {
@@ -485,26 +479,33 @@ OR condicion
 }
 ;
 
-condicion: expresion 
+condicionFactor: expresion
 {
-        p_aux = p_exp;
+        desapilar(&pila_expr, &p_aux);
+        apilar(&pilaCondFact, &p_aux);
 }
-MAYOR expresion 
+
+|expresionInt
+{
+        desapilar(&pilaExpInt, &p_aux);
+        apilar(&pilaCondFact, &p_aux);  
+}
+;
+
+condicion: condicionFactor MAYOR condicionFactor 
 {
         printf("%d - condicion ---> expresion MAYOR expresion \n", yylineno);
         info->valor = "MAYOR";
         info->indice++;
         p_oper = crear_hoja(info, pf);
         
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
 }
           
-|expresion 
-{
-        p_aux = p_exp;
-}
-MENOR expresion 
+|condicionFactor MENOR condicionFactor 
 {
         printf("%d - condicion ---> expresion MENOR expresion \n", yylineno);
 
@@ -512,15 +513,13 @@ MENOR expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
 }
 
-|expresion 
-{
-        p_aux = p_exp;
-}
-MAYOR_IGUAL expresion 
+|condicionFactor MAYOR_IGUAL condicionFactor 
 {
         printf("%d - condicion ---> expresion MAYOR_IGUAL expresion \n", yylineno);
 
@@ -528,15 +527,13 @@ MAYOR_IGUAL expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
 }
           
-|expresion 
-{
-        p_aux = p_exp;
-}
-MENOR_IGUAL expresion 
+|condicionFactor MENOR_IGUAL condicionFactor 
 {
         printf("%d - condicion ---> expresion MENOR_IGUAL expresion \n", yylineno);
 
@@ -544,15 +541,13 @@ MENOR_IGUAL expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
 }
 
-|expresion
-{
-        p_aux = p_exp;
-}  
-IGUAL expresion 
+|condicionFactor IGUAL condicionFactor 
 {
         printf("%d - condicion ---> expresion IGUAL expresion \n", yylineno);
 
@@ -560,15 +555,13 @@ IGUAL expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
         
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
 }
 
-|expresion 
-{
-    p_aux = p_exp;
-} 
-DISTINTO expresion 
+|condicionFactor DISTINTO condicionFactor 
 {
         printf("%d - expresion DISTINTO expresion\n", yylineno);
 
@@ -576,13 +569,17 @@ DISTINTO expresion
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        crear_nodo(p_aux, p_oper, p_exp, pf);
+        desapilar(&pilaCondFact, &p_cond_fact);
+        desapilar(&pilaCondFact, &p_aux);
+        crear_nodo(p_aux, p_oper, p_cond_fact, pf);
         p_cond = p_oper;
-} 
+}
 ;
 
 asignacion: ID ASIG expresion P_COMA 
 {
+        validateId(&tablaSimbolos, $1, T_FLOAT, yylineno);
+
         printf("%d - asignacion ---> ID ASIG expresion P_COMA \n", yylineno);
         info->valor = "ASIG";
         info->indice++;
@@ -599,23 +596,23 @@ asignacion: ID ASIG expresion P_COMA
         p_asig = p_oper;
 }
 
-| ID ASIG CTE_CADENA P_COMA 
+|ID ASIG expresionInt P_COMA 
 {
+        validateId(&tablaSimbolos, $1, T_INTEGER, yylineno);
 
-        printf("%d - asignacion ---> ID ASIG CTE_CADENA P_COMA \n", yylineno);
-        info->valor = $1;
-        info->indice++;
-        info->tipo = T_STRING;
-        p_aux = crear_hoja(info, pf);
-        
+        printf("%d - asignacion ---> ID ASIG expresionInt P_COMA \n", yylineno);
         info->valor = "ASIG";
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = obtenerStringHoja($3);
-        info->indice++; 
-        info->tipo = T_STRING; 
-        crear_nodo(p_aux, p_oper, crear_hoja(info, pf), pf);
+        info->valor = $1;
+        info->indice++;
+        info->tipo = T_INTEGER;
+        p_aux = crear_hoja(info, pf);
+
+        desapilar(&pilaExpInt, &p_exp_int);
+
+        crear_nodo(p_aux, p_oper, p_exp_int, pf);
         p_asig = p_oper;
 }
 ;
@@ -646,6 +643,74 @@ expresion: expresion OP_SUMA termino
         desapilar(&pila_expr,&dato_aux);
         crear_nodo(dato_aux, p_oper, dato, pf);
         apilar(&pila_expr,&p_oper);
+        p_exp = p_oper;
+
+        cont_auxiliares++;
+}
+
+|expresion OP_SUMA terminoInt  
+{
+        printf("%d - expresion ---> expresion OP_SUMA terminoInt \n", yylineno);
+        info->valor = "SUMA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt,&dato);            
+        desapilar(&pila_expr,&dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pila_expr,&p_oper);
+        p_exp = p_oper;
+
+        cont_auxiliares++;
+}
+
+|expresion OP_RESTA terminoInt 
+{
+        printf("%d - expresion ---> expresion OP_RESTA terminoInt \n", yylineno);
+        info->valor = "RESTA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt, &dato);        
+        desapilar(&pila_expr, &dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pila_expr, &p_oper);
+        p_exp = p_oper;
+
+        cont_auxiliares++;
+}
+
+|expresionInt OP_SUMA termino  
+{
+        printf("%d - expresion ---> expresion OP_SUMA terminoInt \n", yylineno);
+        info->valor = "SUMA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pila_term,&dato);            
+        desapilar(&pilaExpInt, &dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pila_expr, &p_oper);
+        p_exp = p_oper;
+
+        cont_auxiliares++;
+}
+
+|expresionInt OP_RESTA termino
+{
+        printf("%d - expresion ---> expresion OP_RESTA terminoInt \n", yylineno);
+        info->valor = "RESTA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pila_term, &dato);        
+        desapilar(&pilaExpInt, &dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pila_expr, &p_oper);
         p_exp = p_oper;
 
         cont_auxiliares++;
@@ -693,7 +758,62 @@ termino: termino OP_MULT factor
         p_term = p_oper;
 
         cont_auxiliares++;
-}                
+}
+
+|termino OP_MULT factorInt 
+{
+        printf("%d - termino ---> termino OP_MULT factorInt \n", yylineno);
+        info->valor = "MULT";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pila_term, &dato);
+        desapilar(&pilaFactInt, &dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
+
+        dato = p_oper;
+        apilar(&pila_term,&dato);
+
+        p_term = p_oper;
+
+        cont_auxiliares++;
+}
+
+|termino OP_DIV factorInt 
+{
+        printf("%d - termino ---> termino OP_DIV factorInt \n", yylineno);
+        info->valor = "DIV";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pila_term, &dato);
+        desapilar(&pilaFactInt, &dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
+
+        dato = p_oper;
+        apilar(&pila_term,&dato);
+        p_term = p_oper;
+
+        cont_auxiliares++;
+}
+
+|terminoInt OP_DIV factorInt 
+{
+        printf("%d - termino ---> termino OP_DIV factorInt \n", yylineno);
+        info->valor = "DIV";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt, &dato);
+        desapilar(&pilaFactInt, &dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
+
+        dato = p_oper;
+        apilar(&pila_term,&dato);
+        p_term = p_oper;
+
+        cont_auxiliares++;
+}
 
 |factor 
 {
@@ -704,6 +824,7 @@ termino: termino OP_MULT factor
         p_term = p_f;
 }
 ;
+
 factor: factor OP_MOD factor_mod 
 {
         printf("%d - factor --> factor OP_MOD factor_mod \n", yylineno);
@@ -712,6 +833,36 @@ factor: factor OP_MOD factor_mod
         p_oper = crear_hoja(info, pf);
         desapilar(&pila_factor,&dato);
         crear_nodo(dato, p_oper, p_f_mod, pf);
+        dato = p_oper;
+        apilar(&pila_factor,&dato);
+        p_f = p_oper;
+}
+
+|factorInt OP_MOD factor_mod 
+{
+        printf("%d - factor --> factor OP_MOD factor_mod \n", yylineno);
+        info->valor = "MOD";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaFactInt,&dato);
+        crear_nodo(dato, p_oper, p_f_mod, pf);
+
+        dato = p_oper;
+        apilar(&pila_factor,&dato);
+        p_f = p_oper;
+}
+
+|factorInt OP_MOD factorInt 
+{
+        printf("%d - factor --> factor OP_MOD factor_mod \n", yylineno);
+        info->valor = "MOD";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaFactInt,&dato);
+        crear_nodo(dato, p_oper, p_f_int, pf);
+
         dato = p_oper;
         apilar(&pila_factor,&dato);
         p_f = p_oper;
@@ -725,8 +876,11 @@ factor: factor OP_MOD factor_mod
         p_f = p_f_mod;
 }
 ; 
+
 factor_mod: ID  
 {
+        idExists(&tablaSimbolos, $1, yylineno);
+
         printf("%d -  factor_mod --> ID \n", yylineno);
         $<strVal>$ = $1;
         info->valor = $1;
@@ -735,20 +889,20 @@ factor_mod: ID
         p_f_mod = crear_hoja(info, pf); 
 }
 
-|CTE_INT 
-{
-        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
-        $<intVal>$ = $1;
-        info->valor = (char*)malloc(sizeof(char) * 20);
-        info->indice++;
-        info->tipo = T_INTEGER;
-        sprintf(info->valor,"%d", $1);
+// |CTE_INT 
+// {
+//         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
+//         $<intVal>$ = $1;
+//         info->valor = (char*)malloc(sizeof(char) * 20);
+//         info->indice++;
+//         info->tipo = T_INTEGER;
+//         sprintf(info->valor,"%d", $1);
         
-        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
-        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+//         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+//         cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
 
-        p_f_mod = crear_hoja(info, pf); 
-}
+//         p_f_mod = crear_hoja(info, pf); 
+// }
 
 |CTE_REAL 
 {
@@ -771,20 +925,20 @@ factor_mod: ID
         p_f_mod = crear_hoja(info, pf); 
 }
 
-|OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
-{
-        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
-        $<intVal>$ = $2 * (-1);
-        info->valor = (char*)malloc(sizeof(char) * 20);
-        sprintf(info->valor,"-%d", $2);
-        info->indice++;
-        info->tipo = T_INTEGER;
+// |OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
+// {
+//         printf("%d -  factor_mod --> CTE_INT \n", yylineno);
+//         $<intVal>$ = $2 * (-1);
+//         info->valor = (char*)malloc(sizeof(char) * 20);
+//         sprintf(info->valor,"-%d", $2);
+//         info->indice++;
+//         info->tipo = T_INTEGER;
 
-        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
-        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+//         cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+//         cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
 
-        p_f_mod = crear_hoja(info, pf); 
-}
+//         p_f_mod = crear_hoja(info, pf); 
+// }
 
 |OP_RESTA CTE_REAL %prec OP_RESTA_UNARIA
 {
@@ -812,7 +966,134 @@ factor_mod: ID
 }
 ;
 
-ciclo: WHILE P_A  condicion_mul P_C START bloque END 
+expresionInt: expresionInt OP_SUMA terminoInt  
+{
+        printf("%d - expresion ---> expresionInt OP_SUMA terminoInt \n", yylineno);
+        info->valor = "SUMA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt, &dato);            
+        desapilar(&pilaExpInt, &dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pilaExpInt,&p_oper);
+
+        p_exp_int = p_oper;
+
+        cont_auxiliares++;
+}
+
+|expresionInt OP_RESTA terminoInt 
+{
+        printf("%d - expresion ---> expresionInt OP_RESTA terminoInt \n", yylineno);
+        info->valor = "RESTA";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt, &dato);        
+        desapilar(&pilaExpInt, &dato_aux);
+        crear_nodo(dato_aux, p_oper, dato, pf);
+
+        apilar(&pilaExpInt, &p_oper);
+        p_exp_int = p_oper;
+
+        cont_auxiliares++;
+}
+
+|terminoInt 
+{
+        printf("%d - expresionInt ---> terminoInt \n", yylineno);
+
+        desapilar(&pilaTermInt, &dato);
+        apilar(&pilaExpInt, &dato);
+        p_exp_int = dato;
+}
+;
+
+terminoInt: terminoInt OP_MULT factorInt 
+{
+        printf("%d - termino ---> termino OP_MULT factor \n", yylineno);
+        info->valor = "MULT";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaTermInt, &dato);
+        desapilar(&pilaFactInt, &dato_aux);
+        crear_nodo(dato, p_oper, dato_aux, pf);
+
+        dato = p_oper;
+        apilar(&pilaTermInt, &dato);
+
+        p_term = p_oper;
+
+        cont_auxiliares++;
+}             
+
+|factorInt 
+{
+        printf("%d - termino ---> factor \n", yylineno);
+        dato = p_f_int;
+
+        desapilar(&pilaFactInt,&dato);
+        apilar(&pilaTermInt, &dato);
+        p_term_int = p_f_int;
+}
+;
+
+factorInt: CTE_INT 
+{
+        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
+        $<intVal>$ = $1;
+
+        info->valor = (char*)malloc(sizeof(char) * 20);
+        info->indice++;
+        info->tipo = T_INTEGER;
+        sprintf(info->valor,"%d", $1);
+        
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+
+        p_f_int = crear_hoja(info, pf); 
+        apilar(&pilaFactInt, &p_f_int);
+}
+
+// |ID  
+// {
+//         printf("%d -  factor_mod --> ID \n", yylineno);
+//         $<strVal>$ = $1;
+//         info->valor = $1;
+//         info->indice++;
+//         info->tipo = T_ID;
+//         p_f_mod = crear_hoja(info, pf); 
+// }
+
+|OP_RESTA CTE_INT %prec OP_RESTA_UNARIA
+{
+        printf("%d -  factor_mod --> CTE_INT \n", yylineno);
+        $<intVal>$ = $2 * (-1);
+        info->valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(info->valor,"-%d", $2);
+        info->indice++;
+        info->tipo = T_INTEGER;
+
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+
+        p_f_int = crear_hoja(info, pf); 
+        apilar(&pilaFactInt, &p_f_int);
+}
+
+|P_A expresionInt P_C 
+{
+        printf("%d - factor_mod --> P_A expresion P_C \n", yylineno); 
+        desapilar(&pilaExpInt,&dato);
+        apilar(&pilaFactInt, &p_f_int);
+        p_f_int = dato;
+}
+;
+
+ciclo: WHILE P_A condicion_mul P_C START bloque END 
 {
         
         sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
@@ -937,12 +1218,8 @@ int main(int argc,char *argv[])
   else
   {
         crear_lista_ts(&tablaSimbolos);
-        crear_pila(&pila_blo);
-        crear_pila(&pila_cond);
-        crear_pila(&pila_expr);
-        crear_pila(&pila_term);
-        crear_pila(&pila_list_exp);
-        crear_pila(&pila_factor);
+        initPilas();
+
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         cont_auxiliares = 0;
@@ -973,3 +1250,15 @@ int yyerror(void)
     exit (1);
 }
 
+void initPilas(){
+        crear_pila(&pila_blo);
+        crear_pila(&pila_cond);
+        crear_pila(&pila_expr);
+        crear_pila(&pila_term);
+        crear_pila(&pila_list_exp);
+        crear_pila(&pila_factor);
+        crear_pila(&pilaExpInt);
+        crear_pila(&pilaTermInt);
+        crear_pila(&pilaFactInt);
+        crear_pila(&pilaCondFact);
+}

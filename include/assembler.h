@@ -17,7 +17,7 @@ void generar_declaraciones(FILE*, const t_lista_ts*);
 void generar_codigo(FILE*, t_nodoa*,int, const t_lista_ts*);
 void generar_final(FILE*);
 char* transformar_a_etiqueta(const char*);
-char *obtenerValorOperando(const char *);
+char *obtenerValorOperando(const t_info*);
 int esCteOrString(const char *);
 
 int cont_auxiliares;

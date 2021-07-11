@@ -21,5 +21,7 @@ int esNumero(const char);
 int esLetraMin(const char);
 int esLetraMayus(const char);
 void set_tipo_ids(t_nodoa*, const char*, t_lista_ts*);
+char* idExists(const t_lista_ts*, const char*, int );
+void validateId(const t_lista_ts*, const char*, const char*, int );
 
 #endif

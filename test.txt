@@ -1,17 +1,13 @@
 DECVAR
-    z, a: integer;
+    z, a: float;
+    b: integer;
 ENDDEC
 
-a:=1;
-z:= 1;
-
-if( a < a)
+if( 5 > 5.5 )
 START
-WRITE "SOY MAYOR";
+    write "5 es mayor que 5.5";
 END
 ELSE
 START
-WRITE "NO SOY MAYOR";
+    write "5 es menor que 5.5";
 END
-
-a:=21;

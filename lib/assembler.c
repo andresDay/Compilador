@@ -118,7 +118,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			}
 			else if (strcmp(tipo, T_INTEGER) == 0)
 			{
-				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
+				fprintf(pf, "displayFloat %s , 0\nnewline 1\n", p_nodo->der->info.valor);
 			}
 			else if (strcmp(tipo, T_FLOAT) == 0)
 			{
@@ -157,9 +157,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FXCH\n");
 		fprintf(pf, "FCOM\n");
@@ -177,7 +177,8 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "JE %s\n\n", p_nodo->info.etiquetaElse);
 	}
 	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
-	{ //ES UNA ASIGNACION
+	{ 
+		//ES UNA ASIGNACION
 		if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
 		{
 			// string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
@@ -185,16 +186,16 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		}
 		else
 		{
-			aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+			aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 			fprintf(pf, "FLD %s\n", aux);
 		}
 		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "SUMA") == 0)
 	{ //ES UNA SUMA
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FADD\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -208,9 +209,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "RESTA") == 0)
 	{ //ES UNA RESTA
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FSUB\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -224,9 +225,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "MULT") == 0)
 	{ //ES UNA MULTIPLICACION
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FMUL\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -240,9 +241,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
 	{ //ES UNA DIVISION
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FDIV\n");
 		fprintf(pf, "FSTP %s%d\n\n", "@aux", cont_auxiliares);
@@ -287,9 +288,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FXCH\n");
 		fprintf(pf, "FCOM\n");
@@ -313,9 +314,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FXCH\n");
 		fprintf(pf, "FCOM\n");
@@ -338,9 +339,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FXCH\n");
 		fprintf(pf, "FCOM\n");
@@ -363,9 +364,9 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
 			p_nodo->info.esWhile =0;
 		}
-		aux = (char *)obtenerValorOperando(p_nodo->izq->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
-		aux = (char *)obtenerValorOperando(p_nodo->der->info.valor);
+		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fprintf(pf, "FXCH\n");
 		fprintf(pf, "FCOM\n");
@@ -416,16 +417,16 @@ int esCteOrString(const char *s)
 	return (*s >= '0' && *s <= '9') || *s == '"' || *s == '\\';
 }
 
-char *obtenerValorOperando(const char *op)
+char *obtenerValorOperando(const t_info* info)
 {
 	char *res;
-	if (*op >= '0' && *op <= '9')
+	if (*(info->valor) >= '0' && *(info->valor) <= '9')
 	{
-		res = agregarGuionBajo(op);
+		res = obtenerLexemaFloat(info->valor);
 	}
 	else
 	{
-		res = strdup(op);
+		res = strdup(info->valor);
 	}
 
 	return res;

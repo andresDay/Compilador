@@ -71,13 +71,13 @@ char *agregarGuionBajo(const char *s)
 	return resultado;
 }
 
-void guardarAuxiliares(int cont_auxiliares, t_lista_ts* ts)
+void guardarAuxiliares(int cont_auxiliares, t_lista_ts *ts)
 {
 	int _cont = 1;
 	t_dato_lista_ts dato;
-	while ( _cont <= cont_auxiliares)
+	while (_cont <= cont_auxiliares)
 	{
-		dato.lexema = (char*)malloc(5000);
+		dato.lexema = (char *)malloc(5000);
 		sprintf(dato.lexema, "@aux%d", _cont);
 		dato.tipo = "id";
 		dato.valor = NULL;
@@ -98,7 +98,8 @@ char *obtenerLexemaFloat(const char *s)
 		return NULL;
 	}
 	inicio = resultado;
-	if(*s != '_'){
+	if (*s != '_')
+	{
 		*resultado = '_';
 		resultado++;
 	}
@@ -121,23 +122,23 @@ char *obtenerLexemaFloat(const char *s)
 	return inicio;
 }
 
-char* estandarizarString(const char *s)
+char *estandarizarString(const char *s)
 {
 	char *resultado, *paux;
-	resultado = (char*) malloc(sizeof(char)* strlen(s) + 1);
-	if(resultado == NULL)
+	resultado = (char *)malloc(sizeof(char) * strlen(s) + 1);
+	if (resultado == NULL)
 	{
 		return NULL;
 	}
 	strcpy(resultado, s);
 	paux = resultado;
-	while(*paux != '\0')
+	while (*paux != '\0')
 	{
-		if(!esCaracterValido(*paux))
+		if (!esCaracterValido(*paux))
 		{
 			*paux = '_';
-		} 
-		else if(esLetraMayus(*paux))
+		}
+		else if (esLetraMayus(*paux))
 		{
 			*paux = tolower(*paux);
 		}
@@ -149,7 +150,7 @@ char* estandarizarString(const char *s)
 int esCaracterValido(const char c)
 {
 	return esNumero(c) || esLetraMin(c) || esLetraMayus(c) || c == '_';
-}	
+}
 
 int esNumero(const char c)
 {
@@ -166,7 +167,7 @@ int esLetraMayus(const char c)
 	return c >= 'A' && c <= 'Z';
 }
 
-void set_tipo_ids(t_nodoa *pa, const char *tipo, t_lista_ts* ts)
+void set_tipo_ids(t_nodoa *pa, const char *tipo, t_lista_ts *ts)
 {
 	if (pa == NULL)
 	{
@@ -177,8 +178,41 @@ void set_tipo_ids(t_nodoa *pa, const char *tipo, t_lista_ts* ts)
 	set_tipo_ids(pa->der, tipo, ts);
 	if (pa->izq == NULL && pa->der == NULL)
 	{
-		printf("%s, ", pa->info.valor);
+		// printf("%s, ", pa->info.valor);
 		pa->info.tipo = strdup(tipo);
 		cambiar_campo_tipo(ts, pa->info.valor, tipo);
-	}	
+	}
+}
+
+char* idExists(const t_lista_ts *ts, const char *lexema, int line)
+{
+	char *res = buscar_tipo(ts, lexema);
+	if (res == NULL || strcmp(res, T_ID) == 0)
+	{
+		printf("\n\n*****************************************************************************************\n");
+		printf("ERROR!\n");
+		fprintf(stderr, "error: in line %d\n", line);
+		fprintf(stderr, "Variable \"%s\" not defined\n", lexema);
+		printf("*****************************************************************************************\n\n");
+		system("Pause");
+		exit(1);
+	}
+
+	return res;
+}
+
+void validateId(const t_lista_ts *ts, const char *lexema, const char *tipo, int line){
+
+	char *res = idExists(ts, lexema, line);
+
+	if (strcmp(tipo, res) != 0)
+	{
+		printf("\n\n*****************************************************************************************\n");
+		printf("ERROR!\n");
+		fprintf(stderr, "error: in line %d\n", line);
+		fprintf(stderr, "No se puede asignar un valor de tipo %s a la variable \"%s\" de tipo %s\n", tipo, lexema, res);
+		printf("*****************************************************************************************\n\n");
+		system("Pause");
+		exit(1);
+	}
 }

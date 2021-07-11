@@ -78,7 +78,6 @@ NEWLINE     [Nn][Ee][Ww][Ll][Ii][Nn][Ee]
 {STRING}    {return STRING;}
 {INTEGER}   {return INTEGER;}
 {FLOAT}     {return FLOAT;}
-{CHAR}      {return CHAR;}
 {START}     {return START;}
 {END}       {return END;}
 {IF}        {return IF;}

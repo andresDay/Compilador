@@ -1,0 +1,47 @@
+digraph G {
+graph [ordering="out"];
+nodo0[label="z"];
+nodo1[label="COMA"];
+nodo2[label="a"];
+nodo1->nodo0
+nodo1->nodo2
+nodo3[label="float"];
+nodo4[label="DEC"];
+nodo4->nodo1
+nodo4->nodo3
+nodo5[label="b"];
+nodo6[label="integer"];
+nodo7[label="DEC"];
+nodo7->nodo5
+nodo7->nodo6
+nodo8[label="BLOQUE
+DECLARACIONES"];
+nodo8->nodo4
+nodo8->nodo7
+nodo9[label="5"];
+nodo10[label="5.5"];
+nodo11[label="MAYOR"];
+nodo11->nodo9
+nodo11->nodo10
+nodo12[label="WRITE"];
+nodo13[label="\"5 es mayor que 5.5\""];
+nodo12->nodo13
+nodo14[label="WRITE"];
+nodo15[label="\"5 es menor que 5.5\""];
+nodo14->nodo15
+nodo16[label="THEN"];
+nodo17[label="ELSE"];
+nodo18[label="CUERPO"];
+nodo19[label="IF_ELSE"];
+nodo16->nodo12
+nodo17->nodo14
+nodo18->nodo16
+nodo18->nodo17
+nodo19->nodo11
+nodo19->nodo18
+nodo20[label="PROG"];
+nodo21[label="INICIO"];
+nodo20->nodo19
+nodo21->nodo8
+nodo21->nodo20
+}
