@@ -25,9 +25,10 @@ t_nodoa* p_auxM, *p_aux1 , *p_aux2, *p_aux3 ,*p_aux4, *p_then, *p_else;
 t_info *info;
 FILE *pf;
 t_pila pila_cond, pila_term, pila_expr, pila_blo,pila_list_exp, pila_factor;
+t_pila p_etiquetaElse,p_etiquetaEnd,p_etiquetaStartWhile,p_etiquetaThen,p_etiquetaEndwhile,p_etiquetaStartWhileEsp,p_etiquetaEndWhileEsp;
 
 
-t_dato_pila dato,dato_m,dato_aux;
+t_dato_pila dato,dato_m,dato_aux,dato_etiqueta;
 char * auxID;
 
 %}
@@ -336,15 +337,22 @@ seleccion:
 IF P_A condicion_mul P_C START bloque END 
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END\n", yylineno);
+       
 
         info->valor = "IF";
-        info->indice++;
-        info->etiquetaEnd = strdup(etiquetaElse);
+        info->indice++;        
+        desapilar(&p_etiquetaElse,&dato_etiqueta);
+        printf("ELSE: %s",dato_etiqueta->info.valor);
+        info->etiquetaEnd = dato_etiqueta->info.valor;
+        free(dato_etiqueta);
+        
+        
         p_aux = crear_hoja(info, pf);
 
         desapilar(&pila_cond, &dato);
         desapilar(&pila_blo, &p_blo);
 
+        
         crear_nodo(dato, p_aux, p_blo, pf);
         p_sel = p_aux;
 }
@@ -353,9 +361,16 @@ IF P_A condicion_mul P_C START bloque END
 {
         printf("%d - seleccion ---> IF P_A condicion_mul P_C START bloque END ELSE START bloque END\n", yylineno);              
         info->valor = "THEN";
-        info->indice++;        
-        info->etiquetaEnd = strdup(etiquetaEnd);
-        info->etiquetaElse =strdup(etiquetaElse);
+        info->indice++;
+
+        desapilar(&p_etiquetaEnd,&dato_etiqueta);        
+        info->etiquetaEnd = strdup(dato_etiqueta->info.valor);
+        free(dato_etiqueta);
+        
+        desapilar(&p_etiquetaElse,&dato_etiqueta);
+        info->etiquetaElse =strdup(dato_etiqueta->info.valor);        
+        free(dato_etiqueta);
+
         // sprintf(etiquetaThen, "_FIN_%d", cont_then);
         // info->etiquetaThen = strdup(etiquetaThen);
         p_then = crear_hoja(info, pf);
@@ -389,7 +404,11 @@ IF P_A condicion_mul P_C START bloque END
 
 condicion_mul:condicion 
 {
-        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        sprintf(etiquetaElse, "_else_%d", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaElse) ;
+        apilar(&p_etiquetaElse,&dato_etiqueta);
+
         p_cond->info.etiquetaElse=strdup(etiquetaElse);
         p_cond->info.cond="AND";
         p_aux = p_cond;        
@@ -399,7 +418,12 @@ condicion_mul:condicion
 AND condicion 
 {
         printf("%d - condicion_mul ---> condicion AND condicion \n", yylineno);
+
         sprintf(etiquetaEnd, "_End_%d", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaEnd);
+        apilar(&p_etiquetaEnd,&dato_etiqueta);
+        
         p_cond->info.cond="AND";     
         p_cond->info.etiquetaElse=strdup(etiquetaElse);
 
@@ -418,7 +442,11 @@ AND condicion
 
 | condicion 
 {  
-        sprintf(etiquetaThen, "_then_%d", cont_if); 
+        sprintf(etiquetaThen, "_then_%d\0", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor= strdup(etiquetaThen);
+        apilar(&p_etiquetaThen,&dato_etiqueta);
+        
         p_cond->info.etiquetaThen=strdup(etiquetaThen);
         p_cond->info.cond="OR";
         p_aux = p_cond;        
@@ -432,11 +460,20 @@ OR condicion
         p_cond->info.cond="OR";     
         p_cond->info.etiquetaThen=strdup(etiquetaThen);
 
-        sprintf(etiquetaElse, "_else_%d", cont_if);    
+        sprintf(etiquetaElse, "_else_%d", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaElse);        
+        apilar(&p_etiquetaElse,&dato_etiqueta);
+
         info->etiquetaElse=strdup(etiquetaElse);
         info->etiquetaThen=strdup(etiquetaThen);
         info->valor = "OR";
+
         sprintf(etiquetaEnd, "_End_%d", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaEnd);
+        apilar(&p_etiquetaEnd,&dato_etiqueta);
+
         info->etiquetaEnd = strdup(etiquetaEnd);
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -452,10 +489,20 @@ OR condicion
 {
         printf("%d - condicion_mul ---> NOT condicion \n", yylineno);
 
-        p_cond->info.cond="NOT";     
-        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        p_cond->info.cond="NOT";
+
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        sprintf(etiquetaElse, "_else_%d\0", cont_if);
+        dato_etiqueta->info.valor=strdup(etiquetaElse);
+        apilar(&p_etiquetaElse,&dato_etiqueta); 
+
         p_cond->info.etiquetaElse=strdup(etiquetaElse);
+
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
         sprintf(etiquetaEnd, "_End_%d", cont_if);
+        dato_etiqueta->info.valor=strdup(etiquetaEnd);
+        apilar(&p_etiquetaEnd,&dato_etiqueta); 
+
         p_cond->info.etiquetaEnd=strdup(etiquetaEnd);
         // p_cond_mul = p_cond;
         // apilar(&pila_cond, &p_cond_mul);
@@ -474,9 +521,20 @@ OR condicion
 | condicion 
 {
         printf("%d - condicion_mul ---> condicion \n", yylineno);
-        sprintf(etiquetaElse, "_else_%d", cont_if); 
+        sprintf(etiquetaElse, "_else_%d\0", cont_if);
+
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));        
+        dato_etiqueta->info.valor=strdup(etiquetaElse);
+        apilar(&p_etiquetaElse,&dato_etiqueta);
+
         p_cond->info.etiquetaElse=strdup(etiquetaElse);
-        sprintf(etiquetaEnd, "_End_%d", cont_if);
+        p_cond->info.cond = NULL;
+
+        sprintf(etiquetaEnd, "_End_%d\0", cont_if);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaEnd);
+        apilar(&p_etiquetaEnd,&dato_etiqueta);
+
         p_cond->info.etiquetaEnd=strdup(etiquetaEnd);
         p_cond_mul = p_cond;
         apilar(&pila_cond, &p_cond_mul);
@@ -813,11 +871,13 @@ factor_mod: ID
 ;
 
 ciclo: WHILE P_A  condicion_mul P_C START bloque END 
-{
+{        
         
-        sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
+        desapilar(&p_etiquetaElse,&dato_etiqueta);
+        info->etiquetaEnd=strdup(dato_etiqueta->info.valor);
+        free(dato_etiqueta);
 
-        info->etiquetaEnd=strdup(etiquetaElse);
+        sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
         info->etiquetaStart=strdup(etiquetaStartWhile);
         info->valor = "WHILE";
         info->indice++;       
@@ -825,18 +885,16 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 
         desapilar(&pila_blo, &dato);
         desapilar(&pila_cond, &p_cond_mul);
-       if ( strcmp(p_cond_mul->info.valor, "AND") == 0 ||  strcmp(p_cond_mul->info.valor, "OR") == 0  || strcmp(p_cond_mul->info.valor, "NOT") == 0  ){           
+        if( strcmp(p_cond_mul->info.valor, "AND") == 0 ||  strcmp(p_cond_mul->info.valor, "OR") == 0  || strcmp(p_cond_mul->info.valor, "NOT") == 0  ){           
                 p_cond_mul->izq->info.esWhile = 1;     
-                sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
                 p_cond_mul->izq->info.etiquetaStart=strdup(etiquetaStartWhile);   
         }               
         else{       
-                sprintf(etiquetaStartWhile, "_StartWhile_%d", cont_while);
                 p_cond_mul->info.etiquetaStart=strdup(etiquetaStartWhile);
                 p_cond_mul->info.esWhile = 1;  
         }       
-
         crear_nodo(p_cond_mul,p_aux,dato,pf);
+
         p_c = p_aux;
         printf("%d - ciclo ---> WHILE P_A condicion_mul P_C START bloque END \n", yylineno);
 
@@ -846,13 +904,14 @@ ciclo: WHILE P_A  condicion_mul P_C START bloque END
 ;
 ciclo_especial: WHILE ID { auxID = $2;} IN C_A lista_de_expresiones C_C DO bloque ENDWHILE 
 {  
+        ver_tope(&p_etiquetaEndWhileEsp,&dato_etiqueta);
+        info->etiquetaEnd =  strdup(dato_etiqueta->info.valor);
         info->valor = "WHILE_ESP";
+        desapilar(&p_etiquetaStartWhileEsp,&dato_etiqueta);
+        info->etiquetaStart = strdup(dato_etiqueta->info.valor);
+        free(dato_etiqueta);
         info->indice++;
         p_ce = crear_hoja(info,pf);
-
-        info->valor = "COND";
-        info->indice++;
-        p_oper = crear_hoja(info,pf);
 
         info->valor = $2;
         info->indice++;
@@ -861,12 +920,26 @@ ciclo_especial: WHILE ID { auxID = $2;} IN C_A lista_de_expresiones C_C DO bloqu
 
         desapilar(&pila_list_exp,&p_l_exp);
 
+        
+        desapilar(&p_etiquetaEndWhileEsp,&dato_etiqueta);
+        info->valor = "LISTA";
+        info->etiquetaEnd = strdup(dato_etiqueta->info.valor);
+        free(dato_etiqueta);
+
+        if( strcmp(p_l_exp->info.valor,";")==0)
+                info->etiquetaThen = strdup(p_l_exp->der->info.etiquetaThen);
+        else
+                info->etiquetaThen = strdup(p_l_exp->info.etiquetaThen);   
+        info->indice++;
+        p_oper = crear_hoja(info,pf);
+
         crear_nodo(p_l_exp, p_oper, NULL, pf);
 
         desapilar(&pila_blo, &p_blo);
         crear_nodo(p_oper, p_ce, p_blo, pf);
         
         printf("%d - ciclo_especial ---> WHILE ID IN C_A lista_de_expresiones C_C DO bloque ENDWHILE\n", yylineno);
+        
 }
 ;
 lista_de_expresiones: expresion 
@@ -880,6 +953,19 @@ lista_de_expresiones: expresion
         info->indice++;        
         p_aux2=crear_hoja(info,pf);
 
+        sprintf(etiquetaStartWhile, "_StartWhileEspecial_%d", cont_while);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaStartWhile);
+        apilar(&p_etiquetaStartWhileEsp,&dato_etiqueta);
+
+        sprintf(etiquetaEndWhile, "_EndWhileEspecial_%d", cont_while);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaEndWhile);
+        apilar(&p_etiquetaEndWhileEsp,&dato_etiqueta);
+
+        info->etiquetaStart = strdup(etiquetaStartWhile);
+        sprintf(etiquetaThen, "_ThenWhileEspecial_%d", cont_while);
+        info->etiquetaThen =strdup(etiquetaThen);
         info->valor="==";
         info->indice++;
         p_l_exp=crear_hoja(info,pf);
@@ -887,7 +973,8 @@ lista_de_expresiones: expresion
         crear_nodo(p_aux2, p_l_exp ,p_exp,pf);
 
         apilar(&pila_list_exp, &p_l_exp );
- 
+        cont_while++;
+        
 }
 
 | lista_de_expresiones COMA expresion 
@@ -895,12 +982,15 @@ lista_de_expresiones: expresion
         printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
 
         desapilar(&pila_expr, &p_exp);
-
+   
         info->valor=auxID;
         info->indice++;        
         p_aux2=crear_hoja(info,pf);
 
+        
         info->valor="==";
+        info->etiquetaStart=strdup("");
+        info->etiquetaThen =strdup(etiquetaThen);     
         info->indice++;
         p_aux3=crear_hoja(info,pf);
 
@@ -943,6 +1033,15 @@ int main(int argc,char *argv[])
         crear_pila(&pila_term);
         crear_pila(&pila_list_exp);
         crear_pila(&pila_factor);
+
+        crear_pila(&p_etiquetaStartWhile);
+        crear_pila(&p_etiquetaEndwhile);
+        crear_pila(&p_etiquetaElse);
+        crear_pila(&p_etiquetaEnd);
+        crear_pila(&p_etiquetaThen);
+        crear_pila(&p_etiquetaStartWhileEsp);
+        crear_pila(&p_etiquetaEndWhileEsp);
+
         info=(t_info*)malloc(sizeof(t_info));
         indice=0;
         cont_auxiliares = 0;
