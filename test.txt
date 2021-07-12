@@ -22,15 +22,5 @@ write "Imprimo un float:";
 write 8.256;
 write NEWLINE;
 
-write "Ingreso un integer:";
-read integer b;
-write NEWLINE;
-write "Ingresaste:";
-write b;
-
-write NEWLINE;
-write "Ingreso un float:";
-read float a;
-write NEWLINE;
-write "Ingresaste:";
+a:= 30 MOD 7;
 write a;

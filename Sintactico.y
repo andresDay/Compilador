@@ -962,12 +962,16 @@ factor: factor OP_MOD factor_mod
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
+        desapilar(&pilaFactInt,&dato_aux);
         desapilar(&pilaFactInt,&dato);
-        crear_nodo(dato, p_oper, p_f_int, pf);
+
+        crear_nodo(dato, p_oper, dato_aux, pf);
 
         dato = p_oper;
         apilar(&pila_factor,&dato);
         p_f = p_oper;
+
+        cont_auxiliares++;
 }
         
 | factor_mod 

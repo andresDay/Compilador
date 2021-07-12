@@ -7,18 +7,18 @@ include macros.asm
 
 .DATA
 @aux1                              	dd	?
+@aux2                              	dd	?
 _2                                 	dd	2.00
+_30                                	dd	30.00
 _3_6                               	dd	3.6
 _4                                 	dd	4.00
 _5                                 	dd	5.00
+_7                                 	dd	7.00
 _8_256                             	dd	8.256
 _imprimo_un_entero_                	db	"Imprimo un entero:"               , '$', 18 dup (?)
 _imprimo_un_float_                 	db	"Imprimo un float:"                , '$', 17 dup (?)
 _imprimo_una_variable_entera_      	db	"Imprimo una variable entera:"     , '$', 28 dup (?)
 _imprimo_una_variable_float_       	db	"Imprimo una variable float:"      , '$', 27 dup (?)
-_ingresaste_                       	db	"Ingresaste:"                      , '$', 11 dup (?)
-_ingreso_un_float_                 	db	"Ingreso un float:"                , '$', 17 dup (?)
-_ingreso_un_integer_               	db	"Ingreso un integer:"              , '$', 19 dup (?)
 a                                  	dd	?
 b                                  	dd	?
 z                                  	dd	?
@@ -76,31 +76,13 @@ newline 1
 
 newline 1
 
-displayString _ingreso_un_integer_
-newline 1
+FLD _7
+FLD _30
+FPREM
+FSTP @aux2
 
-GetFloat b
-
-newline 1
-
-displayString _ingresaste_
-newline 1
-
-displayFloat b , 0
-newline 1
-
-
-newline 1
-
-displayString _ingreso_un_float_
-newline 1
-
-GetFloat a
-
-newline 1
-
-displayString _ingresaste_
-newline 1
+FLD @aux2
+FSTP a
 
 displayFloat a , 2
 newline 1
