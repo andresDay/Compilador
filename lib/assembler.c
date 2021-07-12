@@ -116,7 +116,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 
 		if (esCteOrString(p_nodo->der->info.valor))
 		{
-			printf("\n\n------------------------------\n\nEs constante string\n\n-----------------------------\n\n");
+			// printf("\n\n------------------------------\n\nEs constante string\n\n-----------------------------\n\n");
 			if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
 			{
 				string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
@@ -125,7 +125,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_INTEGER) == 0)
 			{
-				fprintf(pf, "displayInteger %s\nnewline 1\n", p_nodo->der->info.valor);
+				fprintf(pf, "displayFloat %s , 0\nnewline 1\n", agregarGuionBajo(p_nodo->der->info.valor));
 				fflush(pf);
 			}
 			else if (strcmp(p_nodo->der->info.tipo, T_FLOAT) == 0)
@@ -135,10 +135,15 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 				fflush(pf);
 			}
 		}
+		else if (strcmp(p_nodo->der->info.valor, T_NEWLINE) == 0)
+		{
+			fprintf(pf, "\nnewline 1\n");
+			fflush(pf);
+		}
 		else
 		{
 			char *tipo = buscar_tipo(ts, p_nodo->der->info.valor);
-			printf("\n\n------------------------------\n\nNo es constante string\nTipo: %s\n\n-----------------------------\n\n", p_nodo->der->info.tipo);
+			// printf("\n\n------------------------------\n\nNo es constante string\nTipo: %s\n\n-----------------------------\n\n", p_nodo->der->info.tipo);
 			if (strcmp(tipo, T_STRING) == 0)
 			{
 				fprintf(pf, "displayString %s\nnewline 1\n", p_nodo->der->info.valor);
@@ -154,23 +159,22 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 				fprintf(pf, "displayFloat %s , 2\nnewline 1\n", p_nodo->der->info.valor);
 				fflush(pf);
 			}
-			else if (strcmp(p_nodo->der->info.tipo, T_NEWLINE) == 0)
-			{
-				fprintf(pf, "\nnewline 1\n");
-				fflush(pf);
-			}
+			// else if (strcmp(p_nodo->der->info.tipo, T_NEWLINE) == 0)
+			// {
+			// 	fprintf(pf, "\nnewline 1\n");
+			// 	fflush(pf);
+			// }
 		}
 		fprintf(pf, "\n");
 		fflush(pf);
 	}
-	else if (strcmp(p_nodo->info.valor, "READ STRING") == 0)
+	else if (strcmp(p_nodo->info.valor, "READ FLOAT") == 0)
 	{	//ES UNA SENTENCIA DE READ
-		// fprintf(pf,"getFloat %s\n",p_nodo->der->info.valor);
+		fprintf(pf,"GetFloat %s\n",p_nodo->der->info.valor);
 	}
-	else if (p_nodo->der != NULL && strcmp(p_nodo->der->info.valor, "SALIR") == 0)
-	{ //ES UN NODO SALIR
-		fprintf(pf, "JMP _ET_SALIR\n");
-		fflush(pf);
+	else if (strcmp(p_nodo->info.valor, "READ INTEGER") == 0)
+	{	//ES UNA SENTENCIA DE READ
+		fprintf(pf,"GetFloat %s\n",p_nodo->der->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "LISTA") == 0)
 	{ //ES UN NODO SALIR
@@ -183,11 +187,11 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaEnd);
 	}
 	else if (strcmp(p_nodo->info.valor, "==") == 0)
-	{		
+	{
 		if (strcmp(p_nodo->info.etiquetaStart, "") != 0)
 			fprintf(pf, "%s:\n\n", p_nodo->info.etiquetaStart);
-		fflush(pf);	
-	
+		fflush(pf);
+
 		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
 		fflush(pf);
@@ -293,7 +297,7 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		}
 	}
 	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
-	{ 
+	{
 		//ES UNA ASIGNACION
 		if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
 		{
@@ -628,7 +632,7 @@ int esCteOrString(const char *s)
 	return (*s >= '0' && *s <= '9') || *s == '"' || *s == '\\';
 }
 
-char *obtenerValorOperando(const t_info* info)
+char *obtenerValorOperando(const t_info *info)
 {
 	char *res;
 	if (*(info->valor) >= '0' && *(info->valor) <= '9')

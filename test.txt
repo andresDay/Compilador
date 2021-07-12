@@ -3,6 +3,34 @@ DECVAR
     b: integer;
 ENDDEC
 
-b:= 2+2;
+b:= 2+5;
+a:=3.6;
 
+write "Imprimo una variable entera:";
+write b;
+write NEWLINE;
+
+write "Imprimo una variable float:";
+write a;
+write NEWLINE;
+
+write "Imprimo un entero:";
 write 4;
+write NEWLINE;
+
+write "Imprimo un float:";
+write 8.256;
+write NEWLINE;
+
+write "Ingreso un integer:";
+read integer b;
+write NEWLINE;
+write "Ingresaste:";
+write b;
+
+write NEWLINE;
+write "Ingreso un float:";
+read float a;
+write NEWLINE;
+write "Ingresaste:";
+write a;

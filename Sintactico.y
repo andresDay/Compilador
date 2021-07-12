@@ -244,11 +244,18 @@ sentencia: ciclo
 
 funcion:  ESCRIBIR CTE_REAL P_COMA 
 {
-        printf("%d - funcion ---> ESCRIBIR P_A factor_mod P_C P_COMA\n", yylineno);
+        printf("%d - funcion ---> ESCRIBIR CTE_REAL P_COMA\n", yylineno);
 
-        itoa($2, info->valor, 10);
+        info->valor = (char*)malloc(sizeof(char) * 20);
+	sprintf(info->valor,"%g", $2);
         info->indice++;
         info->tipo = T_FLOAT;
+
+        char* val = (char*)malloc(sizeof(char) * 20);
+        sprintf(val,"%g", $2);
+
+        cambiar_campo_tipo(&tablaSimbolos, obtenerLexemaFloat(val), T_FLOAT);
+        cambiar_campo_valor(&tablaSimbolos, obtenerLexemaFloat(val), val);
 
         p_aux = crear_hoja(info, pf);
 
@@ -264,9 +271,13 @@ funcion:  ESCRIBIR CTE_REAL P_COMA
 {
         printf("%d - funcion ---> ESCRIBIR P_A factorInt P_C P_COMA\n", yylineno);
 
-        itoa($2, info->valor, 10);
+        info->valor = (char*)malloc(sizeof(char) * 20);
         info->indice++;
         info->tipo = T_INTEGER;
+        sprintf(info->valor,"%d", $2);
+        
+        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
 
         p_aux = crear_hoja(info, pf);
 
@@ -320,7 +331,7 @@ funcion:  ESCRIBIR CTE_REAL P_COMA
         info->indice++;
         p_oper = crear_hoja(info, pf);
 
-        info->valor = "NEWLINE";
+        info->valor = T_NEWLINE;
         info->indice++;
         info->tipo = T_NEWLINE; 
         crear_nodo(NULL, p_oper, crear_hoja(info, pf), pf);
@@ -992,11 +1003,11 @@ factor_mod: ID
         char* val = (char*)malloc(sizeof(char) * 20);
         sprintf(val,"%g", $1);
 
-        printf("\n\n%s\n\n", val);
+        printf("\n\n%s\n\n", obtenerLexemaFloat(val));
         printf("\n\n%s\n\n", info->valor);
 
-        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(val), T_FLOAT);
-        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(val), val);
+        cambiar_campo_tipo(&tablaSimbolos, obtenerLexemaFloat(val), T_FLOAT);
+        cambiar_campo_valor(&tablaSimbolos, obtenerLexemaFloat(val), val);
 
         p_f_mod = crear_hoja(info, pf); 
 }

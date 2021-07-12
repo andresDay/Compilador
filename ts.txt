@@ -5,7 +5,17 @@
 |--------------------------------|----------------|--------------------------------|--------|
 |@aux1                           |id              |                                |        |
 |_2                              |integer         |2                               |        |
-|_4                              |                |                                |        |
+|_3_6                            |float           |3.6                             |        |
+|_4                              |integer         |4                               |        |
+|_5                              |integer         |5                               |        |
+|_8_256                          |float           |8.256                           |        |
+|_imprimo_un_entero_             |string          |"Imprimo un entero:"            |18      |
+|_imprimo_un_float_              |string          |"Imprimo un float:"             |17      |
+|_imprimo_una_variable_entera_   |string          |"Imprimo una variable entera:"  |28      |
+|_imprimo_una_variable_float_    |string          |"Imprimo una variable float:"   |27      |
+|_ingresaste_                    |string          |"Ingresaste:"                   |11      |
+|_ingreso_un_float_              |string          |"Ingreso un float:"             |17      |
+|_ingreso_un_integer_            |string          |"Ingreso un integer:"           |19      |
 |a                               |float           |                                |        |
 |b                               |integer         |                                |        |
 |z                               |float           |                                |        |

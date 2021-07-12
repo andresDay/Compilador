@@ -136,7 +136,7 @@ void guardarSimbolo(const char *type){
     }
     else{
 
-        if((dato.lexema = strdup(agregarGuionBajo(yytext))) == NULL){
+        if((dato.lexema = strdup(obtenerLexemaFloat(yytext))) == NULL){
             puts("Memoria insuficiente!");
             exit(1);
         }       
