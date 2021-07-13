@@ -1,0 +1,45 @@
+
+DECVAR
+    i : INTEGER;
+    b : float;
+ENDDEC
+i:=25;
+
+while i in [25-3,-250,153,25,26]
+do
+    write i;
+    i:= i + 1;
+    if(i == 26)
+        START
+            write "toy dentro del if, verdadero";
+            if( 25 == 25 and i == i)
+                START 
+                    write "posta";
+                END
+            if( 25 != 25 or i <= 30)
+                START
+                    write " 25 != 25 or bla";
+                    write "INGRESE un numero(20)";
+                    read float b;
+                    if(b == 20)
+                        START
+                            write "le pegaste";
+                        END
+                        ELSE
+                            START
+                                write "casi";
+                            END
+                END
+        END
+    ELSE
+        START
+            write "esto es falso";
+        END
+ENDWHILE
+
+i := i mod 10;
+write i;
+b:= (i*50) div 8 * ( 1 + 2 );
+write b;
+
+WRITE "INCREIBLE PERO FUNCIONA";
