@@ -679,7 +679,7 @@ condicion: condicionFactor MAYOR condicionFactor
 
 asignacion: ID ASIG expresion P_COMA 
 {
-        validateId(&tablaSimbolos, $1, T_FLOAT, yylineno);
+        idExists(&tablaSimbolos, $1, yylineno);
 
         printf("%d - asignacion ---> ID ASIG expresion P_COMA \n", yylineno);
         info->valor = "ASIG";
@@ -699,7 +699,7 @@ asignacion: ID ASIG expresion P_COMA
 
 |ID ASIG expresionInt P_COMA 
 {
-        validateId(&tablaSimbolos, $1, T_INTEGER, yylineno);
+        idExists(&tablaSimbolos, $1, yylineno);
 
         printf("%d - asignacion ---> ID ASIG expresionInt P_COMA \n", yylineno);
         info->valor = "ASIG";
@@ -953,6 +953,23 @@ factor: factor OP_MOD factor_mod
         dato = p_oper;
         apilar(&pila_factor,&dato);
         p_f = p_oper;
+        cont_auxiliares++;
+}
+
+|factor_mod OP_MOD factorInt 
+{
+        printf("%d - factor --> factor_mod OP_MOD factorInt \n", yylineno);
+        info->valor = "MOD";
+        info->indice++;
+        p_oper = crear_hoja(info, pf);
+
+        desapilar(&pilaFactInt,&dato);
+        crear_nodo(p_f_mod, p_oper, dato, pf);
+
+        dato = p_oper;
+        apilar(&pila_factor,&dato);
+        p_f = p_oper;
+        cont_auxiliares++;
 }
 
 |factorInt OP_MOD factorInt 
@@ -1025,11 +1042,26 @@ factor_mod: ID
         info->indice++;
         info->tipo = T_FLOAT;
 
-        char* val = (char*)malloc(sizeof(char) * 20);
-        sprintf(val,"%g", $2);
+        // char* val = (char*)malloc(sizeof(char) * 20);
+        // sprintf(val,"%g", $2);
 
-        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(val), T_FLOAT);
-        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(val), val);
+        // cambiar_campo_tipo(&tablaSimbolos, obtenerLexemaFloat(val), T_FLOAT);
+        // cambiar_campo_valor(&tablaSimbolos, obtenerLexemaFloat(val), val);
+
+        t_dato_lista_ts ts_dato;
+        if((ts_dato.lexema = strdup(obtenerLexemaFloatNeg(yytext))) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }       
+        if((ts_dato.tipo = strdup(T_FLOAT)) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }
+        ts_dato.valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(ts_dato.valor,"-%g", $2);
+        ts_dato.longitud = 0;
+
+        insertar_ordenado_ts(&tablaSimbolos, &ts_dato, comparacion_ts);
 
         p_f_mod = crear_hoja(info, pf); 
 }
@@ -1089,7 +1121,7 @@ expresionInt: expresionInt OP_SUMA terminoInt
 
 terminoInt: terminoInt OP_MULT factorInt 
 {
-        printf("%d - termino ---> termino OP_MULT factor \n", yylineno);
+        printf("%d - termino ---> terminoInt OP_MULT factorInt \n", yylineno);
         info->valor = "MULT";
         info->indice++;
         p_oper = crear_hoja(info, pf);
@@ -1143,8 +1175,23 @@ factorInt: CTE_INT
         info->indice++;
         info->tipo = T_INTEGER;
 
-        cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
-        cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+        // cambiar_campo_tipo(&tablaSimbolos, agregarGuionBajo(info->valor), T_INTEGER);
+        // cambiar_campo_valor(&tablaSimbolos, agregarGuionBajo(info->valor), info->valor);
+
+        t_dato_lista_ts ts_dato;
+        if((ts_dato.lexema = strdup(obtenerLexemaFloatNeg(yytext))) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }       
+        if((ts_dato.tipo = strdup(T_INTEGER)) == NULL){
+            puts("Memoria insuficiente!");
+            exit(1);
+        }
+        ts_dato.valor = (char*)malloc(sizeof(char) * 20);
+        sprintf(ts_dato.valor,"-%d", $2);
+        ts_dato.longitud = 0;
+
+        insertar_ordenado_ts(&tablaSimbolos, &ts_dato, comparacion_ts);
 
         p_f_int = crear_hoja(info, pf); 
         apilar(&pilaFactInt, &p_f_int);
@@ -1154,7 +1201,7 @@ factorInt: CTE_INT
 {
         printf("%d - factor_mod --> P_A expresion P_C \n", yylineno); 
         desapilar(&pilaExpInt,&dato);
-        apilar(&pilaFactInt, &p_f_int);
+        apilar(&pilaFactInt, &dato);
         p_f_int = dato;
 }
 ;
@@ -1202,10 +1249,10 @@ ciclo_especial: WHILE ID { auxID = $2;} IN C_A lista_de_expresiones C_C DO bloqu
         info->indice++;
         p_ce = crear_hoja(info,pf);
 
-        info->valor = $2;
-        info->indice++;
-        info->tipo = T_ID;
-        p_id = crear_hoja(info,pf);
+        // info->valor = $2;
+        // info->indice++;
+        // info->tipo = T_ID;
+        // p_id = crear_hoja(info,pf);
 
         desapilar(&pila_list_exp,&p_l_exp);
 
@@ -1266,6 +1313,40 @@ lista_de_expresiones: expresion
         
 }
 
+|expresionInt 
+{
+        printf("%d - lista_de_expresiones ---> expresionInt\n", yylineno);
+        
+        desapilar(&pilaExpInt, &p_exp_int);
+
+        info->valor=auxID;
+        info->indice++;        
+        p_aux2=crear_hoja(info,pf);
+
+        sprintf(etiquetaStartWhile, "_StartWhileEspecial_%d", cont_while);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaStartWhile);
+        apilar(&p_etiquetaStartWhileEsp,&dato_etiqueta);
+
+        sprintf(etiquetaEndWhile, "_EndWhileEspecial_%d", cont_while);
+        dato_etiqueta = (t_nodoa *)malloc(sizeof(t_nodoa*));
+        dato_etiqueta->info.valor=strdup(etiquetaEndWhile);
+        apilar(&p_etiquetaEndWhileEsp,&dato_etiqueta);
+
+        info->etiquetaStart = strdup(etiquetaStartWhile);
+        sprintf(etiquetaThen, "_ThenWhileEspecial_%d", cont_while);
+        info->etiquetaThen =strdup(etiquetaThen);
+        info->valor="==";
+        info->indice++;
+        p_l_exp=crear_hoja(info,pf);
+
+        crear_nodo(p_aux2, p_l_exp ,p_exp_int,pf);
+
+        apilar(&pila_list_exp, &p_l_exp );
+        cont_while++;
+        
+}
+
 | lista_de_expresiones COMA expresion 
 {
         printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresion\n", yylineno);
@@ -1293,14 +1374,37 @@ lista_de_expresiones: expresion
 
         crear_nodo(p_l_exp ,p_aux2 ,p_aux3,pf );
 
-        apilar(&pila_list_exp , &p_aux2);
+        apilar(&pila_list_exp , &p_aux2);     
+}
 
-        // info->valor = "Lista_exp";
-        // info->indice++;
-        // p_oper = crear_hoja(info,pf);
+| lista_de_expresiones COMA expresionInt 
+{
+        printf("%d - lista_de_expresiones ---> lista_de_expresiones COMA expresionInt\n", yylineno);
 
-        // crear_nodo(p_l_exp, p_oper, p_exp, pf);
-        // apilar(&pila_list_exp, &p_oper);     
+        desapilar(&pilaExpInt, &p_exp_int);
+   
+        info->valor=auxID;
+        info->indice++;        
+        p_aux2=crear_hoja(info,pf);
+
+        
+        info->valor="==";
+        info->etiquetaStart=strdup("");
+        info->etiquetaThen =strdup(etiquetaThen);     
+        info->indice++;
+        p_aux3=crear_hoja(info,pf);
+
+        crear_nodo(p_aux2, p_aux3 ,p_exp_int,pf);
+
+        info->valor=";";
+        info->indice++;
+        p_aux2=crear_hoja(info,pf);
+
+        desapilar(&pila_list_exp,&p_l_exp);
+
+        crear_nodo(p_l_exp ,p_aux2 ,p_aux3,pf );
+
+        apilar(&pila_list_exp , &p_aux2);   
 }
 ;
 

@@ -169,12 +169,12 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		fflush(pf);
 	}
 	else if (strcmp(p_nodo->info.valor, "READ FLOAT") == 0)
-	{	//ES UNA SENTENCIA DE READ
-		fprintf(pf,"GetFloat %s\n",p_nodo->der->info.valor);
+	{ //ES UNA SENTENCIA DE READ
+		fprintf(pf, "GetFloat %s\n", p_nodo->der->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "READ INTEGER") == 0)
-	{	//ES UNA SENTENCIA DE READ
-		fprintf(pf,"GetFloat %s\n",p_nodo->der->info.valor);
+	{ //ES UNA SENTENCIA DE READ
+		fprintf(pf, "GetFloat %s\n", p_nodo->der->info.valor);
 	}
 	else if (strcmp(p_nodo->info.valor, "LISTA") == 0)
 	{ //ES UN NODO SALIR
@@ -298,16 +298,18 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 	}
 	else if (strcmp(p_nodo->info.valor, "ASIG") == 0)
 	{
+		char *tipo = buscar_tipo(ts, p_nodo->izq->info.valor);
 		//ES UNA ASIGNACION
-		if (strcmp(p_nodo->der->info.tipo, T_STRING) == 0)
-		{
-			// string_guion_bajo_est = (char *)estandarizarString(obtenerValorString(p_nodo->der->info.valor));
-			// fprintf(pf, "FLD %s\n", agregarGuionBajo(string_guion_bajo_est));
-		}
-		else
+		if (strcmp(tipo, T_FLOAT) == 0)
 		{
 			aux = (char *)obtenerValorOperando(&p_nodo->der->info);
 			fprintf(pf, "FLD %s\n", aux);
+		}
+		else if (strcmp(tipo, T_INTEGER) == 0)
+		{
+			aux = (char *)obtenerValorOperando(&p_nodo->der->info);
+			fprintf(pf, "FLD %s\n", aux);
+			fprintf(pf, "FRNDINT\n");
 			// fflush(pf);
 		}
 		fprintf(pf, "FSTP %s\n\n", p_nodo->izq->info.valor);
@@ -371,7 +373,8 @@ void generar_sentencia(t_nodoa *p_nodo, FILE *pf, int cont, const t_lista_ts *ts
 		cont_auxiliares++;
 	}
 	else if (strcmp(p_nodo->info.valor, "DIV") == 0)
-	{ //ES UNA DIVISION
+	{
+		//ES UNA DIVISION
 		aux = (char *)obtenerValorOperando(&p_nodo->izq->info);
 		fprintf(pf, "FLD %s\n", aux);
 		aux = (char *)obtenerValorOperando(&p_nodo->der->info);
@@ -635,7 +638,11 @@ int esCteOrString(const char *s)
 char *obtenerValorOperando(const t_info *info)
 {
 	char *res;
-	if (*(info->valor) >= '0' && *(info->valor) <= '9')
+	if (*(info->valor) == '-' && *(info->valor + 1) >= '0' && *(info->valor + 1) <= '9')
+	{
+		res = obtenerLexemaFloatNeg(info->valor+1);
+	}
+	else if (*(info->valor) >= '0' && *(info->valor) <= '9')
 	{
 		res = obtenerLexemaFloat(info->valor);
 	}

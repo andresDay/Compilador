@@ -106,6 +106,30 @@ int cambiar_campo_valor(t_lista_ts *pl, const char *lexema, const char *valor)
 	return ERROR;
 }
 
+int cambiar_campo_lexema(t_lista_ts *pl, const char *old, const char *new)
+{
+	char *existe = buscar_tipo(pl, new);
+	if(existe != NULL){
+		printf("\n\nERROR: El lexema %s ya está declarado en la Tabla de simbolos\n\n", new);
+		exit(1);
+	}
+
+	while(*pl)
+    {
+        if( strcmp((*pl)->dato.lexema, old) == 0)
+		{
+			free(&(*pl)->dato.lexema);
+			if(((*pl)->dato.lexema = strdup(new)) == NULL)
+			{
+				return ERROR;
+			}
+			return TODO_BIEN;
+		}
+        pl=&(*pl)->psig;
+    }
+	return ERROR;
+}
+
 char* buscar_tipo(const t_lista_ts *pl, const char *lexema)
 {
 	while(*pl)

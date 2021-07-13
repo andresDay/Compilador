@@ -122,6 +122,44 @@ char *obtenerLexemaFloat(const char *s)
 	return inicio;
 }
 
+char *obtenerLexemaFloatNeg(const char *s)
+{
+	int i, largo = strlen(s);
+	char *inicio, *resultado;
+	resultado = (char *)malloc(sizeof(char) * largo + 2);
+	if (resultado == NULL)
+	{
+		return NULL;
+	}
+	inicio = resultado;
+	if (*s != '_')
+	{
+		*resultado = '_';
+		resultado++;
+	}
+
+	*resultado = '_';
+	resultado++;
+
+	while (*s)
+	{
+		if (*s != '.')
+		{
+			*resultado = *s;
+			resultado++;
+			s++;
+		}
+		else
+		{
+			*resultado = '_';
+			resultado++;
+			s++;
+		}
+	}
+	*resultado = '\0';
+	return inicio;
+}
+
 char *estandarizarString(const char *s)
 {
 	char *resultado, *paux;
@@ -184,7 +222,7 @@ void set_tipo_ids(t_nodoa *pa, const char *tipo, t_lista_ts *ts)
 	}
 }
 
-char* idExists(const t_lista_ts *ts, const char *lexema, int line)
+char *idExists(const t_lista_ts *ts, const char *lexema, int line)
 {
 	char *res = buscar_tipo(ts, lexema);
 	if (res == NULL || strcmp(res, T_ID) == 0)
@@ -201,7 +239,8 @@ char* idExists(const t_lista_ts *ts, const char *lexema, int line)
 	return res;
 }
 
-void validateId(const t_lista_ts *ts, const char *lexema, const char *tipo, int line){
+void validateId(const t_lista_ts *ts, const char *lexema, const char *tipo, int line)
+{
 
 	char *res = idExists(ts, lexema, line);
 
@@ -215,4 +254,8 @@ void validateId(const t_lista_ts *ts, const char *lexema, const char *tipo, int 
 		system("Pause");
 		exit(1);
 	}
+}
+
+int esCteNegativa(const char* val){
+	return *val == '-';
 }

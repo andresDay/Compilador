@@ -5,7 +5,7 @@ pause
 c:\MinGW\bin\gcc.exe ./lib/assembler.c ./lib/pila.c ./lib/arboles.c ./lib/utils.c ./lib/lista_ts.c lex.yy.c y.tab.c -o Primera.exe
 pause
 pause
-Primera.exe test.txt
+Primera.exe prueba.txt
 echo.
 echo -----------------------------------------------------------------
 pause

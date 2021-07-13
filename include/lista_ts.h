@@ -33,5 +33,6 @@ void guardar_lista_en_archivo_ts(t_lista_ts*, const char*);
 int cambiar_campo_tipo(t_lista_ts*, const char*, const char*);
 int cambiar_campo_valor(t_lista_ts*, const char*, const char*);
 char* buscar_tipo(const t_lista_ts*, const char*);
+int cambiar_campo_lexema(t_lista_ts *, const char *, const char *);
 
 #endif // LISTA_TS_H_INCLUDED

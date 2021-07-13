@@ -22,5 +22,6 @@ write "Imprimo un float:";
 write 8.256;
 write NEWLINE;
 
-a:= 30 MOD 7;
+read float a;
+
 write a;

@@ -4,19 +4,47 @@
 |LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
 |--------------------------------|----------------|--------------------------------|--------|
 |@aux1                           |id              |                                |        |
+|@aux10                          |id              |                                |        |
+|@aux11                          |id              |                                |        |
+|@aux12                          |id              |                                |        |
+|@aux13                          |id              |                                |        |
+|@aux14                          |id              |                                |        |
+|@aux15                          |id              |                                |        |
+|@aux16                          |id              |                                |        |
+|@aux17                          |id              |                                |        |
+|@aux18                          |id              |                                |        |
 |@aux2                           |id              |                                |        |
+|@aux3                           |id              |                                |        |
+|@aux4                           |id              |                                |        |
+|@aux5                           |id              |                                |        |
+|@aux6                           |id              |                                |        |
+|@aux7                           |id              |                                |        |
+|@aux8                           |id              |                                |        |
+|@aux9                           |id              |                                |        |
+|_0                              |integer         |0                               |        |
+|_1                              |integer         |1                               |        |
 |_2                              |integer         |2                               |        |
-|_30                             |integer         |30                              |        |
-|_3_6                            |float           |3.6                             |        |
+|_20                             |integer         |20                              |        |
+|_25                             |integer         |25                              |        |
+|_2_25                           |float           |2.25                            |        |
+|_3                              |integer         |3                               |        |
+|_3_5                            |float           |3.5                             |        |
 |_4                              |integer         |4                               |        |
+|_4_5                            |                |                                |        |
 |_5                              |integer         |5                               |        |
-|_7                              |integer         |7                               |        |
-|_8_256                          |float           |8.256                           |        |
-|_imprimo_un_entero_             |string          |"Imprimo un entero:"            |18      |
-|_imprimo_un_float_              |string          |"Imprimo un float:"             |17      |
-|_imprimo_una_variable_entera_   |string          |"Imprimo una variable entera:"  |28      |
-|_imprimo_una_variable_float_    |string          |"Imprimo una variable float:"   |27      |
-|a                               |float           |                                |        |
-|b                               |integer         |                                |        |
-|z                               |float           |                                |        |
+|_6                              |integer         |6                               |        |
+|_9                              |integer         |9                               |        |
+|__4_5                           |float           |-4.5                            |        |
+|__5                             |integer         |-5                              |        |
+|___ingrese_exit_para_salir__    |string          |"--INGRESE EXIT PARA SALIR--"   |27      |
+|_es_una_palabra_corta           |string          |"es una palabra corta"          |20      |
+|_es_una_palabra_larga           |string          |"es una palabra larga"          |20      |
+|_es_una_palabra_no_tan_larga    |string          |"es una palabra no tan larga"   |27      |
+|_ingresa_una_palabra_           |string          |"ingresa una palabra:"          |20      |
+|_la_cantidad_es_total           |string          |"la cantidad es total"          |20      |
+|_programa_para_contar_letras__  |string          |"PROGRAMA PARA CONTAR LETRAS--" |29      |
+|cantidadLetras                  |integer         |                                |        |
+|i                               |integer         |                                |        |
+|palabra                         |float           |                                |        |
+|variable                        |float           |                                |        |
 |___________________________________________________________________________________________|
