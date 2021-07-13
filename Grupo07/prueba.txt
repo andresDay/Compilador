@@ -1,0 +1,56 @@
+
+DECVAR
+    i : INTEGER;
+    b : float;
+    -/Ejemplo de declaracion de id fuera de rango/-
+    -/esto_es_un_id_muy_largo: STRING;/-
+ENDDEC
+i:=25;
+-/este es un programa muy simple -/comentario anidado/--/con un comentario anidado/- de prueba -/otroo comentario/-/-
+
+while i in [25-3,-250,153,25,26]
+do
+    write i;
+    i:= i + 1;
+    if(i == 26)
+        START
+            write "toy dentro del if, verdadero";
+            if( 25 == 25 and i == i)
+                START 
+                    write "posta";
+                END
+            if( 25 != 25 or i <= 30)
+                START
+                    write " 25 != 25 or bla";
+                    write "INGRESE un numero(20)";
+                    read float b;
+                    if(b == 20)
+                        START
+                            write "le pegaste";
+                        END
+                        ELSE
+                            START
+                                write "casi";
+                            END
+                END
+        END
+    ELSE
+        START
+            write "esto es falso";
+        END
+ENDWHILE
+
+-/Declaracion erronea fuera del bloque de declaraciones/-
+-/prueba: INTEGER;/-
+
+-/Ejemplos de asignaciones fuera de rango para validar longitud/-
+-/i:=456548556;/-
+-/variable:=3402823466385288598117041834845169254431.0000000000000000;/-
+
+i := i mod 10;
+write i;
+b:= (i*50) div 8 * ( 1 + 2 );
+write b;
+
+WRITE "INCREIBLE PERO FUNCIONA";
+write NEWLINE;

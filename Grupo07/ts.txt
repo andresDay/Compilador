@@ -1,0 +1,36 @@
+|-------------------------------------------------------------------------------------------|
+|            					    TABLA DE SIMBOLOS                                       |
+|-------------------------------------------------------------------------------------------|
+|LEXEMA                          |TIPO            |VALOR                           |LONGITUD|
+|--------------------------------|----------------|--------------------------------|--------|
+|@aux1                           |id              |                                |        |
+|@aux2                           |id              |                                |        |
+|@aux3                           |id              |                                |        |
+|@aux4                           |id              |                                |        |
+|@aux5                           |id              |                                |        |
+|@aux6                           |id              |                                |        |
+|@aux7                           |id              |                                |        |
+|_1                              |integer         |1                               |        |
+|_10                             |integer         |10                              |        |
+|_153                            |integer         |153                             |        |
+|_2                              |integer         |2                               |        |
+|_20                             |integer         |20                              |        |
+|_25                             |integer         |25                              |        |
+|_250                            |                |                                |        |
+|_26                             |integer         |26                              |        |
+|_3                              |integer         |3                               |        |
+|_30                             |integer         |30                              |        |
+|_50                             |integer         |50                              |        |
+|_8                              |integer         |8                               |        |
+|__250                           |integer         |-250                            |        |
+|__25____25_or_bla               |string          |" 25 != 25 or bla"              |16      |
+|_casi                           |string          |"casi"                          |4       |
+|_esto_es_falso                  |string          |"esto es falso"                 |13      |
+|_increible_pero_funciona        |string          |"INCREIBLE PERO FUNCIONA"       |23      |
+|_ingrese_un_numero_20_          |string          |"INGRESE un numero(20)"         |21      |
+|_le_pegaste                     |string          |"le pegaste"                    |10      |
+|_posta                          |string          |"posta"                         |5       |
+|_toy_dentro_del_if__verdadero   |string          |"toy dentro del if, verdadero"  |28      |
+|b                               |float           |                                |        |
+|i                               |integer         |                                |        |
+|___________________________________________________________________________________________|
